@@ -154,12 +154,20 @@
  }
  async function startup(){
   try{
-   const m=await import('https://esm.sh/@supabase/supabase-js@2.56.0');
-   supa=m.createClient(PROJECT,PUBLIC_KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
+   if(!window.QAAuthCore){
+     await new Promise((resolve,reject)=>{
+       const script=document.createElement('script');script.src='./qa-auth-core.js?v=20261123-core01';
+       script.onload=resolve;script.onerror=()=>reject(new Error('Authentication module did not load'));
+       document.head.append(script);
+     });
+   }
+   supa=window.QAAuthCore.createClient();
    supa.auth.onAuthStateChange((event)=>{
      if(event==='PASSWORD_RECOVERY'){setTimeout(openRecoveryForm,0)}
      setTimeout(sessionInfo,0)
    });
+   const callback=await supa.auth.handleRedirect();
+   if(callback?.error)status.textContent='Ověřovací odkaz: '+callback.error.message;
    await sessionInfo();
    providerSetup();
    if(RECOVERY_IN_URL&&auth)setTimeout(openRecoveryForm,60);

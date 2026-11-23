@@ -1,50 +1,78 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111329"><title>QA Studio AI PRO – Secure Sign In</title>
+<html lang="cs">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101528">
+<meta name="description" content="QA Studio AI PRO: bezpečné přihlášení, registrace, ověřovací kód a obnova hesla">
+<title>QA Studio AI PRO | Přihlášení a registrace</title>
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <style>
-:root{color-scheme:dark;font-family:system-ui,-apple-system,Arial,sans-serif}*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 90% 0%,#52266f,#10182c 42%,#090c19);color:#f5f5ff;min-height:100vh;padding:16px}
-header{max-width:850px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:14px 0 22px}
-header a{color:white;font-weight:900;text-decoration:none}header select{background:#232547;color:#fff;border-radius:9px;padding:10px;border:1px solid #6a5997}
-main{max-width:660px;margin:auto;background:#151b35f7;border:1px solid #8263a5;border-radius:22px;padding:clamp(19px,5vw,38px);box-shadow:0 16px 60px #0009}
-h1{margin:0 0 10px;font-size:clamp(24px,5vw,35px)}h2{font-size:19px}p{color:#c0cbe3;line-height:1.6}
-label{display:block;font-size:14px;font-weight:700;margin:13px 0 7px}input{width:100%;background:#10172a;color:#fff;border-radius:11px;border:1px solid #667292;padding:13px;font-size:16px}input:focus{outline:2px solid #b98fff}
-button{border-radius:12px;padding:12px 14px;background:#463283;color:#fff;border:1px solid #8873b2;font:inherit;font-weight:730;cursor:pointer}button.primary{background:linear-gradient(100deg,#de8964,#a44bcc,#524be4);border-color:#f6c5df}button:disabled{opacity:.55;cursor:wait}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.actions button{flex:1;min-width:145px}
-section{border-top:1px solid #3d4866;margin:19px 0;padding:16px 0 0}small{color:#b8c4dd;font-size:12px}
-.qaRateNote{background:#4f2e1a;border:1px solid #a66b3f;color:#ffe3b2;padding:12px;border-radius:11px;line-height:1.5}
-#status{border:2px solid #bfa1ee;background:#282045;color:#fff3cb;white-space:pre-wrap;padding:14px;border-radius:13px;min-height:56px;line-height:1.55;margin:15px 0;font-weight:750;box-shadow:0 6px 25px #0005}#status:focus{outline:3px solid #ffcb64}
-#current{color:#9ee6c5;margin:12px 0}#promo{font-weight:800;color:#f4cf88}details{background:#18243f;border:1px solid #536389;border-radius:11px;padding:12px;margin:14px 0}summary{font-weight:750;cursor:pointer}[hidden]{display:none!important}
-footer{max-width:660px;margin:22px auto;color:#adbbd3;text-align:center;font-size:12px}
-</style></head><body>
-<header><a href="./">✦ QA STUDIO AI PRO</a><select id="lang" aria-label="Language"><option value="cs">Čeština</option><option value="en">English</option></select></header>
-<main><div id="promo">SECURE SIGN-IN / ZABEZPEČENÉ PŘIHLÁŠENÍ</div><h1>Sign in / Přihlášení</h1>
-<p>Use your email and password, or paste a verification link without opening it in your email app. / Přihlas se heslem nebo vlož odkaz z e-mailu bez otevírání.</p>
-<p id="current" role="status"></p>
-<form id="loginForm">
-<label for="email">Email / E-mail</label><input type="email" id="email" autocomplete="email" required placeholder="you@example.com">
-<label for="password">Password / Heslo</label><input type="password" id="password" autocomplete="current-password" placeholder="Your password" required><div class="actions"><button type="button" id="showPassword" style="background:#192745;font-size:13px">👁 Zobrazit heslo / Show password</button></div>
-<div class="actions"><button class="primary" id="login" type="submit">Sign in / Přihlásit</button><button type="button" id="register">Register / Registrovat</button></div></form>
-<div id="status" tabindex="-1" role="alert" aria-live="assertive">Načítám přihlášení / Connecting to sign-in…</div>
-<section id="alternatives"><h2>Link does not open? / Odkaz nefunguje?</h2>
-<p>We can check an email code or verify a copied link directly. / Ověříme kód nebo zkopírovanou adresu odkazu. Použij vždy nejnovější zprávu.</p>
-<div class="actions"><button id="sendOtp" type="button">Send sign-in email / Poslat přihlášení</button><button type="button" id="sendReset">Reset password / Obnovit heslo</button></div>
-<p id="mailLimits" class="qaRateNote" role="status" hidden></p>
-<div class="actions" id="socialButtons" hidden><button type="button" id="googleAuth">G · Continue with Google</button><button type="button" id="facebookAuth">f · Continue with Facebook</button></div>
-<p id="socialNote" hidden></p>
-<label for="otp">Email code / Kód z e-mailu (only if present)</label><input id="otp" maxlength="8" pattern="[0-9]{6,8}" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
-<div class="actions"><button id="verifyOtp" type="button">Verify code / Ověřit kód</button></div>
-<details><summary>Copy and paste the email link / Zkopíruj odkaz z e-mailu</summary>
-<p>Long-press the confirmation button in your email and copy its link address. Do not share it with anyone. / Podrž tlačítko v e-mailu, zkopíruj adresu odkazu a vlož ji sem. Nikomu ji neposílej.</p>
-<label for="pasted">Full Supabase verification URL / Celý ověřovací odkaz</label><input id="pasted" autocomplete="off" type="url" spellcheck="false" placeholder="https://...supabase.co/auth/v1/verify?token=...">
-<div class="actions"><button type="button" id="verifyLink">Verify pasted link / Ověřit odkaz</button></div></details>
-</section>
-<section id="newPasswordSection" hidden><h2>Set new password / Nastavit nové heslo</h2>
-<p>Available only after a verified recovery email or in an existing authenticated session. / Dostupné po ověření e-mailu nebo po přihlášení.</p>
-<label for="newPassword">New password / Nové heslo</label><input type="password" id="newPassword" autocomplete="new-password" minlength="8">
-<label for="confirmPassword">Repeat new password / Potvrdit heslo</label><input type="password" id="confirmPassword" autocomplete="new-password" minlength="8">
-<div class="actions"><button id="savePassword" class="primary" type="button">Save password / Uložit heslo</button></div></section>
-<div class="actions"><button type="button" id="studio">Continue free / Pokračovat zdarma</button><button id="logout" type="button" hidden>Sign out / Odhlásit</button></div>
-<small>Payment cards are never requested on this page. Live checkout is still disabled. / Platební karty se zde nevyplňují. Ostré platby jsou vypnuté.</small>
-</main><footer>QA Studio AI PRO · Secure account access</footer>
-<script src="./qa-login.js?v=20261123-authfix03" defer></script></body></html>
+:root{font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color-scheme:dark;color:#f6f6ff;--txt:#f6f6ff;--sub:#afc0df;--line:#444b72;--pink:#ff83bb;--mint:#9ef5d0;--gold:#ffda98}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 80% -10%,#3f265c 0,transparent 44%),radial-gradient(ellipse at 5% 45%,#263768 0,transparent 46%),#0b1021;color:var(--txt);font-size:15px}
+a{color:#e4d4ff;text-decoration:none}a:hover{text-decoration:underline}button,input,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:wait}
+header{max-width:1150px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 18px}
+.brand{font-size:18px;font-weight:950;letter-spacing:-.035em;color:#fff;display:flex;gap:9px;align-items:center}.brand span{color:var(--gold)}
+.topActions{display:flex;align-items:center;gap:10px}.topActions a{font-size:13px;font-weight:700}.topActions select{background:#1b2543;border:1px solid #66739d;border-radius:10px;color:white;padding:10px 8px;max-width:138px}
+.layout{max-width:1150px;margin:0 auto;padding:8px 18px 48px;display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);gap:20px;align-items:start}
+.promo{background:linear-gradient(145deg,#281f50,#162346 48%,#241636);border:1px solid #68508c;border-radius:24px;position:relative;overflow:hidden;padding:32px;box-shadow:0 15px 55px #0005;min-height:490px}
+.promo:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-95px;top:-80px;background:radial-gradient(circle at 35% 35%,#b085ff94,#f4789d65 38%,transparent 70%);filter:blur(2px)}
+.kicker{font-size:11px;letter-spacing:.18em;font-weight:900;color:#ffd09b;position:relative}.promo h1{font-size:clamp(30px,4vw,46px);line-height:1.12;letter-spacing:-.05em;margin:18px 0;position:relative}.promo p{color:#d0d9ec;line-height:1.7;max-width:380px;position:relative}
+.art{display:flex;align-items:center;gap:9px;margin:25px 0}.art>span{font-size:32px;display:grid;place-items:center;height:68px;width:68px;border:1px solid #ffffff35;border-radius:20px;background:linear-gradient(150deg,#59316e,#27295e);box-shadow:0 7px 28px #0003}.art>span:nth-child(2){transform:translateY(-7px);background:linear-gradient(145deg,#62417c,#bc637e)}.art>span:nth-child(3){background:linear-gradient(145deg,#754a62,#373667)}
+.benefits{list-style:none;padding:0;display:grid;gap:12px;margin:22px 0}.benefits li{color:#dee5fb;font-size:13px}.benefits li:before{content:"✓";color:var(--mint);font-weight:900;margin-right:10px}
+.proNote{border:1px solid #a38a6f;border-radius:14px;padding:12px;background:#38263b99;color:#fce3af;font-size:12px;line-height:1.6;margin-top:20px}
+.auth{background:linear-gradient(170deg,#1b2445,#11172d);border:1px solid #6b6593;border-radius:24px;padding:clamp(18px,3vw,30px);box-shadow:0 18px 60px #0007;min-width:0}
+.progress{display:flex;gap:5px;justify-content:space-between;color:#c3cce6;font-size:11px;margin-bottom:24px}.progress span{border-radius:40px;padding:7px 10px;border:1px solid #4c5985;background:#252e50}.progress span:first-child{background:#452a67;color:#fff;border-color:#8d6bd4}
+.auth h2{font-size:clamp(24px,3.5vw,34px);line-height:1.15;letter-spacing:-.035em;margin:0 0 8px}.subtitle{color:#bdcae4;font-size:13px;line-height:1.6;margin:0 0 18px}
+label{display:block;font-weight:750;font-size:13px;margin:15px 0 7px}input{background:#0d162b;border:1px solid #5c698b;color:#fff;border-radius:12px;padding:14px 13px;min-height:48px;width:100%;outline:none;font-size:16px}input:focus{border-color:#c6a0fe;box-shadow:0 0 0 3px #9d68eb33}input::placeholder{color:#879ab9}
+.btn{border:1px solid #7972a5;background:#242b56;color:#fff;border-radius:12px;padding:12px 15px;min-height:46px;font-weight:790;transition:filter .12s}.btn:hover{filter:brightness(1.1)}.btn:focus-visible{outline:3px solid #c1a4fa;outline-offset:2px}.btn.primary{background:linear-gradient(100deg,#fa8b69,#bf4cb4,#6951f4);border-color:#f8b8dc;box-shadow:0 6px 26px #b54cd52c}.btn.soft{background:#192941;border-color:#527398}.btn.gold{background:linear-gradient(110deg,#ffd17a,#e9958b);color:#241632;border-color:#ffdfa9}.btn.textBtn{padding:8px 0;background:none;border:none;min-height:34px;color:#dec4ff}.btn.full{width:100%}
+.fieldWithButton{position:relative}.fieldWithButton input{padding-right:105px}.fieldWithButton .btn{position:absolute;right:5px;top:5px;padding:6px 11px;min-height:38px;font-size:12px;border-color:#66708a}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>.btn{flex:1}.actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}.actions .btn{flex:1;min-width:125px}
+#message{margin:16px 0 9px;display:flex;gap:9px;align-items:start;border:1px solid #59739d;border-radius:13px;padding:13px 15px;color:#d5e8ff;background:#1e3054;white-space:pre-wrap;line-height:1.52;min-height:53px;font-size:13px;scroll-margin-top:30px}#message[data-kind=error]{border-color:#df7689;background:#3b233e;color:#ffdfe3}#message[data-kind=ok]{border-color:#5bad91;background:#163c3c;color:#c6ffea}#message[data-kind=warn]{border-color:#b68d5f;background:#392d31;color:#ffe6b4}#message:focus{outline:3px solid #dfbadf}#message strong{font-size:16px}
+.helptext{color:#c7d2e9;font-size:12px;line-height:1.6}.divider{display:flex;gap:12px;align-items:center;color:#9faecb;font-size:12px;margin:19px 0}.divider:before,.divider:after{content:"";height:1px;flex:1;background:#475479}
+#social{display:flex;gap:9px;flex-wrap:wrap}#social button{flex:1;min-width:120px}#socialInfo{font-size:12px;color:#bdc5dd;margin-top:8px}
+details{border:1px solid #4f567a;background:#172340;border-radius:13px;padding:12px 14px;margin-top:14px}details summary{cursor:pointer;font-weight:750;color:#d9d9fc}details p{font-size:12px;line-height:1.55;color:#c3d3f0}
+#recoverPanel{margin-top:18px;border:1px solid #a588d5;padding:16px;border-radius:14px;background:#261d4e}
+#signedIn{background:#16372f;border:1px solid #5ca187;padding:18px;border-radius:14px;color:#e0ffe9}
+.disclaimer{font-size:11px;color:#9cacc9;margin:17px 0 0;line-height:1.6}
+#diagPanel{margin-top:18px;padding-top:15px;border-top:1px solid #364d71;font-size:12px;color:#b7c4df}#diagPanel summary{color:#e6d4fb;font-weight:760;cursor:pointer}#diagPanel pre{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;color:#cde0ed;line-height:1.5}
+#rateNotice{background:#3c302c;color:#ffe1b1;border:1px solid #a68054;border-radius:10px;padding:11px;font-size:12px;margin-top:10px}
+footer{max-width:1150px;margin:0 auto;text-align:center;color:#8396bc;padding:15px 20px 30px;font-size:12px}
+[hidden]{display:none!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.promo{min-height:0;padding:22px}.promo h1{font-size:29px}.art{margin:15px 0}.art>span{height:52px;width:52px;font-size:25px}.benefits{grid-template-columns:1fr 1fr;gap:7px}.auth{padding:20px}}
+@media(max-width:490px){header{padding:14px 12px}.brand{font-size:15px}.topActions{gap:6px}.topActions a{font-size:12px}.topActions select{max-width:108px}.layout{padding:5px 10px 30px;gap:13px}.promo{padding:19px;border-radius:18px}.promo h1{font-size:25px;margin:10px 0}.promo p{font-size:12px;margin:8px 0}.benefits{margin:13px 0}.benefits li{font-size:11px}.auth{border-radius:18px;padding:17px}.progress{font-size:10px}.progress span{padding:6px}.actions .btn{min-width:125px}}
+</style>
+</head><body>
+<header><a href="./" class="brand"><span>✦</span> QA STUDIO AI PRO</a><div class="topActions"><a href="./" data-i18n="home">Domů</a><select id="language" aria-label="Language"><option value="cs">Čeština</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pl">Polski</option><option value="pt">Português</option><option value="ru">Русский</option><option value="uk">Українська</option><option value="nl">Nederlands</option><option value="ro">Română</option><option value="ja">日本語</option><option value="zh">中文</option><option value="hi">हिन्दी</option></select></div></header>
+<div class="layout"><aside class="promo" aria-label="QA Studio AI PRO preview">
+<div class="kicker">✦ QA STUDIO AI PRO · BETA</div><h1 data-i18n="promoTitle">Tvoř bez hranic. Začni bezpečně.</h1><p data-i18n="promoText">Obrázky, videošablony, kreativní nástroje a připravované AI služby v jednom studiu.</p>
+<div class="art" aria-hidden="true"><span>🎬</span><span>🐈</span><span>✨</span><span>🪄</span></div>
+<ul class="benefits"><li data-i18n="benefit1">Základní editor zdarma</li><li data-i18n="benefit2">Hotové kreativní šablony</li><li data-i18n="benefit3">PRO balíčky dle délky</li><li data-i18n="benefit4">Bez automatické obnovy</li></ul>
+<div class="proNote" data-i18n="betaNote">PRO/VIP balíčky jsou v přípravě. Veřejné platby a externí AI generování zatím nejsou aktivní.</div>
+</aside>
+<main class="auth" id="authCard"><div class="progress"><span data-i18n="stepOne">① Účet</span><span data-i18n="stepTwo">② PRO / VIP</span><span data-i18n="stepThree">③ Studio</span></div>
+<h2 data-i18n="heading">Vítej v QA Studio</h2><p class="subtitle" data-i18n="subtitle">Přihlášení bez přesměrování na jiné stránky. Účet zůstane zabezpečený službou Supabase.</p>
+<div id="selectedPlan" hidden></div><div id="signedIn" hidden><strong id="signedInLabel"></strong><p data-i18n="alreadySignedIn">Jsi ověřený. Můžeš pokračovat do studia.</p><div class="actions"><button class="btn gold" type="button" id="enterStudio" data-i18n="enterStudio">Vstoupit do studia</button><button class="btn soft" type="button" id="logout" data-i18n="logout">Odhlásit</button></div></div>
+<form id="authForm" novalidate>
+<label for="email" data-i18n="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com">
+<label for="password" data-i18n="password">Heslo</label><div class="fieldWithButton"><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"><button type="button" id="togglePassword" class="btn soft" data-i18n="show">Zobrazit</button></div>
+<div class="actions"><button type="submit" id="login" class="btn primary" data-i18n="signIn">Přihlásit se</button><button type="button" class="btn" id="register" data-i18n="register">Vytvořit účet</button></div>
+</form>
+<div id="message" tabindex="-1" role="status" aria-live="polite" data-kind="info"><strong>ⓘ</strong><span id="messageText">Kontroluji připojení…</span></div>
+<div class="row"><button id="showHelp" type="button" class="btn textBtn" data-i18n="forgot">Zapomněl/a jsem heslo</button><button id="goFree" type="button" class="btn textBtn" data-i18n="freeEditor">Pokračovat zdarma bez účtu</button></div>
+<div id="rateNotice" hidden></div>
+<div id="socialArea"><div class="divider" data-i18n="socialHeading">Rychlé přihlášení, pokud je dostupné</div><div id="social"><button id="google" type="button" class="btn soft" hidden>G · Google</button><button id="facebook" type="button" class="btn soft" hidden>f · Facebook</button></div><p id="socialInfo" data-i18n="socialPending">Google a Facebook se objeví po aktivaci přihlášení u poskytovatelů.</p></div>
+<details id="emailHelp"><summary data-i18n="emailHelpTitle">Ověřit kód nebo zkopírovaný odkaz z e-mailu</summary><p data-i18n="emailHelpText">Použij pouze nejnovější e-mail. Když obsahuje číselný kód, zadej ho. Když obsahuje tlačítko, podrž ho a zkopíruj jeho adresu bez otevření.</p>
+<div class="actions"><button id="sendCode" type="button" class="btn" data-i18n="sendCode">Poslat přihlašovací e-mail</button><button id="sendRecovery" type="button" class="btn soft" data-i18n="sendRecovery">Poslat obnovu hesla</button></div>
+<label for="code" data-i18n="otpLabel">Ověřovací kód (pokud ho e-mail obsahuje)</label><input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="123456">
+<label for="codeType" data-i18n="codeTypeLabel">Kód je určený pro</label><select id="codeType" style="background:#17213d;color:#fff;border:1px solid #5c698b;border-radius:9px;padding:10px;width:100%"><option value="email" data-i18n="codeLogin">Přihlášení</option><option value="recovery" data-i18n="codeRecovery">Obnovu hesla</option><option value="signup" data-i18n="codeSignup">Registraci</option></select>
+<div class="actions"><button id="verifyCode" type="button" class="btn primary" data-i18n="verifyCode">Ověřit kód</button></div>
+<label for="pastedLink" data-i18n="pasteLabel">Zkopírovaná adresa ověřovacího odkazu</label><input id="pastedLink" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://...supabase.co/auth/v1/verify?token=...">
+<div class="actions"><button id="verifyLink" type="button" class="btn primary" data-i18n="verifyLink">Ověřit odkaz bez otevření</button></div>
+</details>
+<section id="recoverPanel" hidden><h3 data-i18n="newPasswordHeading">Nastavení nového hesla</h3><p class="helptext" data-i18n="newPasswordHelp">Změna hesla je dostupná pouze po úspěšném ověření účtu.</p><label for="newPassword" data-i18n="newPassword">Nové heslo</label><input id="newPassword" type="password" autocomplete="new-password" minlength="8"><label for="confirmPassword" data-i18n="confirmPassword">Zopakovat nové heslo</label><input id="confirmPassword" type="password" autocomplete="new-password" minlength="8"><div class="actions"><button class="btn primary" type="button" id="savePassword" data-i18n="savePassword">Uložit nové heslo</button></div></section>
+<details id="diagPanel"><summary data-i18n="diagnostics">Diagnostika připojení</summary><pre id="diagnosticText">Not checked</pre><div class="row"><button type="button" id="checkConnection" class="btn soft" data-i18n="checkConnection">Zkontrolovat spojení</button><button type="button" id="copyDiagnostics" class="btn soft" data-i18n="copyDiagnostics">Kopírovat diagnostiku</button></div><p class="helptext" data-i18n="diagNote">Diagnostika neobsahuje heslo ani přístupové tokeny. Neposílej sem žádné ověřovací odkazy.</p></details>
+<p class="disclaimer" data-i18n="disclaimer">V aplikaci se neukládají čísla platebních karet. Žádná ostrá platba se zatím neúčtuje.</p>
+</main></div><footer>QA Studio AI PRO © 2026 · Public beta · Secure sign-in</footer>
+<script src="./qa-auth-core.js?v=20261123-core01" defer></script>
+<script src="./qa-login.js?v=20261123-core01" defer></script>
+</body></html>

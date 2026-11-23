@@ -55,8 +55,8 @@ q('#qapPack').onchange=()=>{estimate();cards.querySelectorAll('.qap-card').forEa
 async function loadBalance(){
  const target=q('#qapBalance');target.textContent='Načítám stav na zabezpečeném serveru…';
  try{
-  const m=await import('https://esm.sh/@supabase/supabase-js@2.56.0');
-  const client=m.createClient('https://naxotlqvimewbfowxwmw.supabase.co','sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL');
+  if(!window.QAAuthCore)throw Error('Přihlášení se ještě načítá.');
+ const client=window.QAAuthCore.createClient();
   const session=(await client.auth.getSession()).data.session;
   if(!session){q('#qapSandbox').hidden=true;target.textContent='Nepřihlášený uživatel – otevři záložku Účet / PREMIUM.';return}
   const authRes=await fetch('https://naxotlqvimewbfowxwmw.supabase.co/functions/v1/qa-template',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':'sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL'},body:JSON.stringify({action:'status'})});
@@ -69,8 +69,8 @@ async function loadBalance(){
 }
 q('#qapBalanceRefresh').onclick=loadBalance;
 q('#qapTestBuy').onclick=async()=>{const b=q('#qapTestBuy'),state=q('#qapTestStatus'),link=q('#qapTestLink');link.hidden=true;b.disabled=true;state.textContent='Ověřuji správce a vytvářím bezpečnou testovací relaci…';try{
- const m=await import('https://esm.sh/@supabase/supabase-js@2.56.0');
- const c=m.createClient('https://naxotlqvimewbfowxwmw.supabase.co','sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL');
+ if(!window.QAAuthCore)throw Error('Přihlášení se ještě načítá.');
+ const c=window.QAAuthCore.createClient();
  const sess=(await c.auth.getSession()).data.session;if(!sess)throw Error('Přihlas se jako správce.');
  const res=await fetch('https://naxotlqvimewbfowxwmw.supabase.co/functions/v1/qa-checkout',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+sess.access_token,'apikey':'sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL'},body:JSON.stringify({action:'test',plan:q('#qapPack').value})});
  const j=await res.json().catch(()=>({}));if(!res.ok||!j.test_only||!String(j.url||'').startsWith('https://checkout.stripe.com/'))throw Error(j.error||'Testovací checkout není dostupný.');
