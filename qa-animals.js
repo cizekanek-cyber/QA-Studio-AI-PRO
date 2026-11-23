@@ -22,7 +22,28 @@ people:['photo-1534528741775-53994a69daeb','photo-1500648767791-00dcc994a43e','p
 christmas:['photo-1512389142860-9c449e58a543','photo-1482517967863-00e15c9b44be','photo-1510798831971-661eb04b3739'],
 film:['photo-1500534623283-312aade485b7','photo-1500534314209-a25ddb2bd429','photo-1501854140801-50d01698950b'],
 water:['photo-1433086966358-54859d0ed716','photo-1470770841072-f978cf4d019e','photo-1501785888041-af3ef285b470'],
-architecture:['photo-1519501025264-65ba15a82390','photo-1510798831971-661eb04b3739','photo-1480714378408-67cf0d13bc1b']
+architecture:['photo-1519501025264-65ba15a82390','photo-1510798831971-661eb04b3739','photo-1480714378408-67cf0d13bc1b'],
+cars:["photo-1503376780353-7e6692767b70","photo-1493238792000-8113da705763","photo-1507136566006-cfc505b114fc"],
+motorbikes:["photo-1558981806-ec527fa84c39","photo-1568772585407-9361f9bf3a87","photo-1558980664-10e7170b5f1f"],
+trucks:["photo-1519003722824-194d4455a60c","photo-1486262715619-67b85e0b08d3","photo-1532635042-a6f6ad4745f9"],
+aircraft:["photo-1436491865332-7a61a109cc05","photo-1474302770737-173ee21bab63","photo-1556388158-158ea5ccacbd"],
+boats:["photo-1544551763-46a013bb70d5","photo-1567899378494-47b22a2ae96a","photo-1502005229762-cf1b2da7c5d6"],
+homes:["photo-1600585154340-be6161a56a0c","photo-1600596542815-ffad4c1539a9","photo-1600607687939-ce8a6c25118c"],
+interiors:["photo-1600607687920-4e2a09cf159d","photo-1600210492486-724fe5c67fb0","photo-1616486338812-3dadae4b4ace"],
+products:["photo-1541643600914-78b084683601","photo-1608571423902-eed4a5ad8108","photo-1523275335684-37898b6baf30"],
+fashion:["photo-1483985988355-763728e1935b","photo-1539109136881-3be0616acf4b","photo-1525507119028-ed4c629a60a3"],
+beauty:["photo-1596462502278-27bfdc403348","photo-1522335789203-aabd1fc54bc9","photo-1608248543803-ba4f8c70ae0b"],
+food:["photo-1546069901-ba9599a7e63c","photo-1512621776951-a57141f2eefd","photo-1565299624946-b28f40a0ae38"],
+technology:["photo-1518770660439-4636190af475","photo-1519389950473-47ba0277781c","photo-1550751827-4bd374c3f58b"],
+sports:["photo-1517649763962-0c623066013b","photo-1461896836934-ffe607ba8211","photo-1571019613454-1cb2f99b2d8b"],
+flowers:["photo-1490750967868-88aa4486c946","photo-1468327768560-75b778cbb551","photo-1508615070457-7baeba4003ab"],
+jewelry:["photo-1611652022419-a9419f74343d","photo-1515562141207-7a88fb7ce338","photo-1605100804763-247f67b3557e"],
+office:["photo-1497366811353-6870744d04b2","photo-1497366754035-f200968a6e72","photo-1524758631624-e2822e304c36"],
+construction:["photo-1504307651254-35680f356dfd","photo-1487958449943-2429e8be8625","photo-1517581177682-a085bb7ffb15"],
+travel:["photo-1488646953014-85cb44e25828","photo-1469474968028-56623f02e42e","photo-1533105079780-92b9be482077"],
+art:["photo-1541961017774-22349e4a1262","photo-1513364776144-60967b0f800f","photo-1579783902614-a3fb3927b6a5"],
+gaming:["photo-1593305841991-05c297ba4575","photo-1535223289827-42f1e9919769","photo-1612287230202-1ff1d85d1bdf"],
+farm:["photo-1500382017468-9049fed747ef","photo-1501004318641-b39e6451bec6"]
 };
 const cats=[
 {id:'winter',name:'Zimní scény',subjects:['Zasněžené údolí','Lesní samota','Horská zima','Mrazivé ráno','Polární krajina','Tichá noc'],fx:['snow','blizzard','fog','snow','frost','sparkle']},
@@ -38,7 +59,28 @@ const cats=[
 {id:'christmas',name:'Vánoce a svátky',subjects:['Štědrý večer','Sněhové vločky','Vánoční světla','Zimní chalupa','Noc splněných přání','Novoroční nálada'],fx:['snow','sparkle','snow','blizzard','fireflies','frost']},
 {id:'film',name:'Filmové efekty',subjects:['Dramatická scéna','Zlatá hodinka','Akční sekvence','Tajemná atmosféra','Retro snímek','Filmové finále'],fx:['dust','sunrays','rain','fog','sparkle','snow']},
 {id:'water',name:'Voda a vodopády',subjects:['Horský vodopád','Jezero v mlze','Kapky deště','Vlhký prales','Tyrkysová hladina','Podvečerní jezero'],fx:['rain','fog','sparkle','sunrays','dust','rain']},
-{id:'architecture',name:'Místa a architektura',subjects:['Historické centrum','Romantický dům','Moderní město','Zimní náměstí','Noční stavba','Tajemná pevnost'],fx:['snow','fog','rain','sparkle','sunrays','dust']}
+{id:'architecture',name:'Místa a architektura',subjects:['Historické centrum','Romantický dům','Moderní město','Zimní náměstí','Noční stavba','Tajemná pevnost'],fx:['snow','fog','rain','sparkle','sunrays','dust']},
+{id:"cars",name:"Auta a supersporty",subjects:["Luxusní supersport","Sportovní kupé","Jízda po silnici","Klasický veterán","Noční tuning","Auto při západu slunce"],fx:["sunrays","sparkle","rain","dust","fog","sunrays"]},
+{id:"motorbikes",name:"Motorky a skútry",subjects:["Sportovní motorka","Cestovní motocykl","Motorka v garáži","Retro motocykl","Jízda na silnici","Městský skútr"],fx:[]},
+{id:"trucks",name:"Kamiony a těžká technika",subjects:["Nákladní souprava","Stavební stroj","Silniční doprava","Rypadlo na stavbě","Průmyslový náklad","Technika v terénu"],fx:[]},
+{id:"aircraft",name:"Letadla a letectví",subjects:["Dopravní letadlo","Let v oblacích","Letištní ranvej","Soukromý letoun","Letadlo při západu","Letecká fotografie"],fx:[]},
+{id:"boats",name:"Lodě a jachty",subjects:["Luxusní jachta","Plachetnice","Přístav při západu","Loď na moři","Motorový člun","Pobřežní plavba"],fx:[]},
+{id:"homes",name:"Domy a nemovitosti",subjects:["Moderní dům","Vila s bazénem","Rodinné bydlení","Architektura domu","Chalupa v přírodě","Luxusní terasa"],fx:[]},
+{id:"interiors",name:"Interiéry a design",subjects:["Moderní obývák","Elegantní kuchyně","Luxusní ložnice","Minimalistický byt","Hotelový interiér","Designová pracovna"],fx:[]},
+{id:"products",name:"Produkty a reklama",subjects:["Produktové studio","Reklama na parfém","Detail hodinek","Stylový obal","E-shop produkt","Luxusní produkt"],fx:[]},
+{id:"fashion",name:"Móda a outfity",subjects:["Módní editorial","Streetwear","Elegantní outfit","Módní kampaň","Portrét modelky","Luxusní styl"],fx:[]},
+{id:"beauty",name:"Kosmetika a beauty",subjects:["Pleťová péče","Kosmetická reklama","Make-up detail","Spa zážitek","Přírodní kosmetika","Beauty produkt"],fx:[]},
+{id:"food",name:"Jídlo a gastronomie",subjects:["Food fotografie","Zdravé jídlo","Pizza zblízka","Kavárenská scéna","Luxusní restaurace","Čerstvé suroviny"],fx:[]},
+{id:"technology",name:"Technologie a AI",subjects:["Počítačový hardware","Moderní pracoviště","Technologické světlo","Robotika a AI","Vývoj aplikací","Budoucnost techniky"],fx:[]},
+{id:"sports",name:"Sport a fitness",subjects:["Sportovní výkon","Atletická dráha","Fitness studio","Týmový sport","Horský běh","Dynamický pohyb"],fx:[]},
+{id:"flowers",name:"Květiny a dekorace",subjects:["Jarní kytice","Květinový detail","Zahradní aranžmá","Dekorace na stůl","Romantické růže","Barevné květy"],fx:[]},
+{id:"jewelry",name:"Šperky a hodinky",subjects:["Zlatý šperk","Elegantní náhrdelník","Luxusní hodinky","Prsten zblízka","Produktový detail","Šperkařská reklama"],fx:[]},
+{id:"office",name:"Kanceláře a byznys",subjects:["Moderní kancelář","Pracovní schůzka","Kreativní studio","Business prostor","Týmová spolupráce","Startup atmosféra"],fx:[]},
+{id:"construction",name:"Stavby a průmysl",subjects:["Stavební projekt","Moderní architektura","Průmyslový závod","Stavba domu","Řemeslná práce","Stavební fotografie"],fx:[]},
+{id:"travel",name:"Cestování a hotely",subjects:["Cestovatelská výprava","Výhled do přírody","Prázdninový resort","Hotelový pokoj","Dobrodružná cesta","Městský pobyt"],fx:[]},
+{id:"art",name:"Umění a kreativita",subjects:["Abstraktní obraz","Umělecký ateliér","Galerie a výstava","Barvy a textura","Designérská práce","Kreativní plakát"],fx:[]},
+{id:"gaming",name:"Hry a gaming",subjects:["Herní počítač","LED herní prostor","Futuristická scéna","Herní ovladač","E-sport","Digitální atmosféra"],fx:[]},
+{id:"farm",name:"Farma a venkov",subjects:["Zemědělský venkov","Traktor na poli","Hospodářská zvířata","Sklizeň","Život na statku","Venkovský podvečer"],fx:[]}
 ];
 const looks=['Přirozené světlo','Kino HDR','Zlatá hodina','Měsíční noc','Studený film','Dramatický kontrast','Jemná mlha','Luxusní detail','Filmový noir','Vzdušná perspektiva','Teplý podvečer','Tajemná modř'];
 const fxNames={snow:'Jemné sněžení',blizzard:'Silná vánice',rain:'Realistický déšť',fog:'Pohyblivá mlha',frost:'Mrazivý závoj',sparkle:'Světelné jiskry',dust:'Částečky v protisvětle',fireflies:'Světlušky',sunrays:'Sluneční paprsky',lightning:'Bouřka'};
@@ -75,9 +117,9 @@ const button=document.createElement('button');button.dataset.tab='qaSceneLib';bu
 const section=document.createElement('section');section.id='qaSceneLib';section.className='tab';
 section.innerHTML=[
 '<div class="qsl-head"><h2>Realistické scény, pozadí a počasí</h2>',
-'<div class="qsl-sub">14 kategorií skutečně různých fotografií. <strong class="qsl-count" id="qslRealCount">Načítám fotografie…</strong>. Prvních 5 v kategorii zdarma, další PRO. Fotografie jsou vizuální podklady; skutečný sníh, déšť a mlha se animují přímo v editoru. Nahraj vlastní fotografie a průhledné PNG lidí či zvířat.</div></div>',
+'<div class="qsl-sub">35 tematických kategorií fotopředloh. <strong class="qsl-count" id="qslRealCount">Načítám fotografie…</strong>. Prvních 5 v kategorii zdarma, další PRO. Fotografie jsou vizuální podklady; skutečný sníh, déšť a mlha se animují přímo v editoru. Nahraj vlastní fotografie a průhledné PNG lidí či zvířat.</div></div>',
 '<div class="qsl-cats" id="qslCategories"></div>',
-'<div class="qsl-toolbar"><input type="search" id="qslSearch" placeholder="Hledej: sníh, kočka, les, déšť…">',
+'<div class="qsl-toolbar"><input type="search" id="qslSearch" placeholder="Hledej: auta, motorky, domy, jídlo, vánoce…">',
 '<select id="qslTier"><option value="all">Všechny varianty</option><option value="free">Zdarma</option><option value="pro">PRO – náhled</option></select>',
 '<select id="qslGenre"><option value="all">Všechna počasí</option></select></div>',
 '<div class="qsl-layout"><div class="qsl-gallery"><div id="qslResults" class="qsl-sub"></div><div id="qslGrid" class="qsl-grid"></div><div class="qsl-row"><button id="qslMore">Zobrazit další scény</button></div></div>',
@@ -130,7 +172,28 @@ sea:'beach ocean tropical island',city:'city street skyline architecture',
 space:'astronomy stars nebula milky way',fantasy:'misty forest fog landscape',
 animals:'wild animal wildlife photograph',people:'portrait person photography',
 christmas:'christmas tree decorations lights',film:'cinematic film landscape lighting',
-water:'waterfall river lake landscape',architecture:'building architecture castle town'
+water:'waterfall river lake landscape',architecture:'building architecture castle town',
+cars:"supercar sports car road vintage automotive photography",
+motorbikes:"motorcycle motorbike classic motorbike photography",
+trucks:"truck lorry construction excavator commercial vehicle",
+aircraft:"airplane aviation aircraft airport sky photograph",
+boats:"yacht sailboat luxury boat marina harbour photography",
+homes:"modern house villa real estate exterior architecture",
+interiors:"modern interior design living room luxury kitchen bedroom",
+products:"product photography commercial product studio still life",
+fashion:"fashion editorial clothing outfits street style runway",
+beauty:"beauty cosmetic skincare makeup product commercial",
+food:"food photography restaurant cooking delicious meals",
+technology:"technology electronics robotics artificial intelligence hardware",
+sports:"fitness sports athlete stadium running athletic exercise",
+flowers:"flowers floral bouquet botanical decorations",
+jewelry:"jewelry watch necklace ring gemstones product photography",
+office:"office business workplace creative coworking workspace",
+construction:"construction site building industrial machinery builders",
+travel:"travel holiday luxury hotel resort destination",
+art:"art abstract painting artist studio gallery creativity",
+gaming:"gaming esports computer video games setup gamer",
+farm:"farm agriculture tractor farming countryside photograph"
 };
 const photoLoading=new Set(),photoDone=new Set(),photoOffset=new Map(),usedImageHashes=new Set();
 function plainText(html){
@@ -186,6 +249,7 @@ async function loadBackgroundCatalog(){
 }
 
 const catsBar=q('#qslCategories');[{id:'all',name:'Všechny kategorie'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name+(c.id==='all'?'':' · až 72');b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
+window.addEventListener('qa:open-category',event=>{const id=String(event.detail?.category||'');const match=Array.from(catsBar.querySelectorAll('button[data-cat]')).find(b=>b.dataset.cat===id);if(!match)return;q('#qslSearch').value='';query='';q('#qslTier').value='all';filter='all';q('#qslGenre').value='all';match.click();});
 const genre=q('#qslGenre');Object.keys(fxNames).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=fxNames[k];genre.append(o)});
 q('#qslTier').onchange=e=>{filter=e.target.value;visible=30;renderCards()};genre.onchange=()=>{visible=30;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=30;renderCards()};q('#qslMore').onclick=()=>{visible+=36;renderCards();if(activeCat==='all')loadBackgroundCatalog();else fetchUnique(cats.find(x=>x.id===activeCat))};
 q('#qslDensity').oninput=e=>density=Number(e.target.value);q('#qslWind').oninput=e=>wind=Number(e.target.value);
@@ -223,7 +287,8 @@ q('#qslVideo').onclick=async()=>{if(recording){status('Video se právě zaznamen
 q('#qslSave').onclick=()=>{let p={app:'QA Studio AI PRO',format:'qa-scene-v2',preset:selected.id,effects,density,wind,caption,captionColor,overlays:overlayItems.map(x=>({x:x.x,y:x.y,scale:x.scale,notice:'Z důvodu soukromí není soubor obrázku uložen do JSON. Nahraj ho znovu.'}))};download(new Blob([JSON.stringify(p,null,2)],{type:'application/json'}),'qa-projekt-'+selected.id+'.json');status('Projekt uložen jako JSON. Vložené soubory nejsou součástí exportu projektu.')};
 button.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===section));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===button));window.scrollTo({top:0,behavior:'smooth'})};
 syncEffects();renderCards();loadBg(selected);
-loadBackgroundCatalog();
+// Load starter cards first; search licensed Commons extras only as visitors explore.
+fetchUnique(cats[0]);
 const chip=document.querySelector('.chip');if(chip&&/200 grafik|800 AI scén/.test(chip.textContent))chip.textContent='Fotografie bez opakování · vlastní zvířata a lidé · skutečně animované počasí';
 for(const id of ['templates','luxury','christmas','collections']){const b=nav.querySelector('button[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
 })();
