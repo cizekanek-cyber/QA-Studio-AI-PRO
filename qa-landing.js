@@ -33,19 +33,12 @@ const conversionLanguages={"en":["Create Free Account","See PRO / VIP Plans","Jo
  function showSelectedPass(){let id;try{id=sessionStorage.getItem('qa-preferred-pass')}catch{};if(!validPlans.has(id))return;const select=document.querySelector('#qapPack');if(select){select.value=id;select.dispatchEvent(new Event('change',{bubbles:true}))}}
  function accountFirst(plan,vip=false){
   if(plan)selectPass(plan);
-  navOpen('qaAccountPanel');
-  const pane=document.querySelector('#qaAccountPanel .qaAccPanel'),form=document.querySelector('#qaAuthForm');if(!pane||!form)return;
-  const t=cv();
-  let box=pane.querySelector('#qaOnboardingPrompt');
-  if(!box){box=document.createElement('div');box.id='qaOnboardingPrompt';box.style.cssText='margin:14px 0;padding:16px;border:1px solid #c8a6f2;border-radius:14px;background:linear-gradient(120deg,#242650,#342253);color:#fff';pane.insertBefore(box,form)}
-  box.replaceChildren();
-  const h=document.createElement('strong');h.textContent=vip?t.vipSoon:t.registerIntro;
-  const detail=document.createElement('p');detail.style.cssText='font-size:13px;color:#d9d6eb;margin:8px 0';let pass;try{pass=sessionStorage.getItem('qa-preferred-pass')}catch{}
-  detail.textContent=(pass&&validPlans.has(pass)?t.chosenPass+': '+offerNames[pass]+'. ':'')+t.noLivePayments;
-  const next=document.createElement('button');next.type='button';next.textContent=t.seePlans;next.onclick=()=>{navOpen('qaPlansPanel');showSelectedPass()};
-  box.append(h,detail,next);
-  if(form.style.display!=='none'){const register=document.getElementById('qaModePassword');register?.click();document.getElementById('qaEmail')?.focus({preventScroll:true})}
+  const url=new URL('./login.html',window.location.href);
+  if(plan&&validPlans.has(plan))url.searchParams.set('plan',plan);
+  if(vip)url.searchParams.set('interest','vip');
+  window.top.location.assign(url.href);
  }
+
   let language='en';
  function get(){let chosen='en';try{chosen=localStorage.getItem('qa-studio-language')||'en'}catch{};return dict[chosen]?chosen:'en';}
  function navOpen(id){const b=document.querySelector('.nav [data-tab="'+id+'"]');if(b)b.click();}

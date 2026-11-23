@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111329"><title>QA Studio AI PRO – Secure Sign In</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Arial,sans-serif}*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 90% 0%,#52266f,#10182c 42%,#090c19);color:#f5f5ff;min-height:100vh;padding:16px}
+header{max-width:850px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:14px 0 22px}
+header a{color:white;font-weight:900;text-decoration:none}header select{background:#232547;color:#fff;border-radius:9px;padding:10px;border:1px solid #6a5997}
+main{max-width:660px;margin:auto;background:#151b35f7;border:1px solid #8263a5;border-radius:22px;padding:clamp(19px,5vw,38px);box-shadow:0 16px 60px #0009}
+h1{margin:0 0 10px;font-size:clamp(24px,5vw,35px)}h2{font-size:19px}p{color:#c0cbe3;line-height:1.6}
+label{display:block;font-size:14px;font-weight:700;margin:13px 0 7px}input{width:100%;background:#10172a;color:#fff;border-radius:11px;border:1px solid #667292;padding:13px;font-size:16px}input:focus{outline:2px solid #b98fff}
+button{border-radius:12px;padding:12px 14px;background:#463283;color:#fff;border:1px solid #8873b2;font:inherit;font-weight:730;cursor:pointer}button.primary{background:linear-gradient(100deg,#de8964,#a44bcc,#524be4);border-color:#f6c5df}button:disabled{opacity:.55;cursor:wait}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.actions button{flex:1;min-width:145px}
+section{border-top:1px solid #3d4866;margin:19px 0;padding:16px 0 0}small{color:#b8c4dd;font-size:12px}
+#status{border:1px solid #556592;background:#1c2948;color:#d9ecff;white-space:pre-wrap;padding:12px;border-radius:12px;min-height:50px;line-height:1.55;margin:16px 0}
+#current{color:#9ee6c5;margin:12px 0}#promo{font-weight:800;color:#f4cf88}details{background:#18243f;border:1px solid #536389;border-radius:11px;padding:12px;margin:14px 0}summary{font-weight:750;cursor:pointer}[hidden]{display:none!important}
+footer{max-width:660px;margin:22px auto;color:#adbbd3;text-align:center;font-size:12px}
+</style></head><body>
+<header><a href="./">✦ QA STUDIO AI PRO</a><select id="lang" aria-label="Language"><option value="cs">Čeština</option><option value="en">English</option></select></header>
+<main><div id="promo">SECURE SIGN-IN / ZABEZPEČENÉ PŘIHLÁŠENÍ</div><h1>Sign in / Přihlášení</h1>
+<p>Use your email and password, or paste a verification link without opening it in your email app. / Přihlas se heslem nebo vlož odkaz z e-mailu bez otevírání.</p>
+<p id="current" role="status"></p>
+<form id="loginForm">
+<label for="email">Email / E-mail</label><input type="email" id="email" autocomplete="email" required placeholder="you@example.com">
+<label for="password">Password / Heslo</label><input type="password" id="password" autocomplete="current-password" minlength="8" placeholder="Your password">
+<div class="actions"><button class="primary" id="login" type="submit">Sign in / Přihlásit</button><button type="button" id="register">Register / Registrovat</button></div></form>
+<section id="alternatives"><h2>Link does not open? / Odkaz nefunguje?</h2>
+<p>We can check an email code or verify a copied link directly. / Ověříme kód nebo zkopírovanou adresu odkazu. Použij vždy nejnovější zprávu.</p>
+<div class="actions"><button id="sendOtp" type="button">Send sign-in email / Poslat přihlášení</button><button type="button" id="sendReset">Reset password / Obnovit heslo</button></div>
+<label for="otp">Email code / Kód z e-mailu (only if present)</label><input id="otp" maxlength="8" pattern="[0-9]{6,8}" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
+<div class="actions"><button id="verifyOtp" type="button">Verify code / Ověřit kód</button></div>
+<details><summary>Copy and paste the email link / Zkopíruj odkaz z e-mailu</summary>
+<p>Long-press the confirmation button in your email and copy its link address. Do not share it with anyone. / Podrž tlačítko v e-mailu, zkopíruj adresu odkazu a vlož ji sem. Nikomu ji neposílej.</p>
+<label for="pasted">Full Supabase verification URL / Celý ověřovací odkaz</label><input id="pasted" autocomplete="off" type="url" spellcheck="false" placeholder="https://...supabase.co/auth/v1/verify?token=...">
+<div class="actions"><button type="button" id="verifyLink">Verify pasted link / Ověřit odkaz</button></div></details>
+</section>
+<section id="newPasswordSection" hidden><h2>Set new password / Nastavit nové heslo</h2>
+<p>Available only after a verified recovery email or in an existing authenticated session. / Dostupné po ověření e-mailu nebo po přihlášení.</p>
+<label for="newPassword">New password / Nové heslo</label><input type="password" id="newPassword" autocomplete="new-password" minlength="8">
+<label for="confirmPassword">Repeat new password / Potvrdit heslo</label><input type="password" id="confirmPassword" autocomplete="new-password" minlength="8">
+<div class="actions"><button id="savePassword" class="primary" type="button">Save password / Uložit heslo</button></div></section>
+<div id="status" role="status" aria-live="polite">Connecting to secure sign-in…</div>
+<div class="actions"><button type="button" id="studio">Continue free / Pokračovat zdarma</button><button id="logout" type="button" hidden>Sign out / Odhlásit</button></div>
+<small>Payment cards are never requested on this page. Live checkout is still disabled. / Platební karty se zde nevyplňují. Ostré platby jsou vypnuté.</small>
+</main><footer>QA Studio AI PRO · Secure account access</footer>
+<script src="./qa-login.js?v=20261123-otp01" defer></script></body></html>

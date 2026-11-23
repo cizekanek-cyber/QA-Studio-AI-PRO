@@ -5,11 +5,7 @@
  const PROJECT='https://naxotlqvimewbfowxwmw.supabase.co';
  const PUBLIC_KEY='sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL';
  // Redirect only to controlled production origins (no arbitrary redirect URLs).
- const REDIRECT_URL=(()=>{
-  const hostname=window.location.hostname.toLowerCase();
-  if(hostname==='qastudioaipro.com'||hostname==='www.qastudioaipro.com')return window.location.origin+'/';
-  return 'https://cizekanek-cyber.github.io/QA-Studio-AI-PRO/';
- })();
+ const REDIRECT_URL=new URL('./login.html',window.location.href).href;
  const rawAuthReturn=new URLSearchParams(window.location.hash.startsWith('#')?window.location.hash.slice(1):'');
  const RECOVERY_IN_URL=rawAuthReturn.get('type')==='recovery';
  const AUTH_RETURN_ERROR=rawAuthReturn.get('error_code')||rawAuthReturn.get('error')||new URLSearchParams(location.search).get('error_code');
@@ -63,7 +59,15 @@
  cashForecast();
 
  const q=s=>sec.querySelector(s),status=q('#qaAccountStatus');
- tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e===sec));nav.querySelectorAll('button').forEach(e=>e.classList.toggle('active',e===tab));window.scrollTo({top:0,behavior:'smooth'})});
+ tab.addEventListener('click',()=>{
+ if(!window.__qaAuthenticatedUserId){
+  window.top.location.assign(new URL('./login.html',window.location.href).href);
+  return;
+ }
+ document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e===sec));
+ nav.querySelectorAll('button').forEach(e=>e.classList.toggle('active',e===tab));
+ window.scrollTo({top:0,behavior:'smooth'});
+});
  let supa=null,auth=null,adminAccess=false,lastVerifiedUser=null;
  const loginGoogle=q('#qaLoginGoogle'),loginFacebook=q('#qaLoginFacebook'),socialStatus=q('#qaSocialStatus');
  const recoveryBox=q('#qaRecoveryBox'),recoveryStatus=q('#qaRecoveryStatus');
