@@ -27,7 +27,7 @@ function apply(){
  const t=TRANSLATIONS[current]||TRANSLATIONS.en;
  document.documentElement.lang=current;
  setText('button[data-tab="qaWelcome"]','⌂ '+t.home);
- setText('button[data-tab="qaCutoutPanel"]','🐾 '+t.peopleAnimals+' PNG');
+ setText('button[data-tab="qaCutoutPanel"]','🖼 '+t.all);\n setText('button[data-tab="qaPeopleTab"]','👤 '+t.people);\n setText('button[data-tab="qaAnimalsTab"]','🐾 '+t.animals);
  setText('button[data-tab="qaSceneLib"]','🎬 '+t.editor);
  setText('button[data-tab="qaSocialPanel"]','↗ '+t.share);
  setText('button[data-tab="qaPlansPanel"]','◈ '+t.plans);
@@ -64,7 +64,7 @@ function apply(){
  allText('#pricing .price-card .price-state',t.inactive);
  setText('#qaPlansPanel h2','QA Studio AI PRO — '+t.prices);
  setText('#qaSocialPanel h2',t.share);
- setText('#qaLanguagePicker',picker.textContent,'ariaLabel'); // no-op if DOM doesn't expose ariaLabel
+ picker.setAttribute('aria-label',t.language);
  busy=false;
 }
 let scheduled=false;
