@@ -49,6 +49,7 @@
   section.insertBefore(frame,section.firstChild);section.classList.add('qlaLandingActive');
   frame.querySelectorAll('[data-go]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.go;go(mode);if(mode==='plans'&&btn.dataset.plan){const sel=document.getElementById('qapPack');if(sel){sel.value=btn.dataset.plan;sel.dispatchEvent(new Event('change',{bubbles:true}))}}}));
   if(picker&&picker.value!==language){picker.value=language;picker.dispatchEvent(new Event('change',{bubbles:false}))}
+  const aiNav=nav.querySelector('#qlaAiNav');if(aiNav)aiNav.textContent='✦ '+t.ai;
   nav.style.setProperty('--qla-nav-color','#d9e6ff');
   return true;
  }
@@ -115,6 +116,7 @@
  #qaWelcome .qlaRibbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;background:#ff8dcd;color:#251431;white-space:nowrap;padding:4px 9px;border-radius:12px}
  #qaWelcome .qlaPricingNote{font-size:12px;color:#cfdbf4;text-align:center;margin-top:17px}
  #qaWelcome .qlaFooter{color:#a3b7d6;text-align:center;font-size:12px;padding:22px 0}
+ .nav #qlaAiNav{background:linear-gradient(115deg,#472a83,#713dcb)!important;color:#fff!important;border:1px solid #bd8cff!important;border-radius:12px!important;padding:10px 14px!important;font-weight:800!important;box-shadow:0 0 14px #9247f52f}
  .nav #qaLanguagePicker{font-weight:800!important;background:#171c39!important;color:#fff!important;border:1px solid #856bc9!important;border-radius:13px!important;padding:10px!important;max-width:160px!important}
  @media(max-width:1100px){#qaWelcome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))}#qaWelcome .qlaPriceGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
  @media(max-width:720px){#qaWelcome.qlaLandingActive{padding:6px 8px 50px!important}#qaWelcome .qlaHero{min-height:610px;align-items:flex-end}#qaWelcome .qlaHeroArt{width:100%;height:66%;top:0;object-position:64% 25%}#qaWelcome .qlaHero::before{background:linear-gradient(0deg,#07132b 0%,#0b142ef5 26%,#101634bd 51%,#07132b12 84%)}#qaWelcome .qlaHeroContent{width:100%;padding:18px 21px 26px}#qaWelcome .qlaHero h1{font-size:clamp(32px,7vw,44px)}#qaWelcome .qlaLead{font-size:16px}#qaWelcome .qlaToolGrid{grid-template-columns:repeat(2,minmax(0,1fr))}#qaWelcome .qlaTool{min-height:155px;padding:15px 8px}#qaWelcome .qlaTwoCols{grid-template-columns:1fr}#qaWelcome .qlaSteps{gap:8px}#qaWelcome .qlaStepVisual{height:95px;font-size:40px}#qaWelcome .qlaPriceGrid{grid-template-columns:repeat(2,minmax(0,1fr))}#qaWelcome .qlaPanel{padding:17px}#qaWelcome .qlaHeader{align-items:start;flex-wrap:wrap}}
@@ -122,6 +124,14 @@
  `;
  function init(){const section=document.getElementById('qaWelcome');if(!section||!section.querySelector('.qwHero')||!document.getElementById('qaLanguagePicker'))return false;
   if(!document.getElementById('qlaCss')){const sheet=document.createElement('style');sheet.id='qlaCss';sheet.textContent=CSS;document.head.append(sheet)}
+  const nav=document.querySelector('.nav');
+  if(nav&&!nav.querySelector('#qlaAiNav')){
+   const aiNav=document.createElement('button');aiNav.type='button';aiNav.id='qlaAiNav';
+   aiNav.textContent='✦ AI Tools';aiNav.setAttribute('aria-label','AI tools');
+   const editorLink=nav.querySelector('button[data-tab="qaSceneLib"]');
+   if(editorLink)editorLink.insertAdjacentElement('afterend',aiNav);else nav.append(aiNav);
+   aiNav.onclick=()=>go('ai');
+  }
   language=get();render();
   const picker=document.getElementById('qaLanguagePicker');picker.addEventListener('change',()=>{language=dict[picker.value]?picker.value:'en';try{localStorage.setItem('qa-studio-language',language)}catch{}render()});
   window.addEventListener('qa:language',e=>{const next=String(e.detail?.language||'').split('-')[0];if(dict[next]){language=next;render()}});
