@@ -110,7 +110,7 @@ section.innerHTML=`
 <button id="qwToggle" class="qwOutline qwToggle" aria-expanded="false">Zobrazit další kategorie</button>
 <h3 style="font-size:17px;margin-bottom:10px">Další nástroje aplikace</h3><div class="qwExtra" id="qwExtra"></div>
 <p id="qwError" class="qwError" role="status"></p>
-<div class="qwNote"><strong>Provoz a náklady:</strong> Hotové motivy a místní efekty nezadávají nové placené požadavky externí AI. Vlastní PNG se importují do telefonu. Placené generování a checkout se aktivují až po ověření nákladů a zabezpečení plateb.</div>
+<div class="qwNote"><strong>Šablony:</strong> V každé kategorii první 4 návrhy zdarma. Aktivní PRO nebo VIP otevírá celý katalog hotových šablon bez jednotlivých příplatků. AI generování může spotřebovávat společné kredity balíčku podle podmínek. <strong>Provoz a náklady:</strong> Hotové motivy a místní efekty nezadávají nové placené požadavky externí AI. Vlastní PNG se importují do telefonu. Placené generování a checkout se aktivují až po ověření nákladů a zabezpečení plateb.</div>
 </section>
 `;
 root.append(section);
