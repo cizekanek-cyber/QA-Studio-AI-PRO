@@ -19,16 +19,23 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 (function(){
 'use strict';
 const f=document.getElementById('app'),n=document.getElementById('notice');
+if(location.search||location.hash)f.src='./index-1.html'+location.search+location.hash;
 f.addEventListener('load',function(){
  try{
    const doc=f.contentDocument;
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js?v=20261123-scenes4';
+     script.src='./qa-animals.js?v=20261123-scenes5';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      doc.body.append(script);
+   }
+   if(!doc.querySelector('script[data-qa-account]')){
+     const account=doc.createElement('script');
+     account.src='./qa-account.js?v=20261123-auth2';
+     account.dataset.qaAccount='true';
+     doc.body.append(account);
    }
    n.style.display='none';
  }catch(e){
