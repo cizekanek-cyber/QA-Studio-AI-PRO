@@ -39,7 +39,7 @@
    await sessionInfo();
   }catch(e){status.textContent='Přihlášení není dostupné: '+(e?.message||'Chyba načtení')}
  }
- q('#qaSignIn').onclick=async()=>{const email=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Zadejte platnou e-mailovou adresu.';return}if(!supa){status.textContent='Připojení zatím není hotové.';return}const b=q('#qaSignIn');b.disabled=true;try{const r=await supa.auth.signInWithOtp({email,options:{emailRedirectTo:'https://cizekanek-cyber.github.io/QA-Studio-AI-PRO/'}});if(r.error)throw r.error;status.textContent='Pokud je adresa povolena, dorazí na ni přihlašovací odkaz. Zkontrolujte také spam.'}catch(e){status.textContent='Přihlášení: '+(e?.message||'Chyba')}finally{b.disabled=false}};
+ q('#qaSignIn').onclick=async()=>{const email=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Zadejte platnou e-mailovou adresu.';return}if(!supa){status.textContent='Připojení zatím není hotové.';return}const b=q('#qaSignIn');b.disabled=true;try{const r=await supa.auth.signInWithOtp({email,options:{emailRedirectTo:(()=>{try{return window.top.location.origin+window.top.location.pathname}catch{return 'https://cizekanek-cyber.github.io/QA-Studio-AI-PRO/'}})()}});if(r.error)throw r.error;status.textContent='Pokud je adresa povolena, dorazí na ni přihlašovací odkaz. Zkontrolujte také spam.'}catch(e){status.textContent='Přihlášení: '+(e?.message||'Chyba')}finally{b.disabled=false}};
  q('#qaSignOut').onclick=async()=>{try{await supa?.auth.signOut()}catch(e){status.textContent=e?.message||'Chyba odhlášení'}await sessionInfo()};
  q('#qaRefresh').onclick=sessionInfo;
  startup();
