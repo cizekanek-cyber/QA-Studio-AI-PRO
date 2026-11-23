@@ -249,6 +249,23 @@ async function loadBackgroundCatalog(){
 }
 
 const catsBar=q('#qslCategories');[{id:'all',name:'Všechny kategorie'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name+(c.id==='all'?'':' · až 72');b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
+window.addEventListener('qa:use-gallery-image',event=>{
+ const image=event.detail&&event.detail.image;
+ if(typeof image!=='string'||!image.startsWith('data:image/png;base64,')||image.length>15000000)return;
+ const name=String(event.detail.name||'Fotografická předloha').slice(0,90);
+ const free=sceneList.find(t=>!t.pro);if(free)selected=free;
+ effects=['sunrays'];syncEffects();
+ q('#qslTitle').textContent=name;
+ q('#qslTierMark').textContent='VLASTNÍ PŘEDLOHA';
+ q('#qslTierMark').style.color='#9df2ce';
+ q('#qslCredit').textContent='Předloha vybraná z galerie uživatele.';
+ const token=++photoToken;
+ photo=null;photoFailed=false;
+ const im=new Image();
+ im.onload=()=>{if(token!==photoToken)return;photo=im;customBackground=true;status('Fotografie vložena do editoru. Přidej text, počasí nebo další objekty.');};
+ im.onerror=()=>{if(token!==photoToken)return;photoFailed=true;status('Obrázek z galerie se nepodařilo převést do editoru.');};
+ im.src=image;
+});
 window.addEventListener('qa:open-category',event=>{const id=String(event.detail?.category||'');const match=Array.from(catsBar.querySelectorAll('button[data-cat]')).find(b=>b.dataset.cat===id);if(!match)return;q('#qslSearch').value='';query='';q('#qslTier').value='all';filter='all';q('#qslGenre').value='all';match.click();});
 const genre=q('#qslGenre');Object.keys(fxNames).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=fxNames[k];genre.append(o)});
 q('#qslTier').onchange=e=>{filter=e.target.value;visible=30;renderCards()};genre.onchange=()=>{visible=30;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=30;renderCards()};q('#qslMore').onclick=()=>{visible+=36;renderCards();if(activeCat==='all')loadBackgroundCatalog();else fetchUnique(cats.find(x=>x.id===activeCat))};
