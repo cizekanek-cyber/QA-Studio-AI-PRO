@@ -1,0 +1,10 @@
+[functions.qa-checkout]
+verify_jwt = false
+[functions.qa-webhook]
+verify_jwt = false
+[functions.qa-access]
+verify_jwt = false
+[functions.qa-portal]
+verify_jwt = false
+[functions.qa-owner]
+verify_jwt = false
