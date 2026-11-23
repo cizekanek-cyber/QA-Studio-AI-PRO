@@ -4,7 +4,15 @@
  if(document.getElementById('qaAccountPanel'))return;
  const PROJECT='https://naxotlqvimewbfowxwmw.supabase.co';
  const PUBLIC_KEY='sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL';
- const REDIRECT_URL='https://cizekanek-cyber.github.io/QA-Studio-AI-PRO/';
+ // Redirect only to controlled production origins (no arbitrary redirect URLs).
+ const REDIRECT_URL=(()=>{
+  const hostname=window.location.hostname.toLowerCase();
+  if(hostname==='qastudioaipro.com'||hostname==='www.qastudioaipro.com')return window.location.origin+'/';
+  return 'https://cizekanek-cyber.github.io/QA-Studio-AI-PRO/';
+ })();
+ const rawAuthReturn=new URLSearchParams(window.location.hash.startsWith('#')?window.location.hash.slice(1):'');
+ const RECOVERY_IN_URL=rawAuthReturn.get('type')==='recovery';
+ const AUTH_RETURN_ERROR=rawAuthReturn.get('error_code')||rawAuthReturn.get('error')||new URLSearchParams(location.search).get('error_code');
  const nav=document.querySelector('.nav');
  if(!nav)return;
  const st=document.createElement('style');
@@ -16,6 +24,17 @@
  const sec=document.createElement('section');sec.className='tab';sec.id='qaAccountPanel';sec.innerHTML='<div class="qaAccPanel"><h2>🔐 Můj účet • QA Studio AI PRO</h2><p>Ověřte svůj e-mail a spravujte přístup k zakoupeným šablonám. Zákaznické platby zatím nejsou povolené.</p><div id="qaAuthForm"><label for="qaEmail">E-mail</label><div><input type="email" autocomplete="email" id="qaEmail" placeholder="vas@email.cz"></div><button id="qaSignIn">Poslat odkaz na e-mail</button></div><div id="qaSignOutBox" style="display:none"><button id="qaSignOut">Odhlásit</button><button id="qaRefresh">Zkontrolovat licenci</button></div><div id="qaAccountStatus" class="qaAccStatus" role="status">Připojuji bezpečné přihlášení…</div><div class="qaNote">Platba je zatím vypnutá, abychom před spuštěním dokončili zabezpečení a zkušební nákup. Neomezené používání šablon nezahrnuje neomezené AI generování.</div><div class="qaNote">Šest časových balíčků od 59 Kč za 24 hodin po 2 990 Kč za 365 dní. Po aktivaci se zpřístupní všechny hotové PRO/VIP předlohy a přidělené AI kredity. Najdeš je v záložce AI kredity / ceník. Platby a skutečné AI čerpání ještě nejsou aktivní.</div></div>';
  const parent=document.querySelector('.tab')?.parentElement||nav.parentElement;parent.append(sec);
  const form=sec.querySelector('#qaAuthForm');
+ sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend',`<div id="qaRecoveryBox" class="qaHidden" style="border:2px solid #a98af4;border-radius:15px;padding:18px;margin:18px 0;background:#202149">
+ <h3>🔑 Set your new password / Nové heslo</h3>
+ <p>You opened a password reset link. Choose a new password and save it. / Po otevření odkazu z e-mailu si nastav nové heslo.</p>
+ <label for="qaNewPassword">New password / Nové heslo</label><input type="password" id="qaNewPassword" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" />
+ <label for="qaNewPasswordCheck" style="display:block;margin-top:11px">Repeat password / Zopakuj heslo</label><input type="password" id="qaNewPasswordCheck" autocomplete="new-password" minlength="8" placeholder="Repeat password" />
+ <div><button type="button" id="qaSaveNewPassword">Save new password / Uložit heslo</button></div><p id="qaRecoveryStatus" role="status"></p>
+ </div>`);
+ const help=document.createElement('div');help.id='qaLoginHelp';help.innerHTML='<p style="font-size:13px;margin:5px 0 12px;color:#b9d8f9">Already registered? Choose <strong>Sign in</strong>, not Register. Forgot your password? Use <strong>Reset password</strong> below. / Máš účet? Přihlas se, neregistruj se znovu.</p>';
+ form.append(help);
+ const guest=document.createElement('button');guest.type='button';guest.id='qaGuestEdit';guest.textContent='Continue free without sign-in / Pokračovat zdarma bez přihlášení';guest.style.cssText='background:#16283b;border:1px solid #3d7d91';guest.onclick=()=>nav.querySelector('[data-tab="qaSceneLib"]')?.click();form.append(guest);
+ 
  form.insertAdjacentHTML('afterbegin','<div class="qaSocialLogin" id="qaSocialLogin"><h3>Quick sign-in · Rychlé přihlášení</h3><div class="qaSocialRow"><button type="button" id="qaLoginGoogle">G · Google</button><button type="button" id="qaLoginFacebook">f · Facebook</button><button type="button" id="qaLoginTikTok" disabled>TikTok · Coming soon</button></div><div class="qaSocialStatus" id="qaSocialStatus" role="status">Checking secure login options…</div><div class="qaSocialWallets">At checkout: Bank card · Apple Pay on supported devices · Google Pay: activation pending. Stripe handles payment details; this website never stores card numbers.</div></div>');
  form.insertAdjacentHTML('beforeend','<div style="margin-top:12px"><button id="qaModeLink" type="button">Odkaz na e-mail</button><button id="qaModePassword" type="button">Přihlášení heslem</button></div><div id="qaPasswordBox" class="qaHidden"><label for="qaPassword">Heslo (min. 8 znaků)</label><input id="qaPassword" type="password" autocomplete="current-password" placeholder="Heslo"><div><button id="qaPassLogin" type="button">Přihlásit</button><button id="qaPassRegister" type="button">Registrovat</button><button id="qaPassReset" type="button">Obnovit heslo</button></div></div>');
  sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend','<div id="qaAdminPanel" class="qaHidden"><h2>Administrace majitele</h2><p>Tržby a předplatná uvidí pouze serverově ověřený správce.</p><button id="qaAdminRefresh" type="button">Načíst tržby</button><div class="qaAdminKpis"><span><strong id="qaGross">–</strong>Hrubé tržby Kč</span><span><strong id="qaPayments">–</strong>Transakce</span><span><strong id="qaSubs">–</strong>Předplatná</span></div><p id="qaAdminInfo" class="qaNote"></p></div>');
@@ -47,6 +66,30 @@
  tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e===sec));nav.querySelectorAll('button').forEach(e=>e.classList.toggle('active',e===tab));window.scrollTo({top:0,behavior:'smooth'})});
  let supa=null,auth=null,adminAccess=false,lastVerifiedUser=null;
  const loginGoogle=q('#qaLoginGoogle'),loginFacebook=q('#qaLoginFacebook'),socialStatus=q('#qaSocialStatus');
+ const recoveryBox=q('#qaRecoveryBox'),recoveryStatus=q('#qaRecoveryStatus');
+ let recoveryMode=RECOVERY_IN_URL;
+ function openRecoveryForm(){
+  recoveryMode=true;recoveryBox.classList.remove('qaHidden');tab.click();recoveryBox.scrollIntoView({behavior:'smooth',block:'center'});
+  q('#qaNewPassword').focus({preventScroll:true});
+ }
+ q('#qaSaveNewPassword').onclick=async()=>{
+  const a=q('#qaNewPassword').value,b=q('#qaNewPasswordCheck').value,save=q('#qaSaveNewPassword');
+  if(a.length<8){recoveryStatus.textContent='Password must have at least 8 characters. / Heslo musí mít alespoň 8 znaků.';return}
+  if(a!==b){recoveryStatus.textContent='Passwords do not match. / Hesla se neshodují.';return}
+  if(!supa){recoveryStatus.textContent='Authentication is still loading. / Přihlášení se načítá.';return}
+  save.disabled=true;
+  try{
+   const {data,error}=await supa.auth.updateUser({password:a});
+   if(error)throw error;
+   if(!data?.user)throw Error('Password update was not confirmed');
+   q('#qaNewPassword').value='';q('#qaNewPasswordCheck').value='';
+   recoveryMode=false;recoveryBox.classList.add('qaHidden');
+   status.textContent='✓ Password updated. You are signed in. / Heslo uloženo, jsi přihlášený.';
+   await sessionInfo();
+  }catch(e){recoveryStatus.textContent='Could not save new password: '+(e.message||e)}
+  finally{save.disabled=false}
+ };
+ 
  async function providerSetup(){
    try{
      const response=await fetch(PROJECT+'/auth/v1/settings',{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
@@ -105,9 +148,18 @@
   try{
    const m=await import('https://esm.sh/@supabase/supabase-js@2.56.0');
    supa=m.createClient(PROJECT,PUBLIC_KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
-   supa.auth.onAuthStateChange(()=>{setTimeout(sessionInfo,0)});
+   supa.auth.onAuthStateChange((event)=>{
+     if(event==='PASSWORD_RECOVERY'){setTimeout(openRecoveryForm,0)}
+     setTimeout(sessionInfo,0)
+   });
    await sessionInfo();
    providerSetup();
+   if(RECOVERY_IN_URL&&auth)setTimeout(openRecoveryForm,60);
+   if(AUTH_RETURN_ERROR){
+     status.textContent='The email login link has expired or was already used. Request a new password reset link below. / Odkaz z e-mailu vypršel nebo už byl použit. Nech si poslat nový odkaz.';
+     tab.click();
+     setTimeout(()=>q('#qaModePassword')?.click(),50);
+   }
   }catch(e){status.textContent='Přihlášení není dostupné: '+(e?.message||'Chyba načtení')}
  }
  q('#qaSignIn').onclick=async()=>{const email=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Zadejte platnou e-mailovou adresu.';return}if(!supa){status.textContent='Připojení zatím není hotové.';return}const b=q('#qaSignIn');b.disabled=true;try{const r=await supa.auth.signInWithOtp({email,options:{emailRedirectTo:REDIRECT_URL}});if(r.error)throw r.error;status.textContent='Žádost přijata. Zkontroluj spam a nejnovější e-mail. Pokud odkaz vrací na localhost, v Supabase Authentication → URL Configuration povol URL beta aplikace. Pro zákaznické e-maily je potřeba vlastní SMTP.'}catch(e){status.textContent='Přihlášení: '+(e?.message||'Chyba')}finally{b.disabled=false}};
@@ -115,9 +167,34 @@
  q('#qaRefresh').onclick=sessionInfo;
  q('#qaModePassword').onclick=()=>{q('#qaPasswordBox').classList.remove('qaHidden');q('#qaSignIn').classList.add('qaHidden')};
  q('#qaModeLink').onclick=()=>{q('#qaPasswordBox').classList.add('qaHidden');q('#qaSignIn').classList.remove('qaHidden')};
- q('#qaPassLogin').onclick=async()=>{try{const email=qEmail(),password=q('#qaPassword').value;const r=await supa.auth.signInWithPassword({email,password});if(r.error)throw r.error;await sessionInfo()}catch(e){status.textContent='Přihlášení heslem: '+(e.message||e)}};
+ q('#qaPassLogin').onclick=async()=>{
+  const b=q('#qaPassLogin');b.disabled=true;
+  try{
+   if(!supa)throw Error('Authentication is loading');
+   const email=qEmail(),password=q('#qaPassword').value;
+   if(!password)throw Error('Vyplň heslo.');
+   const r=await supa.auth.signInWithPassword({email,password});if(r.error)throw r.error;
+   if(!r.data?.session)throw Error('Session was not created');
+   await sessionInfo();
+  }catch(e){
+   const code=String(e.code||''),msg=String(e.message||e);
+   status.textContent=(code==='invalid_credentials'||/invalid login credentials/i.test(msg))?
+   'Wrong email or password. / Nesprávný e-mail nebo heslo. Máš-li účet, klikni na Obnovit heslo a vytvoř si nové.':
+   (code==='email_not_confirmed'?'Confirm your email first. / Nejdřív potvrď e-mail.':'Sign in failed / Přihlášení selhalo: '+msg);
+  }finally{b.disabled=false}
+ };
  q('#qaPassRegister').onclick=async()=>{try{const email=qEmail(),password=q('#qaPassword').value;if(password.length<8)throw Error('Heslo musí mít alespoň 8 znaků.');const r=await supa.auth.signUp({email,password,options:{emailRedirectTo:REDIRECT_URL}});if(r.error)throw r.error;status.textContent=r.data.session?'Registrace dokončena.':'Registrace přijata. Potvrď e-mail; veřejné doručování vyžaduje vlastní SMTP.';if(r.data.session)await sessionInfo()}catch(e){status.textContent='Registrace: '+(e.message||e)}};
- q('#qaPassReset').onclick=async()=>{try{const r=await supa.auth.resetPasswordForEmail(qEmail(),{redirectTo:REDIRECT_URL});if(r.error)throw r.error;status.textContent='Pokud je účet registrovaný, přijde e-mail pro obnovu hesla.'}catch(e){status.textContent='Obnova hesla: '+(e.message||e)}};
+ q('#qaPassReset').textContent='🔑 Reset password / Obnovit heslo';
+ q('#qaPassReset').onclick=async()=>{
+  const b=q('#qaPassReset');b.disabled=true;
+  try{
+   if(!supa)throw Error('Authentication is loading');
+   const {error}=await supa.auth.resetPasswordForEmail(qEmail(),{redirectTo:REDIRECT_URL});
+   if(error)throw error;
+   status.textContent='✓ Password reset email requested. Open only the NEWEST message, then choose a new password in the app. / Odkaz pro obnovu byl vyžádán. Otevři pouze NEJNOVĚJŠÍ e-mail a v aplikaci nastav nové heslo.';
+  }catch(e){status.textContent='Password recovery error / Chyba obnovy hesla: '+(e.message||e)}
+  finally{b.disabled=false}
+ };
  q('#qaAdminRefresh').onclick=adminStats;
  // Password login is the primary path: email links are a secondary fallback.
  q('#qaModePassword').click();
