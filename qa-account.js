@@ -10,11 +10,13 @@
  const st=document.createElement('style');
  st.textContent='.qaAccPanel{background:#161d32;border:1px solid #35405b;border-radius:18px;padding:20px;color:#f7f9ff;max-width:740px;margin:auto}.qaAccPanel h2{margin:0 0 12px}.qaAccPanel p{color:#bac5da;line-height:1.6}.qaAccPanel input{padding:12px;background:#101629;color:white;border:1px solid #56617f;border-radius:12px;width:100%;max-width:380px;font:inherit}.qaAccPanel button{padding:11px 17px;border:1px solid #7060ac;border-radius:12px;background:#483385;color:#fff;margin:6px 6px 6px 0;font:inherit}.qaAccPanel button:disabled{opacity:.5;cursor:not-allowed}.qaNote{font-size:12px;color:#b6c0d6;margin-top:12px}.qaAccStatus{padding:10px 12px;background:#111b31;border-radius:11px;color:#dbf2ff;white-space:pre-wrap}.qaAccPanel .qaPayDisabled{background:#24314a;color:#b9c0cd}';
  st.textContent+='.qaAccPanel .qaHidden{display:none!important}.qaAccPanel #qaAdminPanel{border-top:1px solid #455373;padding-top:14px;margin-top:15px}.qaAccPanel .qaAdminKpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.qaAccPanel .qaAdminKpis span{display:block;background:#101a31;border:1px solid #44526a;border-radius:10px;padding:10px;font-size:12px}.qaAccPanel .qaAdminKpis strong{display:block;font-size:19px;color:white}.qaAccPanel #qaPassword{margin-top:8px}.qaAccPanel #qaEmail{margin-bottom:10px}';
+ st.textContent+='.qaSocialLogin{border:1px solid #5263a2;background:#111c36;border-radius:14px;padding:15px;margin:0 0 19px}.qaSocialLogin h3{margin:0 0 9px;font-size:15px}.qaSocialLogin .qaSocialRow{display:flex;gap:8px;flex-wrap:wrap}.qaSocialLogin .qaSocialRow button{flex:1;min-width:120px;background:#222e4e;border:1px solid #8299c5}.qaSocialLogin .qaSocialRow button:disabled{opacity:.55;cursor:not-allowed}.qaSocialLogin .qaSocialStatus{font-size:12px;color:#c4d0e9;line-height:1.5;margin:7px 0}.qaSocialLogin .qaSocialWallets{font-size:12px;color:#f7dca3;background:#1b253e;border:1px solid #565576;padding:8px;border-radius:9px;margin-top:10px}';
  document.head.append(st);
  const tab=document.createElement('button');tab.type='button';tab.textContent='🔐 Účet / PREMIUM';tab.dataset.tab='qaAccountPanel';nav.append(tab);
  const sec=document.createElement('section');sec.className='tab';sec.id='qaAccountPanel';sec.innerHTML='<div class="qaAccPanel"><h2>🔐 Můj účet • QA Studio AI PRO</h2><p>Ověřte svůj e-mail a spravujte přístup k zakoupeným šablonám. Zákaznické platby zatím nejsou povolené.</p><div id="qaAuthForm"><label for="qaEmail">E-mail</label><div><input type="email" autocomplete="email" id="qaEmail" placeholder="vas@email.cz"></div><button id="qaSignIn">Poslat odkaz na e-mail</button></div><div id="qaSignOutBox" style="display:none"><button id="qaSignOut">Odhlásit</button><button id="qaRefresh">Zkontrolovat licenci</button></div><div id="qaAccountStatus" class="qaAccStatus" role="status">Připojuji bezpečné přihlášení…</div><div class="qaNote">Platba je zatím vypnutá, abychom před spuštěním dokončili zabezpečení a zkušební nákup. Neomezené používání šablon nezahrnuje neomezené AI generování.</div><div class="qaNote">Šest časových balíčků od 59 Kč za 24 hodin po 2 990 Kč za 365 dní. Po aktivaci se zpřístupní všechny hotové PRO/VIP předlohy a přidělené AI kredity. Najdeš je v záložce AI kredity / ceník. Platby a skutečné AI čerpání ještě nejsou aktivní.</div></div>';
  const parent=document.querySelector('.tab')?.parentElement||nav.parentElement;parent.append(sec);
  const form=sec.querySelector('#qaAuthForm');
+ form.insertAdjacentHTML('afterbegin','<div class="qaSocialLogin" id="qaSocialLogin"><h3>Quick sign-in · Rychlé přihlášení</h3><div class="qaSocialRow"><button type="button" id="qaLoginGoogle">G · Google</button><button type="button" id="qaLoginFacebook">f · Facebook</button><button type="button" id="qaLoginTikTok" disabled>TikTok · Coming soon</button></div><div class="qaSocialStatus" id="qaSocialStatus" role="status">Checking secure login options…</div><div class="qaSocialWallets">At checkout: Bank card · Apple Pay on supported devices · Google Pay: activation pending. Stripe handles payment details; this website never stores card numbers.</div></div>');
  form.insertAdjacentHTML('beforeend','<div style="margin-top:12px"><button id="qaModeLink" type="button">Odkaz na e-mail</button><button id="qaModePassword" type="button">Přihlášení heslem</button></div><div id="qaPasswordBox" class="qaHidden"><label for="qaPassword">Heslo (min. 8 znaků)</label><input id="qaPassword" type="password" autocomplete="current-password" placeholder="Heslo"><div><button id="qaPassLogin" type="button">Přihlásit</button><button id="qaPassRegister" type="button">Registrovat</button><button id="qaPassReset" type="button">Obnovit heslo</button></div></div>');
  sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend','<div id="qaAdminPanel" class="qaHidden"><h2>Administrace majitele</h2><p>Tržby a předplatná uvidí pouze serverově ověřený správce.</p><button id="qaAdminRefresh" type="button">Načíst tržby</button><div class="qaAdminKpis"><span><strong id="qaGross">–</strong>Hrubé tržby Kč</span><span><strong id="qaPayments">–</strong>Transakce</span><span><strong id="qaSubs">–</strong>Předplatná</span></div><p id="qaAdminInfo" class="qaNote"></p></div>');
 
@@ -44,6 +46,36 @@
  const q=s=>sec.querySelector(s),status=q('#qaAccountStatus');
  tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e===sec));nav.querySelectorAll('button').forEach(e=>e.classList.toggle('active',e===tab));window.scrollTo({top:0,behavior:'smooth'})});
  let supa=null,auth=null,adminAccess=false,lastVerifiedUser=null;
+ const loginGoogle=q('#qaLoginGoogle'),loginFacebook=q('#qaLoginFacebook'),socialStatus=q('#qaSocialStatus');
+ async function providerSetup(){
+   try{
+     const response=await fetch(PROJECT+'/auth/v1/settings',{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
+     if(!response.ok)throw Error('Provider status is unavailable');
+     const flags=await response.json();
+     const google=flags.external_google===true,facebook=flags.external_facebook===true;
+     loginGoogle.disabled=!google;loginFacebook.disabled=!facebook;
+     loginGoogle.textContent=google?'G · Continue with Google':'G · Google (setup needed)';
+     loginFacebook.textContent=facebook?'f · Continue with Facebook':'f · Facebook (setup needed)';
+     socialStatus.textContent=google||facebook?'Select a configured provider. You will confirm login with Google or Facebook.':'Google and Facebook sign-in require OAuth provider setup in Supabase. Email registration is available below.';
+   }catch(e){
+     loginGoogle.disabled=false;loginFacebook.disabled=false;
+     socialStatus.textContent='Provider status could not be verified. If social sign-in is not configured, use email registration below.';
+   }
+ }
+ async function oauth(provider){
+   if(!supa){socialStatus.textContent='Authentication is loading; use email or try again.';return}
+   const b=provider==='google'?loginGoogle:loginFacebook;b.disabled=true;socialStatus.textContent='Opening secure '+provider+' sign-in…';
+   try{
+     const result=await supa.auth.signInWithOAuth({provider,options:{redirectTo:REDIRECT_URL,skipBrowserRedirect:true}});
+     if(result.error)throw result.error;
+     if(!result.data?.url)throw Error('Login redirect is not available');
+     const url=new URL(result.data.url);
+     if(url.origin!==new URL(PROJECT).origin||!url.pathname.startsWith('/auth/v1/authorize'))throw Error('Unexpected OAuth redirect');
+     window.top.location.assign(url.toString());
+   }catch(e){socialStatus.textContent='Social sign-in: '+(e.message||e)+'. You can use email and password instead.';b.disabled=false}
+ }
+ loginGoogle.onclick=()=>oauth('google');loginFacebook.onclick=()=>oauth('facebook');
+ 
  const qEmail=()=>{const value=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw Error('Zadejte platný e-mail.');return value};
  async function sendServer(slug,body){if(!auth)throw Error('Nejdřív se přihlas.');const r=await fetch(PROJECT+'/functions/v1/'+slug,{method:'POST',headers:{'Content-Type':'application/json',apikey:PUBLIC_KEY,Authorization:'Bearer '+auth.access_token},body:JSON.stringify(body)});const x=await r.json().catch(()=>({}));if(!r.ok)throw Error(x.error||('Server '+r.status));return x}
  async function adminStats(){if(!adminAccess)return;try{q('#qaAdminInfo').textContent='Ověřuji na serveru…';const d=await sendServer('qa-admin',{action:'summary'});q('#qaGross').textContent=Number(d.gross_czk||0).toLocaleString('cs-CZ');q('#qaPayments').textContent=Number(d.paid_transactions||0).toLocaleString('cs-CZ');q('#qaSubs').textContent=Number(d.active_subscriptions||0).toLocaleString('cs-CZ');q('#qaAdminInfo').textContent=d.note||''}catch(e){q('#qaAdminInfo').textContent='Administrace: '+(e.message||e)}}
@@ -71,6 +103,7 @@
    supa=m.createClient(PROJECT,PUBLIC_KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
    supa.auth.onAuthStateChange(()=>{setTimeout(sessionInfo,0)});
    await sessionInfo();
+   providerSetup();
   }catch(e){status.textContent='Přihlášení není dostupné: '+(e?.message||'Chyba načtení')}
  }
  q('#qaSignIn').onclick=async()=>{const email=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Zadejte platnou e-mailovou adresu.';return}if(!supa){status.textContent='Připojení zatím není hotové.';return}const b=q('#qaSignIn');b.disabled=true;try{const r=await supa.auth.signInWithOtp({email,options:{emailRedirectTo:REDIRECT_URL}});if(r.error)throw r.error;status.textContent='Žádost přijata. Zkontroluj spam a nejnovější e-mail. Pokud odkaz vrací na localhost, v Supabase Authentication → URL Configuration povol URL beta aplikace. Pro zákaznické e-maily je potřeba vlastní SMTP.'}catch(e){status.textContent='Přihlášení: '+(e?.message||'Chyba')}finally{b.disabled=false}};

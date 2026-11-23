@@ -16,12 +16,12 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 </head>
 <body>
 <div id="notice">Loading QA Studio AI PRO…</div>
-<iframe id="app" src="./index-1.html?v=neonhome-20261123-02" title="QA Studio AI PRO" allow="web-share"></iframe>
+<iframe id="app" src="./index-1.html?v=signupfunnel-20261123-03" title="QA Studio AI PRO" allow="web-share"></iframe>
 <script>
 (function(){
 'use strict';
 const f=document.getElementById('app'),n=document.getElementById('notice');
-if(location.search||location.hash)f.src='./index-1.html?v=neonhome-20261123-02'+(location.search?'&'+location.search.slice(1):'')+location.hash;
+if(location.search||location.hash)f.src='./index-1.html?v=signupfunnel-20261123-03'+(location.search?'&'+location.search.slice(1):'')+location.hash;
 f.addEventListener('load',function(){
  try{
    const doc=f.contentDocument;
@@ -35,7 +35,7 @@ f.addEventListener('load',function(){
    }
    if(!doc.querySelector('script[data-qa-account]')){
      const account=doc.createElement('script');
-     account.src='./qa-account.js?v=20261123-pricing06';
+     account.src='./qa-account.js?v=20261123-social03';
      account.dataset.qaAccount='true';
      doc.body.append(account);
    }
@@ -49,7 +49,7 @@ f.addEventListener('load',function(){
    if(!doc.querySelector('script[data-qa-help]')){const help=doc.createElement('script');help.src='./qa-help.js?v=20261123-onboard01';help.dataset.qaHelp='true';help.onerror=()=>console.error('Nápovědu nebylo možné načíst');doc.body.append(help);}
    if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261123-v6';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');doc.body.append(pricing);}
    if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261123-i18n3';i18n.dataset.qaI18n='true';doc.body.append(i18n);}
-   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261123-neon02';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');doc.body.append(landing);}
+   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261123-funnel03';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');doc.body.append(landing);}
    n.style.display='none';
  }catch(e){
    n.textContent='Studio se nepodařilo načíst v tomto prostředí. Otevři soubor index-1.html přímo z webového serveru.';
