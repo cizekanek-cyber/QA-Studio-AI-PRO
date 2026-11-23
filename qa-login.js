@@ -14,6 +14,46 @@ try{lang.value=localStorage.getItem('qa-studio-language')==='en'?'en':'cs'}catch
 lang.onchange=()=>{try{localStorage.setItem('qa-studio-language',lang.value)}catch{}};
 const say=(cs,en)=>{status.textContent=lang.value==='en'?en:cs};
 let supa=null,user=null,mode='email',recover=false;
+const mailNotice=by('mailLimits'),sendButtons=[by('sendOtp'),by('sendReset')];
+const MAIL_LOCK_KEY='qa-login-email-limit';
+const COOLDOWN_MS=90000;
+const warn=(msg)=>{mailNotice.hidden=false;mailNotice.textContent=msg;};
+function rateState(){let until=0;try{until=Number(sessionStorage.getItem(MAIL_LOCK_KEY))||0}catch{};const blocked=until>Date.now();sendButtons.forEach(b=>{b.disabled=blocked;b.title=blocked?'Recently requested – wait until allowed by the email provider.':''});if(blocked)warn('A verification email was requested recently. Sending repeated messages may trigger Supabase email limits. / Ověřovací e-mail už byl vyžádán. Opakované odesílání způsobuje blokaci Supabase.');else if(mailNotice.textContent?.startsWith('A verification email')){mailNotice.hidden=true;mailNotice.textContent=''}return blocked}
+function mailSent(){try{sessionStorage.setItem(MAIL_LOCK_KEY,String(Date.now()+COOLDOWN_MS))}catch{};rateState();}
+function mailError(err){
+ const code=String(err?.code||''),msg=String(err?.message||'');
+ if(code==='over_email_send_rate_limit'||/email rate limit|rate limit exceeded|too many requests|429/i.test(msg)){
+  warn('Supabase has temporarily blocked additional emails (429). New email links cannot be sent now. Use your existing password or an enabled social provider; stop retrying until the server limit clears. / Supabase dočasně blokuje další e-maily (429). Zkus stávající heslo nebo funkční Google přihlášení; další opakované odesílání nepomůže.');
+  try{sessionStorage.setItem(MAIL_LOCK_KEY,String(Date.now()+5*60*1000))}catch{};rateState();
+  return true;
+ }
+ return false;
+}
+async function socialOptions(){
+ try{
+  const res=await fetch(PROJECT+'/auth/v1/settings',{headers:{apikey:KEY},cache:'no-store'});
+  if(!res.ok)throw Error('Provider settings unavailable');
+  const cfg=await res.json();
+  const google=cfg.external_google===true,facebook=cfg.external_facebook===true;
+  by('googleAuth').hidden=!google;by('facebookAuth').hidden=!facebook;
+  by('socialButtons').hidden=!google&&!facebook;
+  by('socialNote').hidden=google||facebook;
+  by('socialNote').textContent='Google/Facebook sign-in is not configured in Supabase. Use password sign-in instead. / Google/Facebook není v Supabase aktivované.';
+ }catch{by('socialButtons').hidden=true;by('socialNote').hidden=false;by('socialNote').textContent='Social login availability cannot be verified. / Sociální přihlášení nebylo možné ověřit.'}
+}
+async function socialSignIn(provider,btn){
+ btn.disabled=true;
+ try{
+  const {data,error}=await client().auth.signInWithOAuth({provider,options:{redirectTo:RETURN,skipBrowserRedirect:true}});
+  if(error)throw error;
+  if(!data?.url)throw Error('Provider redirect unavailable');
+  const dest=new URL(data.url);
+  if(dest.origin!==new URL(PROJECT).origin||dest.pathname!=='/auth/v1/authorize')throw Error('Unexpected OAuth redirect');
+  location.assign(dest.href);
+ }catch(e){say('Přihlášení '+provider+' selhalo: '+(e.message||e),'Could not sign in with '+provider+': '+(e.message||e));btn.disabled=false}
+}
+by('googleAuth').onclick=()=>socialSignIn('google',by('googleAuth'));
+by('facebookAuth').onclick=()=>socialSignIn('facebook',by('facebookAuth'));
 function email(){const v=by('email').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error('Zadej platný e-mail / Enter a valid email');return v}
 const goStudio=()=>location.assign(BASE.href);
 by('studio').onclick=goStudio;
@@ -28,26 +68,33 @@ function client(){if(!supa)throw Error('Authentication is still loading / Připo
 async function loggedIn(){if(!await refresh())throw Error('No verified session was created');say('✓ Přihlášeno! Otevírám studio.','✓ Signed in! Opening the studio.');if(!recover)setTimeout(goStudio,350)}
 async function run(btn,job){btn.disabled=true;try{await job()}catch(e){say('Nelze dokončit: '+(e.message||e),'Could not complete: '+(e.message||e))}finally{btn.disabled=false}}
 by('loginForm').onsubmit=e=>{e.preventDefault();run(by('login'),async()=>{
+ if(!by('password').value)throw Error('Enter password / Zadej heslo');
  const {data,error}=await client().auth.signInWithPassword({email:email(),password:by('password').value});
- if(error)throw error;if(!data?.session)throw Error('Sign-in session not returned');await loggedIn();
+ if(error){
+  if(error.code==='invalid_credentials')throw Error('Incorrect email or password. This account already exists: do not register again. / Nesprávný e-mail nebo heslo. Účet už existuje, neregistruj se znovu.');
+  throw error
+ }
+ if(!data?.session)throw Error('Sign-in session not returned');await loggedIn();
 })};
 by('register').onclick=()=>run(by('register'),async()=>{
  const pw=by('password').value;if(pw.length<8)throw Error('Password must contain at least 8 characters');
  const {data,error}=await client().auth.signUp({email:email(),password:pw,options:{emailRedirectTo:RETURN}});
- if(error)throw error;
+ if(error){mailError(error);throw error}
  if(data?.session){await loggedIn();return}
  say('Registrace přijata. V e-mailu můžeš zkopírovat celý odkaz a vložit ho níže. Pokud už účet máš, zkus přihlášení nebo obnovu hesla.',
  'Registration requested. Copy the email verification link and paste below if it will not open. If your account exists, sign in or reset your password.');
 });
 by('sendOtp').onclick=()=>run(by('sendOtp'),async()=>{
+ if(rateState())throw Error('A verification email was requested recently / E-mail už byl nedávno vyžádán.');
  const {error}=await client().auth.signInWithOtp({email:email(),options:{shouldCreateUser:false,emailRedirectTo:RETURN}});
- if(error)throw error;mode='email';recover=false;
+ if(error){mailError(error);throw error}mailSent();mode='email';recover=false;
  say('Ověření vyžádáno. Obsahuje-li e-mail číselný kód, vlož ho sem. Pokud obsahuje pouze odkaz, zkopíruj jeho úplnou adresu bez otevření. Novější e-mail zneplatní starší odkaz.',
  'Verification requested. Enter the numeric code if your email contains one; otherwise copy and paste the full link without opening it. Newer emails invalidate older links.');
 });
 by('sendReset').onclick=()=>run(by('sendReset'),async()=>{
- const {error}=await client().auth.resetPasswordForEmail(email(),{redirectTo:RETURN});if(error)throw error;
- mode='recovery';recover=true;
+ if(rateState())throw Error('A verification email was requested recently / E-mail už byl nedávno vyžádán.');
+ const {error}=await client().auth.resetPasswordForEmail(email(),{redirectTo:RETURN});if(error){mailError(error);throw error}
+ mailSent();mode='recovery';recover=true;
  say('Obnova vyžádána. Pokud zpráva obsahuje číselný kód, zadej ho. Pokud je v ní jen odkaz, zkopíruj jeho adresu. Po ověření nastavíš nové heslo.',
  'Password recovery requested. Enter a code if the email contains one, or paste the link address to verify without clicking.');
 });
@@ -59,8 +106,13 @@ by('verifyOtp').onclick=()=>run(by('verifyOtp'),async()=>{
  else await loggedIn();
 });
 by('verifyLink').onclick=()=>run(by('verifyLink'),async()=>{
- const u=new URL(by('pasted').value.trim());
- if(u.origin!==new URL(PROJECT).origin||u.pathname!=='/auth/v1/verify')throw Error('Paste only the official Supabase email verification URL');
+ const value=by('pasted').value.trim();
+ const u=new URL(value);
+ if(u.origin!==new URL(PROJECT).origin||u.pathname!=='/auth/v1/verify')throw Error('Paste only the official Supabase email verification URL. If the email contains a tracking link, copy the actual destination URL.');
+ if(u.searchParams.has('redirect_to')&&/^http:\/\/localhost(?::\d+)?\//i.test(u.searchParams.get('redirect_to')||'')){
+  say('V odkazu je špatná návratová adresa localhost. Ověření zde může fungovat, ale automatický návrat je nastaven nesprávně. /localhost must be fixed in Supabase settings.',
+      'The email link redirects to localhost. In-app verification may still work, but Supabase redirect settings need correction.');
+ }
  const type=u.searchParams.get('type');if(!['email','magiclink','signup','recovery','invite'].includes(type))throw Error('Unsupported verification link type');
  const token=u.searchParams.get('token_hash')||u.searchParams.get('token');
  if(!token||!/^[A-Za-z0-9_=-]{12,512}$/.test(token))throw Error('Verification link is missing a valid token');
@@ -86,6 +138,7 @@ async function startup(){try{
  const u=new URLSearchParams(location.hash.replace(/^#/,''));
  const failed=u.get('error_code')||PAGE.searchParams.get('error_code');
  await refresh();
+ rateState();socialOptions();
  if(failed)say('Odkaz je neplatný nebo vypršel. Požádej o nový nebo vlož neotevřenou adresu odkazu z e-mailu.','The email link expired or was already used. Request a fresh one, or paste its unclicked URL.');
  else if(user)say('✓ Jsi přihlášený. Můžeš jít do studia nebo změnit heslo.','✓ You are signed in. Go to the studio or change your password.');
  else say('Přihlas se heslem, číselným kódem (pokud je v e-mailu), nebo vlož zkopírovaný ověřovací odkaz.','Sign in with your password, a numeric email code (if provided), or a pasted verification URL.');
