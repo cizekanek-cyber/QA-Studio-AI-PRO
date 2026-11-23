@@ -1,11 +1,11 @@
-/* QA Studio AI PRO · first-party GoTrue browser adapter · v20261123.1.
+/* QA Studio AI PRO · first-party GoTrue browser adapter · v20261123.3.
    Uses only the project's PUBLIC publishable key, never a secret/service key.
    Session authorization is ALWAYS checked by Supabase / protected Edge Functions.
    Mirrors supabase-js's default storage format so existing app modules interoperate. */
 (()=>{'use strict';
   if(window.QAAuthCore)return;
   const PROJECT='https://naxotlqvimewbfowxwmw.supabase.co';
-  const PUBLIC_KEY='sb_publishable_F4L1g58JH7TtFbt9xQkg__C8g71oL';
+  const PUBLIC_KEY='sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL';
   const STORAGE='sb-naxotlqvimewbfowxwmw-auth-token';
   const API=PROJECT+'/auth/v1';
   const err=(code,message,status=0)=>Object.assign(new Error(message||'Authentication error'),{code,status});

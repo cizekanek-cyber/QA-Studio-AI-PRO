@@ -40,21 +40,21 @@ f.addEventListener('load',function(){
      const attachAccount=()=>{
        if(doc.querySelector('script[data-qa-account]'))return;
        const account=doc.createElement('script');
-       account.src='./qa-account.js?v=20261123-core01';
+       account.src='./qa-account.js?v=20261123-core02';
        account.dataset.qaAccount='true';
        account.onerror=()=>console.error('Account module failed to load');
        doc.body.append(account);
      };
      if(doc.defaultView.QAAuthCore)attachAccount();
      else {
-       const core=doc.createElement('script');core.src='./qa-auth-core.js?v=20261123-core01';
+       const core=doc.createElement('script');core.src='./qa-auth-core.js?v=20261123-core02';
        core.dataset.qaCore='true';core.onload=attachAccount;
        core.onerror=()=>{n.textContent='Přihlášení není dostupné. Otevři login.html';n.style.display='grid'};
        doc.body.append(core);
      }
    }
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
-   if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-core01';plans.dataset.qaPlans='true';doc.body.append(plans);}
+   if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-core02';plans.dataset.qaPlans='true';doc.body.append(plans);}
    if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts3';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
    if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-funny01';start.dataset.qaStart='true';doc.body.append(start);}
    if(!doc.querySelector('script[data-qa-gallery]')){const gallery=doc.createElement('script');gallery.src='./qa-gallery.js?v=20261123-unify01';gallery.dataset.qaGallery='true';gallery.onerror=()=>console.error('Galerii fotošablon se nepodařilo načíst');doc.body.append(gallery);}
