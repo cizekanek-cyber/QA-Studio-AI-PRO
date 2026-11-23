@@ -1,0 +1,21 @@
+{
+  "name": "QA Studio AI PRO — kreativní studio",
+  "short_name": "QA Studio AI",
+  "description": "Editor scén, realistické šablony, knihovna PNG lidí a zvířat, export a sdílení.",
+  "id": "/QA-Studio-AI-PRO/",
+  "start_url": "/QA-Studio-AI-PRO/",
+  "scope": "/QA-Studio-AI-PRO/",
+  "display": "standalone",
+  "background_color": "#090c19",
+  "theme_color": "#141b34",
+  "lang": "cs",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
