@@ -19,7 +19,9 @@ const lang=()=>currentLang==='cs'?'cs':'en';
 function translate(){const d=i18n[lang()];document.documentElement.lang=lang();document.querySelectorAll('[data-i18n]').forEach(el=>{const value=d[el.dataset.i18n];if(value)el.textContent=value});by('togglePassword').textContent=d[ui.password.type==='text'?'hide':'show'];}
 translate();ui.language.onchange=()=>{currentLang=ui.language.value;try{localStorage.setItem('qa-studio-language',currentLang)}catch{}translate()};
 let client=null,user=null,recovery=false,authReady=false,providerStatus='unknown',lastCode='none',serverState='not_checked';
-const cooldownKey='qa-studio-auth-mail-cooldown';
+const cooldownKey='qa-studio-auth-mail-cooldown-v2';
+const MAIL_PAUSE=10*60*1000;
+const SERVER_LIMIT_PAUSE=60*60*1000;
 let pending=false;
 function say(cs,en,kind='info',scroll=false){ui.messageText.textContent=lang()==='cs'?cs:en;ui.message.dataset.kind=kind;ui.message.firstElementChild.textContent=kind==='error'?'⚠':kind==='ok'?'✓':kind==='warn'?'!':'ⓘ';if(scroll){ui.message.scrollIntoView({block:'center',behavior:'smooth'});ui.message.focus({preventScroll:true})}}
 function msgError(e){
@@ -32,7 +34,7 @@ function msgError(e){
   if(code==='network_error')return ['Nelze se spojit se Supabase. Zkontroluj internet a zkus Chrome.','Could not connect to Supabase. Check internet access and try Chrome.'];
   return ['Operace se nepodařila: '+m,'Operation failed: '+m];
 }
-function handleError(e){const [cs,en]=msgError(e);say(cs,en,'error',true);if(e.status===429||e.code==='over_email_send_rate_limit'){startCooldown(5*60*1000);setRateNotice(true)}}
+function handleError(e){const [cs,en]=msgError(e);say(cs,en,'error',true);if(e.status===429||e.code==='over_email_send_rate_limit'){startCooldown(SERVER_LIMIT_PAUSE);setRateNotice(true)}}
 async function action(btn,task){if(pending)return;pending=true;btn.disabled=true;const old=btn.textContent;btn.textContent='⏳ '+(lang()==='cs'?'Ověřuji…':'Checking…');say('Spojuji se se zabezpečeným serverem…','Connecting to secure authentication server…');try{await task()}catch(e){handleError(e)}finally{pending=false;btn.disabled=false;btn.textContent=old;lockEmailsIfNeeded()}}
 const need=()=>{if(!client)throw Object.assign(new Error('Zabezpečené přihlášení se nenačetlo. Obnov stránku.'),{code:'not_ready'});return client.auth};
 function validEmail(){const value=ui.email.value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){ui.email.focus();throw Object.assign(new Error('Zadej platný e-mail.'),{code:'invalid_email'})}return value}
@@ -47,10 +49,24 @@ function setAuthView(){
   if(user){by('signedInLabel').textContent='✓ '+(user.email||'Verified customer');by('emailHelp').open=false}
   by('recoverPanel').hidden=!user||!recovery;
 }
-function startCooldown(ms){try{sessionStorage.setItem(cooldownKey,String(Date.now()+ms))}catch{};lockEmailsIfNeeded()}
-function cooldown(){try{return Number(sessionStorage.getItem(cooldownKey))||0}catch{return 0}}
-function lockEmailsIfNeeded(){const locked=cooldown()>Date.now();for(const id of ['sendCode','sendRecovery'])by(id).disabled=locked;return locked}
-function setRateNotice(blocked){by('rateNotice').hidden=!blocked;by('rateNotice').textContent=lang()==='cs'?'E-mailové požadavky jsou dočasně omezené. Opakované odesílání je serverem blokováno.':'Email requests are temporarily limited. Repeated sending will be blocked by the server.';}
+function startCooldown(ms){try{localStorage.setItem(cooldownKey,String(Date.now()+ms))}catch{};lockEmailsIfNeeded()}
+function cooldown(){try{return Number(localStorage.getItem(cooldownKey))||0}catch{return 0}}
+function lockEmailsIfNeeded(){
+ const seconds=Math.max(0,Math.ceil((cooldown()-Date.now())/1000));
+ const blocked=seconds>0;
+ for(const id of ['sendCode','sendRecovery'])by(id).disabled=blocked;
+ setRateNotice(blocked,seconds);
+ return blocked;
+}
+function setRateNotice(blocked,seconds=0){
+ const el=by('rateNotice');el.hidden=!blocked;
+ if(!blocked){el.textContent='';return}
+ const minutes=Math.ceil(seconds/60);
+ el.textContent=lang()==='cs'
+ ?'Z ochranných důvodů je další odeslání e-mailu dostupné přibližně za '+minutes+' min. Skutečný limit serveru Supabase může trvat déle. Přihlášení heslem tím není omezené.'
+ :'Another email request is available in about '+minutes+' min. The Supabase server limit may last longer. Password login is not affected.';
+}
+setInterval(lockEmailsIfNeeded,15000);
 async function signedIn(result){
   if(!result?.session?.access_token)throw new Error('Server did not create a session');
   const check=await need().getUser();if(check.error||!check.data.user)throw check.error||new Error('Unable to verify session');
@@ -74,7 +90,7 @@ async function emailAction(mode){
   const e=validEmail();let error;
   if(mode==='recovery')({error}=await need().resetPasswordForEmail(e,{redirectTo:callback}));
   else ({error}=await need().signInWithOtp({email:e,options:{emailRedirectTo:callback,shouldCreateUser:false}}));
-  if(error)throw error;startCooldown(90000);
+  if(error)throw error;startCooldown(MAIL_PAUSE);
   by('codeType').value=mode==='recovery'?'recovery':'email';
   say('Požadavek přijat. Použij pouze nejnovější doručený e-mail. Má-li kód, zadej ho; má-li odkaz, zkopíruj jeho adresu bez otevření.','Request accepted. Use only the newest email. Enter the code if provided or copy the link URL without opening it.','ok',true)
 }
