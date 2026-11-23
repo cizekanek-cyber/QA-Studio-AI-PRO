@@ -13,6 +13,21 @@ if(validPlans.has(chosen)){
 try{lang.value=localStorage.getItem('qa-studio-language')==='en'?'en':'cs'}catch{lang.value='cs'}
 lang.onchange=()=>{try{localStorage.setItem('qa-studio-language',lang.value)}catch{}};
 const say=(cs,en)=>{status.textContent=lang.value==='en'?en:cs};
+function revealStatus(){status.scrollIntoView({behavior:'smooth',block:'center'});try{status.focus({preventScroll:true})}catch{}}
+function friendlyError(e){
+ const code=String(e?.code||'').toLowerCase(),msg=String(e?.message||e||'');
+ if(code==='invalid_credentials'||/invalid login credentials/i.test(msg))
+  return ['Nesprávné heslo nebo e-mail. Účet už existuje – znovu ho neregistruj. Pokud heslo nevíš, použij obnovu až po uvolnění limitu e-mailů.','Incorrect email or password. Your account already exists. Do not register again.'];
+ if(code==='over_email_send_rate_limit'||/email rate limit|too many requests|429/i.test(msg))
+  return ['Supabase dočasně odmítá posílat další e-maily (limit 429). Opakované žádosti nepomohou.','Supabase email sending is temporarily blocked (429). More attempts will not help.'];
+ if(code==='email_not_confirmed')return ['E-mail účtu ještě není potvrzený.','This account email is not confirmed yet.'];
+ return ['Přihlášení selhalo: '+msg,'Sign-in failed: '+msg];
+}
+by('showPassword').onclick=()=>{
+ const input=by('password'),visible=input.type==='password';
+ input.type=visible?'text':'password';
+ by('showPassword').textContent=visible?'🙈 Skrýt heslo / Hide password':'👁 Zobrazit heslo / Show password';
+};
 let supa=null,user=null,mode='email',recover=false;
 const mailNotice=by('mailLimits'),sendButtons=[by('sendOtp'),by('sendReset')];
 const MAIL_LOCK_KEY='qa-login-email-limit';
@@ -66,14 +81,19 @@ function updateUI(){
 async function refresh(){if(!supa)return;const {data,error}=await supa.auth.getUser();user=error?null:data.user;updateUI();return user}
 function client(){if(!supa)throw Error('Authentication is still loading / Připojení se načítá');return supa}
 async function loggedIn(){if(!await refresh())throw Error('No verified session was created');say('✓ Přihlášeno! Otevírám studio.','✓ Signed in! Opening the studio.');if(!recover)setTimeout(goStudio,350)}
-async function run(btn,job){btn.disabled=true;try{await job()}catch(e){say('Nelze dokončit: '+(e.message||e),'Could not complete: '+(e.message||e))}finally{btn.disabled=false}}
+async function run(btn,job){
+ btn.disabled=true;
+ const original=btn.textContent;
+ btn.textContent='⏳ Checking / Kontroluji…';
+ say('Ověřuji požadavek na zabezpečeném serveru…','Checking your request on the secure server…');
+ try{await job()}
+ catch(e){const message=friendlyError(e);say(message[0],message[1]);revealStatus()}
+ finally{btn.disabled=false;btn.textContent=original}
+}
 by('loginForm').onsubmit=e=>{e.preventDefault();run(by('login'),async()=>{
  if(!by('password').value)throw Error('Enter password / Zadej heslo');
  const {data,error}=await client().auth.signInWithPassword({email:email(),password:by('password').value});
- if(error){
-  if(error.code==='invalid_credentials')throw Error('Incorrect email or password. This account already exists: do not register again. / Nesprávný e-mail nebo heslo. Účet už existuje, neregistruj se znovu.');
-  throw error
- }
+ if(error)throw error;
  if(!data?.session)throw Error('Sign-in session not returned');await loggedIn();
 })};
 by('register').onclick=()=>run(by('register'),async()=>{
@@ -139,7 +159,7 @@ async function startup(){try{
  const failed=u.get('error_code')||PAGE.searchParams.get('error_code');
  await refresh();
  rateState();socialOptions();
- if(failed)say('Odkaz je neplatný nebo vypršel. Požádej o nový nebo vlož neotevřenou adresu odkazu z e-mailu.','The email link expired or was already used. Request a fresh one, or paste its unclicked URL.');
+ if(failed)say('Odkaz je neplatný nebo vypršel. Po uvolnění limitu požádej o nový, případně vlož dosud neotevřenou adresu odkazu.','The email link expired or was already used. Ask for a fresh one after the email limit resets, or paste an unused link.');
  else if(user)say('✓ Jsi přihlášený. Můžeš jít do studia nebo změnit heslo.','✓ You are signed in. Go to the studio or change your password.');
  else say('Přihlas se heslem, číselným kódem (pokud je v e-mailu), nebo vlož zkopírovaný ověřovací odkaz.','Sign in with your password, a numeric email code (if provided), or a pasted verification URL.');
 }catch(e){say('Chyba načítání přihlášení: '+(e.message||e),'Authentication failed to load: '+(e.message||e))}}

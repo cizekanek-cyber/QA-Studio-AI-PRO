@@ -13,7 +13,7 @@ button{border-radius:12px;padding:12px 14px;background:#463283;color:#fff;border
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.actions button{flex:1;min-width:145px}
 section{border-top:1px solid #3d4866;margin:19px 0;padding:16px 0 0}small{color:#b8c4dd;font-size:12px}
 .qaRateNote{background:#4f2e1a;border:1px solid #a66b3f;color:#ffe3b2;padding:12px;border-radius:11px;line-height:1.5}
-#status{border:1px solid #556592;background:#1c2948;color:#d9ecff;white-space:pre-wrap;padding:12px;border-radius:12px;min-height:50px;line-height:1.55;margin:16px 0}
+#status{border:2px solid #bfa1ee;background:#282045;color:#fff3cb;white-space:pre-wrap;padding:14px;border-radius:13px;min-height:56px;line-height:1.55;margin:15px 0;font-weight:750;box-shadow:0 6px 25px #0005}#status:focus{outline:3px solid #ffcb64}
 #current{color:#9ee6c5;margin:12px 0}#promo{font-weight:800;color:#f4cf88}details{background:#18243f;border:1px solid #536389;border-radius:11px;padding:12px;margin:14px 0}summary{font-weight:750;cursor:pointer}[hidden]{display:none!important}
 footer{max-width:660px;margin:22px auto;color:#adbbd3;text-align:center;font-size:12px}
 </style></head><body>
@@ -23,8 +23,9 @@ footer{max-width:660px;margin:22px auto;color:#adbbd3;text-align:center;font-siz
 <p id="current" role="status"></p>
 <form id="loginForm">
 <label for="email">Email / E-mail</label><input type="email" id="email" autocomplete="email" required placeholder="you@example.com">
-<label for="password">Password / Heslo</label><input type="password" id="password" autocomplete="current-password" minlength="8" placeholder="Your password">
+<label for="password">Password / Heslo</label><input type="password" id="password" autocomplete="current-password" placeholder="Your password" required><div class="actions"><button type="button" id="showPassword" style="background:#192745;font-size:13px">👁 Zobrazit heslo / Show password</button></div>
 <div class="actions"><button class="primary" id="login" type="submit">Sign in / Přihlásit</button><button type="button" id="register">Register / Registrovat</button></div></form>
+<div id="status" tabindex="-1" role="alert" aria-live="assertive">Načítám přihlášení / Connecting to sign-in…</div>
 <section id="alternatives"><h2>Link does not open? / Odkaz nefunguje?</h2>
 <p>We can check an email code or verify a copied link directly. / Ověříme kód nebo zkopírovanou adresu odkazu. Použij vždy nejnovější zprávu.</p>
 <div class="actions"><button id="sendOtp" type="button">Send sign-in email / Poslat přihlášení</button><button type="button" id="sendReset">Reset password / Obnovit heslo</button></div>
@@ -43,8 +44,7 @@ footer{max-width:660px;margin:22px auto;color:#adbbd3;text-align:center;font-siz
 <label for="newPassword">New password / Nové heslo</label><input type="password" id="newPassword" autocomplete="new-password" minlength="8">
 <label for="confirmPassword">Repeat new password / Potvrdit heslo</label><input type="password" id="confirmPassword" autocomplete="new-password" minlength="8">
 <div class="actions"><button id="savePassword" class="primary" type="button">Save password / Uložit heslo</button></div></section>
-<div id="status" role="status" aria-live="polite">Connecting to secure sign-in…</div>
 <div class="actions"><button type="button" id="studio">Continue free / Pokračovat zdarma</button><button id="logout" type="button" hidden>Sign out / Odhlásit</button></div>
 <small>Payment cards are never requested on this page. Live checkout is still disabled. / Platební karty se zde nevyplňují. Ostré platby jsou vypnuté.</small>
 </main><footer>QA Studio AI PRO · Secure account access</footer>
-<script src="./qa-login.js?v=20261123-authfix02" defer></script></body></html>
+<script src="./qa-login.js?v=20261123-authfix03" defer></script></body></html>
