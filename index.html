@@ -11,6 +11,8 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 #app{display:block;border:0;width:100%;height:100%;height:100dvh}
 #notice{position:fixed;z-index:9;inset:0;background:#090c19;color:#fff;display:grid;place-items:center;font:15px system-ui;text-align:center;padding:20px}
 </style>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 </head>
 <body>
 <div id="notice">Načítám QA Studio AI PRO…</div>
@@ -40,6 +42,7 @@ f.addEventListener('load',function(){
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
    if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans2';plans.dataset.qaPlans='true';doc.body.append(plans);}
    if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts2';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
+   if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-start1';start.dataset.qaStart='true';doc.body.append(start);}
    n.style.display='none';
  }catch(e){
    n.textContent='Studio se nepodařilo načíst v tomto prostředí. Otevři soubor index-1.html přímo z webového serveru.';
@@ -47,6 +50,11 @@ f.addEventListener('load',function(){
  }
 });
 })();
+</script>
+<script>
+if('serviceWorker' in navigator && location.protocol==='https:') {
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'/QA-Studio-AI-PRO/'}).catch(()=>{}),{once:true});
+}
 </script>
 </body>
 </html>
