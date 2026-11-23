@@ -37,7 +37,7 @@ frame.onload=()=>{
  }
  if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
  if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans2';plans.dataset.qaPlans='true';doc.body.append(plans);}
- if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts1';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
+ if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts2';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
  notice.style.display='none';
  }catch(e){notice.textContent='Beta verzi se nepodařilo načíst. Původní aplikace zůstává nedotčena.';console.error(e)}
 };
