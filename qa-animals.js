@@ -42,11 +42,16 @@ const cats=[
 ];
 const looks=['Přirozené světlo','Kino HDR','Zlatá hodina','Měsíční noc','Studený film','Dramatický kontrast','Jemná mlha','Luxusní detail','Filmový noir','Vzdušná perspektiva','Teplý podvečer','Tajemná modř'];
 const fxNames={snow:'Jemné sněžení',blizzard:'Silná vánice',rain:'Realistický déšť',fog:'Pohyblivá mlha',frost:'Mrazivý závoj',sparkle:'Světelné jiskry',dust:'Částečky v protisvětle',fireflies:'Světlušky',sunrays:'Sluneční paprsky',lightning:'Bouřka'};
-const sceneList=cats.flatMap(cat=>Array.from({length:72},(_,n)=>({
-id:cat.id+'-'+String(n+1).padStart(3,'0'),cat:cat.id,catName:cat.name,subject:cat.subjects[n%6],
-look:looks[Math.floor(n/6)],fx:cat.fx[n%6],photo:picIds[cat.id][n%3],pro:n>=5,idx:n,
-name:cat.subjects[n%6]+' · '+looks[Math.floor(n/6)]
-})));
+const sceneList=[],usedPhotoIDs=new Set(),perCategory=new Map();
+function addPhoto(cat,photo,title,credit=null,photoFull=null){
+ if(!photo||usedPhotoIDs.has(photo)||((perCategory.get(cat.id)||0)>=72))return false;
+ const n=perCategory.get(cat.id)||0;perCategory.set(cat.id,n+1);usedPhotoIDs.add(photo);
+ sceneList.push({id:cat.id+'-img-'+String(n+1).padStart(3,'0'),
+ cat:cat.id,catName:cat.name,subject:cat.subjects[n%6],look:looks[Math.floor(n/6)%looks.length],
+ fx:cat.fx[n%6],photo,photoFull,credit,pro:n>=5,idx:n,name:title||cat.subjects[n%6]});
+ return true;
+}
+for(const cat of cats)picIds[cat.id].forEach((p,i)=>addPhoto(cat,p,cat.subjects[i]));
 const photoUrl=(id,width)=>'https://images.unsplash.com/'+id+'?auto=format&fit=crop&w='+width+'&q=85';
 let selected=sceneList[0],activeCat='all',filter='all',query='',visible=30,photo=null,photoFailed=false,photoToken=0,customBackground=false;
 let effects=['snow'],density=65,wind=16,caption='',captionColor='#ffffff',overlayItems=[],selectedOverlay=-1,isPro=false,licensePromise=null,recording=false,mediaRecorder=null,recTimer=null;
@@ -66,11 +71,11 @@ style.textContent='#qaSceneLib{color:#f0f4ff;font-family:system-ui,Arial,sans-se
 '#qaSceneLib .qsl-row input[type=file]{max-width:100%;font-size:11px}#qaSceneLib .qsl-row .qsl-small{font-size:11px}#qaSceneLib .qsl-title{font-size:14px;margin:8px 0}#qaSceneLib .qsl-badge{color:#dfc37b;font-size:11px;font-weight:700}'+
 '@media(max-width:850px){#qaSceneLib .qsl-layout{grid-template-columns:1fr}#qaSceneLib .qsl-editor{position:static;order:-1}#qaSceneLib .qsl-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#qaSceneLib h2{font-size:19px}}';
 document.head.append(style);
-const button=document.createElement('button');button.dataset.tab='qaSceneLib';button.type='button';button.textContent='🎬 Reálné scény 1008';const before=nav.querySelector('[data-tab="saved"]');before?nav.insertBefore(button,before):nav.append(button);
+const button=document.createElement('button');button.dataset.tab='qaSceneLib';button.type='button';button.textContent='▦ Unikátní šablony';const before=nav.querySelector('[data-tab="saved"]');before?nav.insertBefore(button,before):nav.append(button);
 const section=document.createElement('section');section.id='qaSceneLib';section.className='tab';
 section.innerHTML=[
 '<div class="qsl-head"><h2>Realistické scény, pozadí a počasí</h2>',
-'<div class="qsl-sub">14 kategorií × 72 variant = <strong class="qsl-count">1 008 kombinací</strong>. Z každé kategorie 5 zdarma, 67 PRO. Fotografie jsou vizuální podklady; skutečný sníh, déšť a mlha se animují přímo v editoru. Nahraj vlastní fotografie a průhledné PNG lidí či zvířat.</div></div>',
+'<div class="qsl-sub">14 kategorií skutečně různých fotografií. <strong class="qsl-count" id="qslRealCount">Načítám fotografie…</strong>. Prvních 5 v kategorii zdarma, další PRO. Fotografie jsou vizuální podklady; skutečný sníh, déšť a mlha se animují přímo v editoru. Nahraj vlastní fotografie a průhledné PNG lidí či zvířat.</div></div>',
 '<div class="qsl-cats" id="qslCategories"></div>',
 '<div class="qsl-toolbar"><input type="search" id="qslSearch" placeholder="Hledej: sníh, kočka, les, déšť…">',
 '<select id="qslTier"><option value="all">Všechny varianty</option><option value="free">Zdarma</option><option value="pro">PRO – náhled</option></select>',
@@ -116,8 +121,8 @@ const effectBox=q('#qslEffects');Object.keys(fxNames).forEach(kind=>{let b=docum
 function syncEffects(){effectBox.querySelectorAll('button').forEach(b=>b.classList.toggle('active',effects.includes(b.dataset.fx)))}
 function select(t){selected=t;effects=[t.fx];q('#qslTitle').textContent=t.name;q('#qslTierMark').textContent=t.pro?'PRO – ukázka':'ZDARMA';q('#qslTierMark').style.color=t.pro?'#dfc37b':'#9df2ce';q('#qslCaption').value='';caption='';syncEffects();loadBg(t);renderCards()}
 function filtered(){return sceneList.filter(t=>(activeCat==='all'||t.cat===activeCat)&&(filter==='all'||(filter==='pro'?t.pro:!t.pro))&&(!q('#qslGenre').value||q('#qslGenre').value==='all'||t.fx===q('#qslGenre').value)&&(!query||(t.name+' '+t.catName+' '+fxNames[t.fx]).toLocaleLowerCase('cs-CZ').includes(query)))}
-function renderCards(){let result=filtered(),grid=q('#qslGrid');grid.replaceChildren();result.slice(0,visible).forEach(t=>{let b=document.createElement('button');b.className='qsl-card'+(t.id===selected.id?' active':'');b.type='button';let thumb=document.createElement('div');thumb.className='qsl-thumb';thumb.style.backgroundImage='linear-gradient(0deg,rgba(0,0,0,.35),transparent 58%),url("'+photoUrl(t.photo,440)+'")';let pill=document.createElement('span');pill.className='qsl-pill'+(t.pro?' pro':'');pill.textContent=t.pro?'PRO':'ZDARMA';thumb.append(pill);let name=document.createElement('div');name.className='qsl-cardname';name.textContent=t.name+' · '+fxNames[t.fx];b.append(thumb,name);b.onclick=()=>select(t);grid.append(b)});q('#qslResults').textContent='Zobrazeno '+Math.min(result.length,visible)+' z '+result.length+' výsledků · 70 zdarma / 938 PRO celkem';q('#qslMore').hidden=result.length<=visible}
-const catsBar=q('#qslCategories');[{id:'all',name:'Všechny kategorie'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name+(c.id==='all'?'':' · 72');b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards()};catsBar.append(b)});catsBar.firstChild.classList.add('active');
+function renderCards(){let result=filtered(),grid=q('#qslGrid');grid.replaceChildren();result.slice(0,visible).forEach(t=>{let b=document.createElement('button');b.className='qsl-card'+(t.id===selected.id?' active':'');b.type='button';let thumb=document.createElement('div');thumb.className='qsl-thumb';thumb.style.backgroundImage='linear-gradient(0deg,rgba(0,0,0,.35),transparent 58%),url("'+photoUrl(t.photo,440)+'")';let pill=document.createElement('span');pill.className='qsl-pill'+(t.pro?' pro':'');pill.textContent=t.pro?'PRO':'ZDARMA';thumb.append(pill);let name=document.createElement('div');name.className='qsl-cardname';name.textContent=t.name+' · '+fxNames[t.fx];b.append(thumb,name);b.onclick=()=>select(t);grid.append(b)});q('#qslResults').textContent='Zobrazeno '+Math.min(result.length,visible)+' z '+result.length+' jedinečných fotografií';q('#qslRealCount').textContent=sceneList.length+' skutečně různých fotografií';q('#qslMore').hidden=result.length<=visible}
+const catsBar=q('#qslCategories');[{id:'all',name:'Všechny kategorie'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name+(c.id==='all'?'':' · až 72');b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards()};catsBar.append(b)});catsBar.firstChild.classList.add('active');
 const genre=q('#qslGenre');Object.keys(fxNames).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=fxNames[k];genre.append(o)});
 q('#qslTier').onchange=e=>{filter=e.target.value;visible=30;renderCards()};genre.onchange=()=>{visible=30;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=30;renderCards()};q('#qslMore').onclick=()=>{visible+=36;renderCards()};
 q('#qslDensity').oninput=e=>density=Number(e.target.value);q('#qslWind').oninput=e=>wind=Number(e.target.value);
@@ -140,4 +145,5 @@ q('#qslVideo').onclick=async()=>{if(recording){status('Video se právě zaznamen
 q('#qslSave').onclick=()=>{let p={app:'QA Studio AI PRO',format:'qa-scene-v2',preset:selected.id,effects,density,wind,caption,captionColor,overlays:overlayItems.map(x=>({x:x.x,y:x.y,scale:x.scale,notice:'Z důvodu soukromí není soubor obrázku uložen do JSON. Nahraj ho znovu.'}))};download(new Blob([JSON.stringify(p,null,2)],{type:'application/json'}),'qa-projekt-'+selected.id+'.json');status('Projekt uložen jako JSON. Vložené soubory nejsou součástí exportu projektu.')};
 button.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===section));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===button));window.scrollTo({top:0,behavior:'smooth'})};
 syncEffects();renderCards();loadBg(selected);
+for(const id of ['templates','luxury','christmas','collections']){const b=nav.querySelector('button[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
 })();
