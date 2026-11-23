@@ -12,30 +12,33 @@
  st.textContent+='.qaAccPanel .qaHidden{display:none!important}.qaAccPanel #qaAdminPanel{border-top:1px solid #455373;padding-top:14px;margin-top:15px}.qaAccPanel .qaAdminKpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.qaAccPanel .qaAdminKpis span{display:block;background:#101a31;border:1px solid #44526a;border-radius:10px;padding:10px;font-size:12px}.qaAccPanel .qaAdminKpis strong{display:block;font-size:19px;color:white}.qaAccPanel #qaPassword{margin-top:8px}.qaAccPanel #qaEmail{margin-bottom:10px}';
  document.head.append(st);
  const tab=document.createElement('button');tab.type='button';tab.textContent='🔐 Účet / PREMIUM';tab.dataset.tab='qaAccountPanel';nav.append(tab);
- const sec=document.createElement('section');sec.className='tab';sec.id='qaAccountPanel';sec.innerHTML='<div class="qaAccPanel"><h2>🔐 Můj účet • QA Studio AI PRO</h2><p>Ověřte svůj e-mail a spravujte přístup k zakoupeným šablonám. Zákaznické platby zatím nejsou povolené.</p><div id="qaAuthForm"><label for="qaEmail">E-mail</label><div><input type="email" autocomplete="email" id="qaEmail" placeholder="vas@email.cz"></div><button id="qaSignIn">Poslat přihlašovací odkaz</button></div><div id="qaSignOutBox" style="display:none"><button id="qaSignOut">Odhlásit</button><button id="qaRefresh">Zkontrolovat licenci</button></div><div id="qaAccountStatus" class="qaAccStatus" role="status">Připojuji bezpečné přihlášení…</div><div class="qaNote">Platba je zatím vypnutá, abychom před spuštěním dokončili zabezpečení a zkušební nákup. Neomezené používání šablon nezahrnuje neomezené AI generování.</div><div><button class="qaPayDisabled" disabled>Vánoce – 99 Kč</button><button class="qaPayDisabled" disabled>PLUS – 129 Kč/měs.</button><button class="qaPayDisabled" disabled>PLUS – 1 190 Kč/rok</button></div></div>';
+ const sec=document.createElement('section');sec.className='tab';sec.id='qaAccountPanel';sec.innerHTML='<div class="qaAccPanel"><h2>🔐 Můj účet • QA Studio AI PRO</h2><p>Ověřte svůj e-mail a spravujte přístup k zakoupeným šablonám. Zákaznické platby zatím nejsou povolené.</p><div id="qaAuthForm"><label for="qaEmail">E-mail</label><div><input type="email" autocomplete="email" id="qaEmail" placeholder="vas@email.cz"></div><button id="qaSignIn">Poslat přihlašovací odkaz</button></div><div id="qaSignOutBox" style="display:none"><button id="qaSignOut">Odhlásit</button><button id="qaRefresh">Zkontrolovat licenci</button></div><div id="qaAccountStatus" class="qaAccStatus" role="status">Připojuji bezpečné přihlášení…</div><div class="qaNote">Platba je zatím vypnutá, abychom před spuštěním dokončili zabezpečení a zkušební nákup. Neomezené používání šablon nezahrnuje neomezené AI generování.</div><div class="qaNote">Nové kreditové balíčky začínají od 59 Kč na den. Najdeš je v záložce AI kredity / ceník. Platby a skutečné AI čerpání ještě nejsou aktivní.</div></div>';
  const parent=document.querySelector('.tab')?.parentElement||nav.parentElement;parent.append(sec);
  const form=sec.querySelector('#qaAuthForm');
  form.insertAdjacentHTML('beforeend','<div style="margin-top:12px"><button id="qaModeLink" type="button">Přihlášení odkazem</button><button id="qaModePassword" type="button">E-mail a heslo</button></div><div id="qaPasswordBox" class="qaHidden"><label for="qaPassword">Heslo (min. 8 znaků)</label><input id="qaPassword" type="password" autocomplete="current-password" placeholder="Heslo"><div><button id="qaPassLogin" type="button">Přihlásit</button><button id="qaPassRegister" type="button">Registrovat</button><button id="qaPassReset" type="button">Obnovit heslo</button></div></div>');
  sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend','<div id="qaAdminPanel" class="qaHidden"><h2>Administrace majitele</h2><p>Tržby a předplatná uvidí pouze serverově ověřený správce.</p><button id="qaAdminRefresh" type="button">Načíst tržby</button><div class="qaAdminKpis"><span><strong id="qaGross">–</strong>Hrubé tržby Kč</span><span><strong id="qaPayments">–</strong>Transakce</span><span><strong id="qaSubs">–</strong>Předplatná</span></div><p id="qaAdminInfo" class="qaNote"></p></div>');
 
- sec.querySelector('#qaAdminPanel').insertAdjacentHTML('beforeend','<h3>Plán cash flow · model, nikoli skutečné tržby</h3><p class="qaNote">Předplatné 129 Kč / měsíc · platební poplatek model 1,5 % + 6,50 Kč · Stripe Billing 0,7 %. Náklady na AI a provoz můžeš měnit.</p><div><label>Fixní provozní náklady Kč/měs. <input type="number" id="qaFixedCost" min="0" step="100" value="1000" style="max-width:140px"></label><label>AI náklad Kč/měs. na předplatitele <input type="number" id="qaAiCost" min="0" step="10" value="50" style="max-width:140px"></label><label>Aktivní předplatitelé <input type="number" id="qaCustomers" min="0" step="10" value="100" style="max-width:130px"></label></div><div id="qaForecast" class="qaAccStatus" style="margin-top:8px;line-height:1.8"></div><p class="qaNote">Výsledek je orientační a neobsahuje daně, vratky, reklamní rozpočet, účetní služby, jiné platební metody ani skutečné jednotkové ceny AI. Výchozí náklady jsou ilustrativní předpoklady.</p>');
+ sec.querySelector('#qaAdminPanel').insertAdjacentHTML('beforeend','<h3>Model hospodaření · pouze majitel, nejde o skutečné tržby</h3><p class="qaNote">Jednorázové kreditové balíčky bez automatické obnovy. Počítá se modelový poplatek Stripe 1,5 % + 6,50 Kč (standardní karta EHP). Skutečné poplatky se mohou lišit.</p><div><label>Balíček <select id="qaFinancePlan"><option value="qa_day">1 den · 59 Kč</option><option value="qa_week">7 dní · 169 Kč</option><option value="qa_14days">14 dní · 279 Kč</option><option value="qa_month" selected>30 dní · 449 Kč</option><option value="qa_3months">90 dní · 1 099 Kč</option></select></label><label>Max. cena externí AI / kredit (Kč) <input type="number" id="qaAiCost" min="0" step="0.01" value="0.25" style="max-width:115px"></label><label>Počet prodaných balíčků / měsíc <input type="number" id="qaCustomers" min="0" step="10" value="100" style="max-width:125px"></label><label>Fixní provoz Kč/měs. <input type="number" id="qaFixedCost" min="0" step="100" value="1000" style="max-width:130px"></label></div><div id="qaForecast" class="qaAccStatus" style="margin-top:8px;line-height:1.8"></div><p class="qaNote">Odhad platí při spotřebování všech kreditů a dodržení nastaveného limitu. Serverové vynucení AI nákladového limitu zatím není dokončené. Výsledek nezahrnuje daně, vratky, chargebacky, dražší karty, marketing, účetnictví a další provozní náklady.</p>');
  function cashForecast(){
+  const offers={qa_day:{price:59,credits:70},qa_week:{price:169,credits:200},qa_14days:{price:279,credits:370},qa_month:{price:449,credits:550},qa_3months:{price:1099,credits:1550}};
+  const plan=offers[sec.querySelector('#qaFinancePlan').value]||offers.qa_month;
   const n=Math.max(0,Number(sec.querySelector('#qaCustomers').value)||0);
   const fixed=Math.max(0,Number(sec.querySelector('#qaFixedCost').value)||0);
-  const ai=Math.max(0,Number(sec.querySelector('#qaAiCost').value)||0);
-  const price=129,fee=price*.015+6.5+price*.007,unit=price-fee-ai;
+  const aiRate=Math.max(0,Number(sec.querySelector('#qaAiCost').value)||0);
+  const fee=plan.price*.015+6.5, ai=plan.credits*aiRate, unit=plan.price-fee-ai;
   const profit=n*unit-fixed;
   const breakEven=unit>0?Math.ceil(fixed/unit):null;
   const kr=x=>x.toLocaleString('cs-CZ',{maximumFractionDigits:2})+' Kč';
   sec.querySelector('#qaForecast').textContent=
-   'Příjmy: '+kr(n*price)+'\n'
-   +'Stripe Payments + Billing: −'+kr(n*fee)+'\n'
-   +'Odhad nákladů AI: −'+kr(n*ai)+'\n'
-   +'Fixní provoz: −'+kr(fixed)+'\n'
-   +'Zbývá před daněmi a dalšími náklady: '+kr(profit)+'\n'
-   +'Bod zvratu: '+(breakEven===null?'nedosažitelný s touto cenou a nákladem':breakEven+' platících členů');
+   'Příjmy: '+kr(n*plan.price)+'\n'
+   +'Poplatky Stripe: −'+kr(n*fee)+'\n'
+   +'Maximální rozpočet externí AI: −'+kr(n*ai)+'\n'
+   +'Modelové fixní náklady: −'+kr(fixed)+'\n'
+   +'Příspěvek na provoz a zisk z 1 balíčku: '+kr(unit)+'\n'
+   +'Zbývá před dalšími náklady a daněmi: '+kr(profit)+'\n'
+   +'Bod zvratu: '+(breakEven===null?'nedosažitelný při tomto limitu':'cca '+breakEven+' prodejů za měsíc');
  }
- for(const id of ['qaFixedCost','qaAiCost','qaCustomers'])sec.querySelector('#'+id).addEventListener('input',cashForecast);
+ for(const id of ['qaFinancePlan','qaFixedCost','qaAiCost','qaCustomers'])sec.querySelector('#'+id).addEventListener(id==='qaFinancePlan'?'change':'input',cashForecast);
  cashForecast();
 
  const q=s=>sec.querySelector(s),status=q('#qaAccountStatus');
