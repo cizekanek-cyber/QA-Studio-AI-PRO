@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090c19">
-<meta name="description" content="QA Studio AI PRO: grafika, krátká videa, luxusní a vánoční motivy a 200 zvířecích AI scén.">
+<meta name="description" content="QA Studio AI PRO: grafika, krátká videa, luxusní a vánoční motivy a 35 tematických kategorií.">
 <title>QA Studio AI PRO</title>
 <style>
 html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
@@ -28,7 +28,7 @@ f.addEventListener('load',function(){
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js?v=20261123-unique8';
+     script.src='./qa-animals.js?v=20261123-unique9';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      doc.body.append(script);
