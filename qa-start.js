@@ -51,7 +51,7 @@ css.textContent=`
 #qaWelcome h1,#qaWelcome h2,#qaWelcome h3{line-height:1.16;letter-spacing:-.025em}
 #qaWelcome .qwKicker{font-size:11px;font-weight:850;letter-spacing:.11em;color:#e9c988;margin:0 0 8px}
 #qaWelcome .qwHero{border:1px solid #6a638b;min-height:310px;border-radius:22px;display:flex;align-items:end;position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(110deg,#292244,#25344b)}
-#qaWelcome .qwHero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+#qaWelcome .qwHero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:76% 18%;z-index:-2}
 #qaWelcome .qwHero:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#080b19f7,#080b19d9 49%,#080b1950)}
 #qaWelcome .qwHeroBody{padding:29px;max-width:670px}
 #qaWelcome .qwHero h1{font-size:clamp(27px,5vw,47px);margin:0 0 10px}
@@ -84,18 +84,18 @@ css.textContent=`
 #qaWelcome .qwNote{font-size:12px;color:#bfcce0;margin-top:24px;padding:15px;background:#141c2c;border:1px solid #3b4b69;border-radius:13px;line-height:1.7}
 #qaWelcome .qwError{font-size:12px;color:#ffc3bd;min-height:20px}
 @media(max-width:850px){#qaWelcome .qwFunctions{grid-template-columns:repeat(2,minmax(0,1fr))}#qaWelcome .qwCategories{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:560px){#qaWelcome{padding:8px 10px 23px}#qaWelcome .qwHero{min-height:330px}#qaWelcome .qwHeroBody{padding:20px}#qaWelcome .qwHero:before{background:linear-gradient(0deg,#080b19fc,#080b1970)}#qaWelcome .qwPromos{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#qaWelcome .qwPromo{padding:12px;min-height:153px}#qaWelcome .qwPromo:last-child{grid-column:span 2;min-height:125px}#qaWelcome .qwFunction{padding:13px}#qaWelcome .qwFunction p{min-height:76px}#qaWelcome .qwCategories{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#qaWelcome .qwCategory{height:130px}}
+@media(max-width:560px){#qaWelcome .qwHero img{object-position:76% center}#qaWelcome{padding:8px 10px 23px}#qaWelcome .qwHero{min-height:330px}#qaWelcome .qwHeroBody{padding:20px}#qaWelcome .qwHero:before{background:linear-gradient(0deg,#080b19fc,#080b1970)}#qaWelcome .qwPromos{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#qaWelcome .qwPromo{padding:12px;min-height:153px}#qaWelcome .qwPromo:last-child{grid-column:span 2;min-height:125px}#qaWelcome .qwFunction{padding:13px}#qaWelcome .qwFunction p{min-height:76px}#qaWelcome .qwCategories{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#qaWelcome .qwCategory{height:130px}}
 `;
 document.head.append(css);
 const tab=document.createElement('button');tab.type='button';tab.dataset.tab='qaWelcome';tab.textContent='⌂ Úvod';nav.prepend(tab);
 const section=document.createElement('section');section.id='qaWelcome';section.className='tab';
 section.innerHTML=`
 <section aria-label="Nejnovější upgrade">
-<div class="qwHero"><img src="${photo('photo-1503376780353-7e6692767b70',1500)}" alt="" fetchpriority="high">
-<div class="qwHeroBody"><div class="qwKicker">✦ NOVÝ UPGRADE · QA STUDIO AI PRO</div>
-<h1>Tvoje kreativní studio. Všechno na jednom místě.</h1>
-<p>Nové realistické motivy aut, motorek, produktů, interiérů, lidí i zvířat. Vyber scénu, uprav ji a exportuj jako obrázek nebo krátké video.</p>
-<div class="qwActions"><button class="qwPrimary" data-go="qaSceneLib">Otevřít editor scén</button><button id="qwBrowse" class="qwSecondary">Prohlédnout kategorie</button></div>
+<div class="qwHero"><img src="./assets/gallery-hero.webp?v=20261123-hd" alt="Reklamní módní fotografie na úvodu QA Studio" fetchpriority="high">
+<div class="qwHeroBody"><div class="qwKicker">✦ NOVÝ UPGRADE · 38 REALISTICKÝCH FOTOPŘEDLOH</div>
+<h1>Vytvářej poutavé fotky a profesionální reklamy.</h1>
+<p>Objev 38 nových motivů ze skutečně dodané kolekce, od lidí se zvířaty až po fantasy postavy a módu. Každý obrázek otevřeš zvlášť a můžeš ho upravit v editoru.</p>
+<div class="qwActions"><button class="qwPrimary" data-go="qaGalleryPanel">38 nových fotošablon</button><button class="qwSecondary" data-go="qaSceneLib">Otevřít editor</button><button id="qwBrowse" class="qwSecondary">Všechny kategorie</button></div>
 </div></div><div class="qwPromos" id="qwPromos"></div></section>
 <section aria-labelledby="qwToolsHeading"><div class="qwHeading"><div class="qwKicker">VŠECHNY FUNKCE</div><h2 id="qwToolsHeading">Co chceš vytvořit?</h2><p>Přímý vstup do editoru a všech dostupných nástrojů.</p></div>
 <div class="qwFunctions">
