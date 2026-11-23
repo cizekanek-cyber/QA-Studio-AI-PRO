@@ -2,11 +2,11 @@
 (()=>{'use strict';if(document.getElementById('qaPlansPanel'))return;
 const nav=document.querySelector('.nav');if(!nav)return;
 const packs=[
- {id:'qa_day',name:'Na den',days:1,price:39,credits:100},
- {id:'qa_week',name:'Na 7 dní',days:7,price:109,credits:350},
- {id:'qa_14days',name:'Na 14 dní',days:14,price:189,credits:650},
- {id:'qa_month',name:'Na 30 dní',days:30,price:299,credits:1100},
- {id:'qa_3months',name:'Na 90 dní',days:90,price:699,credits:2800}
+ {id:'qa_day',name:'Na den',days:1,price:29,credits:70},
+ {id:'qa_week',name:'Na 7 dní',days:7,price:69,credits:200},
+ {id:'qa_14days',name:'Na 14 dní',days:14,price:119,credits:370},
+ {id:'qa_month',name:'Na 30 dní',days:30,price:159,credits:550},
+ {id:'qa_3months',name:'Na 90 dní',days:90,price:399,credits:1550}
 ];
 const units=[
  {name:'Text / scénář',value:2,unit:'krátký výstup'},
