@@ -30,13 +30,14 @@ frame.onload=()=>{
  if(!doc||!doc.querySelector('.nav'))throw Error('Editor se nenačetl.');
  for(const [path,key] of [['./qa-animals.js','qaAnimals'],['./qa-account.js','qaAccount']]){
   if(doc.querySelector('script[data-'+(key==='qaAnimals'?'qa-animals':'qa-account')+']'))continue;
-  const s=doc.createElement('script');s.src=path+(key==='qaAnimals'?'?v=20261123-unique7':'?v=20261123-auth5');
+  const s=doc.createElement('script');s.src=path+(key==='qaAnimals'?'?v=20261123-unique8':'?v=20261123-auth5');
   if(key==='qaAnimals')s.dataset.qaAnimals='true';else s.dataset.qaAccount='true';
   s.onerror=()=>console.error('Doplněk není k dispozici: '+path);
   doc.body.append(s);
  }
  if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
  if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans2';plans.dataset.qaPlans='true';doc.body.append(plans);}
+ if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts1';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
  notice.style.display='none';
  }catch(e){notice.textContent='Beta verzi se nepodařilo načíst. Původní aplikace zůstává nedotčena.';console.error(e)}
 };
