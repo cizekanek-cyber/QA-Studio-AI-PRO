@@ -40,7 +40,7 @@
 
  const q=s=>sec.querySelector(s),status=q('#qaAccountStatus');
  tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e===sec));nav.querySelectorAll('button').forEach(e=>e.classList.toggle('active',e===tab));window.scrollTo({top:0,behavior:'smooth'})});
- let supa=null,auth=null,adminAccess=false;
+ let supa=null,auth=null,adminAccess=false,lastVerifiedUser=null;
  const qEmail=()=>{const value=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))throw Error('Zadejte platný e-mail.');return value};
  async function sendServer(slug,body){if(!auth)throw Error('Nejdřív se přihlas.');const r=await fetch(PROJECT+'/functions/v1/'+slug,{method:'POST',headers:{'Content-Type':'application/json',apikey:PUBLIC_KEY,Authorization:'Bearer '+auth.access_token},body:JSON.stringify(body)});const x=await r.json().catch(()=>({}));if(!r.ok)throw Error(x.error||('Server '+r.status));return x}
  async function adminStats(){if(!adminAccess)return;try{q('#qaAdminInfo').textContent='Ověřuji na serveru…';const d=await sendServer('qa-admin',{action:'summary'});q('#qaGross').textContent=Number(d.gross_czk||0).toLocaleString('cs-CZ');q('#qaPayments').textContent=Number(d.paid_transactions||0).toLocaleString('cs-CZ');q('#qaSubs').textContent=Number(d.active_subscriptions||0).toLocaleString('cs-CZ');q('#qaAdminInfo').textContent=d.note||''}catch(e){q('#qaAdminInfo').textContent='Administrace: '+(e.message||e)}}
@@ -50,6 +50,7 @@
   try{
    const r=await supa.auth.getSession();
    auth=r.data.session;
+   if(!auth||auth.user.id!==lastVerifiedUser){adminAccess=false;q('#qaAdminPanel').classList.add('qaHidden');for(const id of ['qaGross','qaPayments','qaSubs'])q('#'+id).textContent='–';lastVerifiedUser=null;}
    q('#qaAuthForm').style.display=auth?'none':'block';
    q('#qaSignOutBox').style.display=auth?'block':'none';
    if(!auth){adminAccess=false;q('#qaAdminPanel').classList.add('qaHidden');status.textContent='Nepřihlášený uživatel. Vytváření návrhů zdarma funguje bez účtu.';return;}
@@ -58,7 +59,7 @@
    const j=await res.json().catch(()=>({}));
    if(!res.ok)throw Error(j.error||'Nelze ověřit licence ('+res.status+')');
    let msg=j.plus?'PLUS aktivní do '+(j.plus_until||'obnovení'):j.christmas?'Vánoční balíček je aktivní':'Bez placené licence';
-   adminAccess=Boolean(j.is_admin);q('#qaAdminPanel').classList.toggle('qaHidden',!adminAccess);status.textContent='Přihlášen: '+auth.user.email+'\n'+msg+(adminAccess?'\nPřístup majitele ověřen serverem.':'');if(adminAccess)adminStats();
+   adminAccess=Boolean(j.is_admin);lastVerifiedUser=auth.user.id;q('#qaAdminPanel').classList.toggle('qaHidden',!adminAccess);status.textContent='Přihlášen: '+auth.user.email+'\n'+msg+(adminAccess?'\nPřístup majitele ověřen serverem.':'');if(adminAccess)adminStats();
   }catch(e){status.textContent='Kontrola přístupu: '+(e?.message||'Chyba připojení')}
  }
  async function startup(){
