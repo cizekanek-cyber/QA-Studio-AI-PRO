@@ -9,8 +9,7 @@ const photo=(id,w=800)=>'https://images.unsplash.com/'+id+'?auto=format&fit=crop
 const categories=[
 ['cars','Auta a supersporty','photo-1503376780353-7e6692767b70'],
 ['motorbikes','Motorky a skútry','photo-1558981806-ec527fa84c39'],
-['animals','Zvířata','photo-1543466835-00a7907e9de1'],
-['people','Lidé a portréty','photo-1534528741775-53994a69daeb'],
+['living','Živí tvorové – předlohy','photo-1534528741775-53994a69daeb'],
 ['christmas','Vánoce a svátky','photo-1512389142860-9c449e58a543'],
 ['products','Produkty a reklama','photo-1541643600914-78b084683601'],
 ['homes','Domy a reality','photo-1600585154340-be6161a56a0c'],
@@ -38,7 +37,7 @@ const categories=[
 ['sea','Moře a pláže','photo-1518837695005-2083093ee35b'],
 ['city','Města','photo-1519501025264-65ba15a82390'],
 ['space','Vesmír','photo-1419242902214-272b3f66ee7a'],
-['fantasy','Fantasy','photo-1470770841072-f978cf4d019e'],
+['fantasy','Fantasy krajiny','photo-1470770841072-f978cf4d019e'],
 ['film','Filmové efekty','photo-1500534623283-312aade485b7'],
 ['water','Voda a vodopády','photo-1433086966358-54859d0ed716'],
 ['architecture','Architektura','photo-1480714378408-67cf0d13bc1b']
@@ -117,11 +116,11 @@ section.innerHTML=`
 root.append(section);
 const q=s=>section.querySelector(s);
 function goto(id){const b=nav.querySelector('button[data-tab="'+id+'"]');if(!b){q('#qwError').textContent='Tento nástroj se ještě nenačetl, obnov stránku a zkus to znovu.';return false}q('#qwError').textContent='';b.click();return true}
-function openCategory(id){if(goto('qaSceneLib'))window.dispatchEvent(new CustomEvent('qa:open-category',{detail:{category:id}}))}
+function openCategory(id){if(id==='living'){if(goto('qaGalleryPanel'))window.dispatchEvent(new CustomEvent('qa:open-gallery',{detail:{category:'Živí tvorové – předlohy'}}));return;}if(goto('qaSceneLib'))window.dispatchEvent(new CustomEvent('qa:open-category',{detail:{category:id}}))}
 q('#qwBrowse').onclick=()=>q('#qwCatAnchor').scrollIntoView({behavior:'smooth',block:'start'});
 section.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>goto(b.dataset.go));
 for(const [id,name,imgId,kicker] of [
- ['animals','Zvířata a lidé','photo-1514888286974-6c03e2ca1dba','OBLÍBENÉ'],
+ ['living','Živí tvorové – předlohy','photo-1514888286974-6c03e2ca1dba','PŘEDLOHY'],
  ['christmas','Vánoční grafika','photo-1512389142860-9c449e58a543','SEZÓNNÍ'],
  ['products','Reklamní obrázky','photo-1541643600914-78b084683601','PRO ZNAČKY']
 ]){
@@ -133,7 +132,7 @@ for(const [id,name,imgId,kicker] of [
 }
 const grid=q('#qwCategories');
 categories.forEach(([id,name,imgId],i)=>{
- const b=document.createElement('button');b.type='button';b.className='qwCategory';if(i>=12)b.hidden=true;
+ const b=document.createElement('button');b.type='button';b.className='qwCategory';b.dataset.category=id;if(i>=12)b.hidden=true;
  const img=document.createElement('img');img.loading='lazy';img.src=photo(imgId,460);img.alt='';img.onerror=()=>img.remove();
  const title=document.createElement('span');title.textContent=name;b.append(img,title);b.onclick=()=>openCategory(id);grid.append(b);
 });
