@@ -17,6 +17,27 @@
  const form=sec.querySelector('#qaAuthForm');
  form.insertAdjacentHTML('beforeend','<div style="margin-top:12px"><button id="qaModeLink" type="button">Přihlášení odkazem</button><button id="qaModePassword" type="button">E-mail a heslo</button></div><div id="qaPasswordBox" class="qaHidden"><label for="qaPassword">Heslo (min. 8 znaků)</label><input id="qaPassword" type="password" autocomplete="current-password" placeholder="Heslo"><div><button id="qaPassLogin" type="button">Přihlásit</button><button id="qaPassRegister" type="button">Registrovat</button><button id="qaPassReset" type="button">Obnovit heslo</button></div></div>');
  sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend','<div id="qaAdminPanel" class="qaHidden"><h2>Administrace majitele</h2><p>Tržby a předplatná uvidí pouze serverově ověřený správce.</p><button id="qaAdminRefresh" type="button">Načíst tržby</button><div class="qaAdminKpis"><span><strong id="qaGross">–</strong>Hrubé tržby Kč</span><span><strong id="qaPayments">–</strong>Transakce</span><span><strong id="qaSubs">–</strong>Předplatná</span></div><p id="qaAdminInfo" class="qaNote"></p></div>');
+
+ sec.querySelector('#qaAdminPanel').insertAdjacentHTML('beforeend','<h3>Plán cash flow · model, nikoli skutečné tržby</h3><p class="qaNote">Předplatné 129 Kč / měsíc · platební poplatek model 1,5 % + 6,50 Kč · Stripe Billing 0,7 %. Náklady na AI a provoz můžeš měnit.</p><div><label>Fixní provozní náklady Kč/měs. <input type="number" id="qaFixedCost" min="0" step="100" value="1000" style="max-width:140px"></label><label>AI náklad Kč/měs. na předplatitele <input type="number" id="qaAiCost" min="0" step="10" value="50" style="max-width:140px"></label><label>Aktivní předplatitelé <input type="number" id="qaCustomers" min="0" step="10" value="100" style="max-width:130px"></label></div><div id="qaForecast" class="qaAccStatus" style="margin-top:8px;line-height:1.8"></div><p class="qaNote">Výsledek je orientační a neobsahuje daně, vratky, reklamní rozpočet, účetní služby, jiné platební metody ani skutečné jednotkové ceny AI. Výchozí náklady jsou ilustrativní předpoklady.</p>');
+ function cashForecast(){
+  const n=Math.max(0,Number(sec.querySelector('#qaCustomers').value)||0);
+  const fixed=Math.max(0,Number(sec.querySelector('#qaFixedCost').value)||0);
+  const ai=Math.max(0,Number(sec.querySelector('#qaAiCost').value)||0);
+  const price=129,fee=price*.015+6.5+price*.007,unit=price-fee-ai;
+  const profit=n*unit-fixed;
+  const breakEven=unit>0?Math.ceil(fixed/unit):null;
+  const kr=x=>x.toLocaleString('cs-CZ',{maximumFractionDigits:2})+' Kč';
+  sec.querySelector('#qaForecast').textContent=
+   'Příjmy: '+kr(n*price)+'\n'
+   +'Stripe Payments + Billing: −'+kr(n*fee)+'\n'
+   +'Odhad nákladů AI: −'+kr(n*ai)+'\n'
+   +'Fixní provoz: −'+kr(fixed)+'\n'
+   +'Zbývá před daněmi a dalšími náklady: '+kr(profit)+'\n'
+   +'Bod zvratu: '+(breakEven===null?'nedosažitelný s touto cenou a nákladem':breakEven+' platících členů');
+ }
+ for(const id of ['qaFixedCost','qaAiCost','qaCustomers'])sec.querySelector('#'+id).addEventListener('input',cashForecast);
+ cashForecast();
+
  const q=s=>sec.querySelector(s),status=q('#qaAccountStatus');
  tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e===sec));nav.querySelectorAll('button').forEach(e=>e.classList.toggle('active',e===tab));window.scrollTo({top:0,behavior:'smooth'})});
  let supa=null,auth=null,adminAccess=false;
