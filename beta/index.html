@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="cs"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QA Studio AI PRO – testovací verze</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#090c19;color:white;font-family:system-ui,Arial}
+header{height:48px;display:flex;align-items:center;gap:8px;padding:5px 10px;background:#181f36;border-bottom:1px solid #323a54}
+header strong{font-size:12px;flex:1}header span{font-size:10px;color:#b5d5ea}
+header button{background:#4d3489;border:1px solid #8f78d4;border-radius:9px;color:white;padding:8px 11px;font-size:12px;font-weight:700}
+#app{display:block;width:100%;height:calc(100dvh - 48px);border:0;background:#090c19}
+#notice{position:fixed;inset:48px 0 0;display:grid;place-items:center;background:#090c19;color:#e9ecfb;text-align:center;padding:15px;font-size:14px}
+</style></head><body>
+<header><strong>QA STUDIO AI PRO <span>· BETA / bez plateb</span></strong><button id="openAccount">🔐 Můj účet</button></header>
+<iframe id="app" src="../index-1.html" title="QA Studio AI PRO – zkušební verze"></iframe>
+<div id="notice">Načítám testovací verzi studia…</div>
+<script>
+(function(){
+'use strict';
+const frame=document.getElementById('app'),notice=document.getElementById('notice');
+if(location.search||location.hash)frame.src='../index-1.html'+location.search+location.hash;
+document.getElementById('openAccount').onclick=()=>{
+ const tab=frame.contentDocument?.querySelector('.nav button[data-tab="qaAccountPanel"]');
+ if(tab){tab.click();frame.focus()}else{alert('Přihlašování se zatím načítá.')}
+};
+frame.onload=()=>{
+ try{
+ const doc=frame.contentDocument;
+ if(!doc||!doc.querySelector('.nav'))throw Error('Editor se nenačetl.');
+ for(const [path,key] of [['../qa-animals.js','qaAnimals'],['../qa-account.js','qaAccount']]){
+  if(doc.querySelector('script[data-'+(key==='qaAnimals'?'qa-animals':'qa-account')+']'))continue;
+  const s=doc.createElement('script');s.src=path;
+  if(key==='qaAnimals')s.dataset.qaAnimals='true';else s.dataset.qaAccount='true';
+  s.onerror=()=>console.error('Doplněk není k dispozici: '+path);
+  doc.body.append(s);
+ }
+ notice.style.display='none';
+ }catch(e){notice.textContent='Beta verzi se nepodařilo načíst. Původní aplikace zůstává nedotčena.';console.error(e)}
+};
+})();
+</script></body></html>
