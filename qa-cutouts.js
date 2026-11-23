@@ -77,11 +77,20 @@ function render(){
   wrapper.append(img,title);if(a.hd){const label=document.createElement('span');label.className='qac-hd';label.textContent='HD předloha';wrapper.append(label)}wrapper.append(button);grid.append(wrapper);
  }
 }
-async function load(){try{const [local,hosted]=await Promise.all([allAssets(),hostedAssets()]);const merged=new Map(hosted.map(x=>[x.id,x]));for(const x of local)merged.set(x.id,x);items=Array.from(merged.values()).sort((a,b)=>a.id.localeCompare(b.id));render();say(items.length?'Připraveno '+items.length+' samostatných PNG. Klepni na „Vložit do scény“.':'Web zatím nemá vložené obrázky; nahraj připravený ZIP jednou do tohoto zařízení.')}catch(e){say('Knihovnu nelze otevřít: '+e.message)}}
+async function load(){try{const [local,hosted]=await Promise.all([allAssets(),hostedAssets()]);const merged=new Map(hosted.map(x=>[x.id,x]));for(const x of local)merged.set(x.id,x);items=Array.from(merged.values()).sort((a,b)=>a.id.localeCompare(b.id));render();say(items.length?'Ready: '+items.length+' transparent cutouts. Choose People or Animals and select Add to scene.':'The PNG library is not yet hosted on this website. Import your collection ZIP once to see all 101 people and 100 animals on this device.')}catch(e){say('Knihovnu nelze otevřít: '+e.message)}}
 q('#qacZip').onchange=async()=>{const files=Array.from(q('#qacZip').files||[]);q('#qacZip').disabled=true;try{let count=0;for(const f of files){say('Načítám '+f.name+'…');count+=await parseArchive(f)}await load();say('Importováno '+count+' PNG · knihovna obsahuje '+items.length+' uložených objektů. Žádné AI kredity se neodečetly.')}catch(e){say('Import nebyl dokončen: '+e.message)}finally{q('#qacZip').disabled=false;q('#qacZip').value=''}};
 q('#qacCategory').onchange=()=>{visible=48;render()};
 q('#qacSearch').oninput=()=>{visible=48;render()};
 q('#qacMore').onclick=()=>{visible+=48;render()};
 tab.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===section));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===tab));window.scrollTo({top:0,behavior:'smooth'})};
+const peopleTab=document.createElement('button');peopleTab.type='button';peopleTab.dataset.tab='qaPeopleTab';peopleTab.textContent='👤 People';nav.insertBefore(peopleTab,tab);
+const animalsTab=document.createElement('button');animalsTab.type='button';animalsTab.dataset.tab='qaAnimalsTab';animalsTab.textContent='🐾 Animals';nav.insertBefore(animalsTab,tab);
+function showCategory(type,selected){
+ q('#qacCategory').value=type;visible=48;render();tab.click();
+ nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===selected));
+}
+peopleTab.onclick=()=>showCategory('lide',peopleTab);
+animalsTab.onclick=()=>showCategory('zvirata',animalsTab);
+
 load();
 })();
