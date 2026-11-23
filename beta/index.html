@@ -11,7 +11,9 @@ header strong{font-size:12px;flex:1}header span{font-size:10px;color:#b5d5ea}
 header button{background:#4d3489;border:1px solid #8f78d4;border-radius:9px;color:white;padding:8px 11px;font-size:12px;font-weight:700}
 #app{display:block;width:100%;height:calc(100dvh - 48px);border:0;background:#090c19}
 #notice{position:fixed;inset:48px 0 0;display:grid;place-items:center;background:#090c19;color:#e9ecfb;text-align:center;padding:15px;font-size:14px}
-</style></head><body>
+</style><link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+</head><body>
 <header><strong>QA STUDIO AI PRO <span>· BETA / bez plateb</span></strong><button id="openAccount">🔐 Můj účet</button></header>
 <iframe id="app" src="../index-1.html" title="QA Studio AI PRO – zkušební verze" allow="web-share"></iframe>
 <div id="notice">Načítám testovací verzi studia…</div>
@@ -38,8 +40,14 @@ frame.onload=()=>{
  if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
  if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans2';plans.dataset.qaPlans='true';doc.body.append(plans);}
  if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts2';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
+ if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-start1';start.dataset.qaStart='true';doc.body.append(start);}
  notice.style.display='none';
  }catch(e){notice.textContent='Beta verzi se nepodařilo načíst. Původní aplikace zůstává nedotčena.';console.error(e)}
 };
 })();
-</script></body></html>
+</script><script>
+if('serviceWorker' in navigator && location.protocol==='https:') {
+ window.addEventListener('load',()=>navigator.serviceWorker.register('../sw.js',{scope:'/QA-Studio-AI-PRO/'}).catch(()=>{}),{once:true});
+}
+</script>
+</body></html>
