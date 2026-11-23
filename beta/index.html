@@ -30,7 +30,7 @@ frame.onload=()=>{
  if(!doc||!doc.querySelector('.nav'))throw Error('Editor se nenačetl.');
  for(const [path,key] of [['./qa-animals.js','qaAnimals'],['./qa-account.js','qaAccount']]){
   if(doc.querySelector('script[data-'+(key==='qaAnimals'?'qa-animals':'qa-account')+']'))continue;
-  const s=doc.createElement('script');s.src=path+(key==='qaAnimals'?'?v=20261123-scenes4':'');
+  const s=doc.createElement('script');s.src=path+(key==='qaAnimals'?'?v=20261123-scenes5':'?v=20261123-auth2');
   if(key==='qaAnimals')s.dataset.qaAnimals='true';else s.dataset.qaAccount='true';
   s.onerror=()=>console.error('Doplněk není k dispozici: '+path);
   doc.body.append(s);
