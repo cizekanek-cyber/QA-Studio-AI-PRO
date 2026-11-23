@@ -122,6 +122,69 @@ function syncEffects(){effectBox.querySelectorAll('button').forEach(b=>b.classLi
 function select(t){selected=t;effects=[t.fx];q('#qslTitle').textContent=t.name;q('#qslTierMark').textContent=t.pro?'PRO – ukázka':'ZDARMA';q('#qslTierMark').style.color=t.pro?'#dfc37b':'#9df2ce';q('#qslCaption').value='';caption='';syncEffects();loadBg(t);const credit=q('#qslCredit');credit.replaceChildren();if(t.credit){const a=document.createElement('a');a.href=t.credit.source;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Fotografie: '+t.credit.author+' · '+t.credit.license;credit.append(a)}else credit.textContent='Původní fotografický podklad; ověř podmínky využití.';renderCards()}
 function filtered(){return sceneList.filter(t=>(activeCat==='all'||t.cat===activeCat)&&(filter==='all'||(filter==='pro'?t.pro:!t.pro))&&(!q('#qslGenre').value||q('#qslGenre').value==='all'||t.fx===q('#qslGenre').value)&&(!query||(t.name+' '+t.catName+' '+fxNames[t.fx]).toLocaleLowerCase('cs-CZ').includes(query)))}
 function renderCards(){let result=filtered(),grid=q('#qslGrid');grid.replaceChildren();result.slice(0,visible).forEach(t=>{let b=document.createElement('button');b.className='qsl-card'+(t.id===selected.id?' active':'');b.type='button';let thumb=document.createElement('div');thumb.className='qsl-thumb';thumb.style.backgroundImage='linear-gradient(0deg,rgba(0,0,0,.35),transparent 58%),url("'+photoUrl(t.photo,440)+'")';let pill=document.createElement('span');pill.className='qsl-pill'+(t.pro?' pro':'');pill.textContent=t.pro?'PRO':'ZDARMA';thumb.append(pill);let name=document.createElement('div');name.className='qsl-cardname';name.textContent=t.name+' · '+fxNames[t.fx];b.append(thumb,name);b.onclick=()=>select(t);grid.append(b)});q('#qslResults').textContent='Zobrazeno '+Math.min(result.length,visible)+' z '+result.length+' jedinečných fotografií';q('#qslRealCount').textContent=sceneList.length+' skutečně různých fotografií';q('#qslMore').hidden=result.length<=visible&&activeCat==='all';q('#qslMore').textContent=visible>=result.length?'Načíst další unikátní fotografie':'Zobrazit další fotografie'}
+
+const photoSearch={
+winter:'snow mountains trees winter',weather:'thunderstorm storm clouds rain',
+forest:'forest nature woodland landscape',mountain:'alpine mountain snow landscape',
+sea:'beach ocean tropical island',city:'city street skyline architecture',
+space:'astronomy stars nebula milky way',fantasy:'misty forest fog landscape',
+animals:'wild animal wildlife photograph',people:'portrait person photography',
+christmas:'christmas tree decorations lights',film:'cinematic film landscape lighting',
+water:'waterfall river lake landscape',architecture:'building architecture castle town'
+};
+const photoLoading=new Set(),photoDone=new Set(),photoOffset=new Map();
+function plainText(html){
+ const d=document.createElement('div');d.innerHTML=String(html||'');
+ return (d.textContent||'').replace(/\s+/g,' ').trim().slice(0,95)
+}
+function titleFromFile(title){return String(title||'').replace(/^File:/,'').replace(/\.[^/.]+$/,'').replace(/_/g,' ').slice(0,85)}
+async function fetchUnique(cat){
+ if(!cat||photoLoading.has(cat.id)||photoDone.has(cat.id)||(perCategory.get(cat.id)||0)>=72)return;
+ photoLoading.add(cat.id);
+ try{
+  const offset=photoOffset.get(cat.id)||0;
+  const par=new URLSearchParams({
+   action:'query',generator:'search',gsrsearch:photoSearch[cat.id]+' filemime:image/jpeg',
+   gsrnamespace:'6',gsrlimit:'50',gsroffset:String(offset),
+   prop:'imageinfo',iiprop:'url|size|mime|extmetadata',iiurlwidth:'1600',
+   format:'json',formatversion:'2',origin:'*'
+  });
+  const res=await fetch('https://commons.wikimedia.org/w/api.php?'+par.toString(),{mode:'cors'});
+  if(!res.ok)throw Error('Knihovna fotografií: HTTP '+res.status);
+  const result=await res.json();
+  if(result.error)throw Error(result.error.info||'Commons API chyba');
+  const pages=(result.query&&result.query.pages)||[];
+  let added=0;
+  for(const page of pages){
+   const img=page.imageinfo&&page.imageinfo[0],meta=img&&img.extmetadata;
+   if(!img||!meta||img.mime!=='image/jpeg'||!img.thumburl||img.width<1500||img.height<850)continue;
+   if(/logo|drawing|painting|cartoon|illustration|map|diagram|advertisement|poster|flag|screenshot|icon/i.test(page.title))continue;
+   const license=plainText(meta.LicenseShortName&&meta.LicenseShortName.value);
+   if(!/^(CC0|CC BY(?:\s|$)|CC-BY(?:\s|$)|Public domain|PD\b)/i.test(license))continue;
+   // CC BY-SA is excluded because derivative commercial distribution requires share-alike compliance.
+   if(/share.?alike|BY-SA/i.test(license))continue;
+   const author=plainText(meta.Artist&&meta.Artist.value)||'Wikimedia Commons';
+   const title=titleFromFile(page.title);
+   const source='https://commons.wikimedia.org/wiki/'+encodeURIComponent(page.title.replace(/ /g,'_'));
+   if(addPhoto(cat,img.thumburl,title,{author,source,license},img.url))added++;
+   if((perCategory.get(cat.id)||0)>=72)break;
+  }
+  photoOffset.set(cat.id,offset+50);
+  if(!result.continue||!result.continue.gsroffset||(perCategory.get(cat.id)||0)>=72)photoDone.add(cat.id);
+  if(added)renderCards();
+  if(activeCat===cat.id)status(added?'Přidáno '+added+' jiných fotografií. Každá fotografie má vlastní zdroj a licenci.':'V tomto hledání nejsou další ověřené fotografie. Je možné zkusit novou stránku výsledků.');
+ }catch(err){if(activeCat===cat.id)status('Některé fotografie se nepodařilo načíst: '+err.message+'. Dostupné karty zůstávají v knihovně.')}
+ finally{photoLoading.delete(cat.id)}
+}
+let filling=false;
+async function loadBackgroundCatalog(){
+ if(filling)return;
+ filling=true;
+ // Incremental catalog discovery: do not claim 1008 pictures until 1008 distinct files actually exist.
+ for(const cat of cats){await fetchUnique(cat)}
+ filling=false;
+}
+
 const catsBar=q('#qslCategories');[{id:'all',name:'Všechny kategorie'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name+(c.id==='all'?'':' · až 72');b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
 const genre=q('#qslGenre');Object.keys(fxNames).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=fxNames[k];genre.append(o)});
 q('#qslTier').onchange=e=>{filter=e.target.value;visible=30;renderCards()};genre.onchange=()=>{visible=30;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=30;renderCards()};q('#qslMore').onclick=()=>{visible+=36;renderCards();if(activeCat==='all')loadBackgroundCatalog();else fetchUnique(cats.find(x=>x.id===activeCat))};
