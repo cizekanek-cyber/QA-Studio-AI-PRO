@@ -33,12 +33,12 @@ f.addEventListener('load',function(){
    }
    if(!doc.querySelector('script[data-qa-account]')){
      const account=doc.createElement('script');
-     account.src='./qa-account.js?v=20261123-auth4';
+     account.src='./qa-account.js?v=20261123-auth5';
      account.dataset.qaAccount='true';
      doc.body.append(account);
    }
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
-   if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans1';plans.dataset.qaPlans='true';doc.body.append(plans);}
+   if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans2';plans.dataset.qaPlans='true';doc.body.append(plans);}
    n.style.display='none';
  }catch(e){
    n.textContent='Studio se nepodařilo načíst v tomto prostředí. Otevři soubor index-1.html přímo z webového serveru.';
