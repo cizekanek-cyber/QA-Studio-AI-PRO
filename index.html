@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -15,7 +15,7 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 </head>
 <body>
-<div id="notice">Načítám QA Studio AI PRO…</div>
+<div id="notice">Loading QA Studio AI PRO…</div>
 <iframe id="app" src="./index-1.html?v=pricing-20261123-4" title="QA Studio AI PRO" allow="web-share"></iframe>
 <script>
 (function(){
@@ -41,9 +41,10 @@ f.addEventListener('load',function(){
    }
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
    if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans3';plans.dataset.qaPlans='true';doc.body.append(plans);}
-   if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts2';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
-   if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-start1';start.dataset.qaStart='true';doc.body.append(start);}
+   if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts3';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
+   if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-start2';start.dataset.qaStart='true';doc.body.append(start);}
    if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261123-v4';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');doc.body.append(pricing);}
+   if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261123-i18n2';i18n.dataset.qaI18n='true';doc.body.append(i18n);}
    n.style.display='none';
  }catch(e){
    n.textContent='Studio se nepodařilo načíst v tomto prostředí. Otevři soubor index-1.html přímo z webového serveru.';
