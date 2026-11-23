@@ -2,11 +2,11 @@
 (()=>{'use strict';if(document.getElementById('qaPlansPanel'))return;
 const nav=document.querySelector('.nav');if(!nav)return;
 const packs=[
- {id:'qa_day',name:'Na den',days:1,price:29,credits:70},
- {id:'qa_week',name:'Na 7 dní',days:7,price:69,credits:200},
- {id:'qa_14days',name:'Na 14 dní',days:14,price:119,credits:370},
- {id:'qa_month',name:'Na 30 dní',days:30,price:159,credits:550},
- {id:'qa_3months',name:'Na 90 dní',days:90,price:399,credits:1550}
+ {id:'qa_day',name:'Na den',days:1,price:59,credits:70},
+ {id:'qa_week',name:'Na 7 dní',days:7,price:169,credits:200},
+ {id:'qa_14days',name:'Na 14 dní',days:14,price:279,credits:370},
+ {id:'qa_month',name:'Na 30 dní',days:30,price:449,credits:550},
+ {id:'qa_3months',name:'Na 90 dní',days:90,price:1099,credits:1550}
 ];
 const units=[
  {name:'Text / scénář',value:2,unit:'krátký výstup'},
@@ -35,13 +35,13 @@ const tab=document.createElement('button');tab.type='button';tab.dataset.tab='qa
 const sec=document.createElement('section');sec.id='qaPlansPanel';sec.className='tab';sec.innerHTML=`
 <div class="qap-box"><h2>Jedna cena. Více AI modelů. Jeden společný kreditový rozpočet.</h2>
 <p>Balíček otevře přístup po vybranou dobu a poskytne společné kredity pro text, obrázky, zvuk, hudbu, dabing, video a synchronizaci. V ceně je plánovaný náklad na externí AI. Bez dalších poplatků ze strany QA Studio za jednotlivé modely.</p>
-<p><strong>Ceník je návrh pro spuštění.</strong> Platby AI balíčků zatím nejsou zapnuté. Konkrétní spotřeba se bude odvíjet od vybraného AI dodavatele, délky, kvality a serverové kalkulace před potvrzením generování.</p></div>
+<p><strong>Ceník je návrh pro spuštění s vyšší nákladovou rezervou.</strong> Platby AI balíčků zatím nejsou zapnuté. Konkrétní spotřeba bude záviset na vybraném AI dodavateli, délce, kvalitě a serverové kalkulaci před potvrzením generování. Pokud externí AI nelze bezpečně nacenit, placené generování se nespustí.</p></div>
 <div id="qapCards" class="qap-grid"></div>
 <div class="qap-box"><h3>Co za kredity vznikne?</h3><p>Všechny funkce se hradí ze stejného balíčku. Následující výpočet je pouze demonstrační, nikoliv závazná cena externího modelu. Skutečný počet kreditů se ukáže před spuštěním generování.</p>
 <div class="qap-row"><label>Balíček <select id="qapPack"></select></label><label>Typ výstupu <select id="qapUnit"></select></label></div>
 <p class="qap-result" id="qapEstimate"></p>
-<small>Např. deset vygenerovaných obrázků a jedno krátké video se odečtou z jediné peněženky. Za neúspěšné generování bez výsledku se rezervované kredity vrátí. Po vyčerpání kreditů nebo platnosti se další externí AI generování zastaví, bez automatického překročení rozpočtu.</small></div>
-<div class="qap-box"><h3>Šablony a kreativní nástroje</h3><p>Vlastní kompozice, úpravy a lokální animace mohou fungovat bez spotřeby placených AI kreditů. Externí AI a její skutečné náklady jsou vždy zvlášť započtené do kreditové kalkulace, nikdy jako skrytý účet mimo aplikaci. Předplatné šablon, pokud existuje, je od kreditové peněženky oddělené.</p></div>`;
+<small>Např. deset vygenerovaných obrázků a jedno krátké video se odečtou z jediné peněženky. Před spuštěním budoucího AI generování musí server rezervovat kredity podle bezpečného odhadu maximální ceny a odmítnout operaci, pokud zůstatek nestačí. Při neúspěchu se vrácení kreditů bude řídit skutečně účtovanými náklady poskytovatele a zveřejněnými podmínkami. Funkční čerpání kreditů je zatím ve vývoji; z tohoto náhledu nelze objednat AI generování.</small></div>
+<div class="qap-box"><h3>Šablony a kreativní nástroje</h3><p>Vlastní kompozice, úpravy a lokální animace mohou fungovat bez spotřeby placených AI kreditů. Externí AI a její skutečné náklady musí být zahrnuté do jediné konečné ceny balíčku přes kreditovou kalkulaci, nikdy jako skrytý účet mimo aplikaci. Předplatné šablon, pokud existuje, je od kreditové peněženky oddělené.</p></div>`;
 (document.querySelector('.tab')?.parentElement||nav.parentElement).append(sec);
 const q=s=>sec.querySelector(s);const cards=q('#qapCards');
 packs.forEach((p,i)=>{let c=document.createElement('div');c.className='qap-card'+(i===3?' selected':'');c.innerHTML='<strong>'+p.name+'</strong><div class="qap-price">'+fmt(p.price)+' Kč</div><div>'+fmt(p.credits)+' společných kreditů</div><small>Platí '+p.days+' '+(p.days===1?'den':'dní')+' od aktivace, bez automatické obnovy.</small><p><button type="button">Zobrazit spotřebu</button></p>';c.querySelector('button').onclick=()=>{q('#qapPack').value=p.id;cards.querySelectorAll('.qap-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');estimate();};cards.append(c);q('#qapPack').add(new Option(p.name+' · '+fmt(p.price)+' Kč',p.id));});
