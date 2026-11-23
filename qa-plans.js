@@ -41,6 +41,7 @@ const sec=document.createElement('section');sec.id='qaPlansPanel';sec.className=
 <div class="qap-row"><label>Balíček <select id="qapPack"></select></label><label>Typ výstupu <select id="qapUnit"></select></label></div>
 <p class="qap-result" id="qapEstimate"></p>
 <small>Např. deset vygenerovaných obrázků a jedno krátké video se odečtou z jediné peněženky. Před spuštěním budoucího AI generování musí server rezervovat kredity podle bezpečného odhadu maximální ceny a odmítnout operaci, pokud zůstatek nestačí. Při neúspěchu se vrácení kreditů bude řídit skutečně účtovanými náklady poskytovatele a zveřejněnými podmínkami. Funkční čerpání kreditů je zatím ve vývoji; z tohoto náhledu nelze objednat AI generování.</small></div>
+<div class="qap-box"><h3>Můj kreditový účet</h3><p id="qapBalance" class="qap-result">Přihlas se pro zobrazení zůstatku.</p><button type="button" id="qapBalanceRefresh">Aktualizovat zůstatek</button><p class="qap-result" style="font-size:13px">Zákaznické nákupy a externí AI jsou do dokončení serverového propojení vypnuté, aby nevznikaly nechtěné náklady.</p></div>
 <div class="qap-box"><h3>Šablony a kreativní nástroje</h3><p>Vlastní kompozice, úpravy a lokální animace mohou fungovat bez spotřeby placených AI kreditů. Externí AI a její skutečné náklady musí být zahrnuté do jediné konečné ceny balíčku přes kreditovou kalkulaci, nikdy jako skrytý účet mimo aplikaci. Předplatné šablon, pokud existuje, je od kreditové peněženky oddělené.</p></div>`;
 (document.querySelector('.tab')?.parentElement||nav.parentElement).append(sec);
 const q=s=>sec.querySelector(s);const cards=q('#qapCards');
@@ -49,5 +50,19 @@ units.forEach((m,i)=>q('#qapUnit').add(new Option(m.name+' / '+m.unit,m.value+'-
 q('#qapPack').value='qa_month';q('#qapUnit').value='12-1';
 function estimate(){const p=packs.find(x=>x.id===q('#qapPack').value)||packs[3];const i=Number(q('#qapUnit').value.split('-')[1]);const u=units[i]||units[1];q('#qapEstimate').textContent='Orientačně: '+fmt(Math.floor(p.credits/u.value))+' × '+u.unit+' ('+fmt(u.value)+' kreditů za '+u.unit+').\nZůstatek: '+fmt(p.credits)+' kreditů na všechny typy výstupů.';}
 q('#qapPack').onchange=()=>{estimate();cards.querySelectorAll('.qap-card').forEach((el,i)=>el.classList.toggle('selected',packs[i].id===q('#qapPack').value))};q('#qapUnit').onchange=estimate;estimate();
-tab.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===sec));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===tab));window.scrollTo({top:0,behavior:'smooth'})};
+async function loadBalance(){
+ const target=q('#qapBalance');target.textContent='Načítám stav na zabezpečeném serveru…';
+ try{
+  const m=await import('https://esm.sh/@supabase/supabase-js@2.56.0');
+  const client=m.createClient('https://naxotlqvimewbfowxwmw.supabase.co','sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL');
+  const session=(await client.auth.getSession()).data.session;
+  if(!session){target.textContent='Nepřihlášený uživatel – otevři záložku Účet / PREMIUM.';return}
+  const res=await fetch('https://naxotlqvimewbfowxwmw.supabase.co/functions/v1/qa-credits',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':'sb_publishable_F4L1g58JH7TtFbt9P8xQkg__C8g71oL'},body:JSON.stringify({action:'status'})});
+  const j=await res.json().catch(()=>({}));
+  if(!res.ok)throw Error(j.error||('Server '+res.status));
+  target.textContent='Aktivní kredity: '+Number(j.credits_available||0).toLocaleString('cs-CZ')+'. '+(j.generation_active?'Generování je dostupné.':'Externí AI generování zatím není aktivováno.');
+ }catch(e){target.textContent='Zůstatek se nepodařilo načíst: '+(e.message||e)}
+}
+q('#qapBalanceRefresh').onclick=loadBalance;
+tab.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===sec));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===tab));window.scrollTo({top:0,behavior:'smooth'});loadBalance()};
 })();
