@@ -1,5 +1,5 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261123-v6';
+const VERSION='qa-shell-20261123-v7';
 const CORE=['./','./index.html','./index-1.html','./qa-animals.js','./qa-account.js','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./assets/gallery-animals.webp','./assets/gallery-fantasy.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
