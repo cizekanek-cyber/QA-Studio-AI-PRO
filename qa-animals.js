@@ -144,7 +144,7 @@ async function fetchUnique(cat){
  try{
   const offset=photoOffset.get(cat.id)||0;
   const par=new URLSearchParams({
-   action:'query',generator:'search',gsrsearch:photoSearch[cat.id]+' filemime:image/jpeg',
+   action:'query',generator:'search',gsrsearch:photoSearch[cat.id],
    gsrnamespace:'6',gsrlimit:'50',gsroffset:String(offset),
    prop:'imageinfo',iiprop:'url|size|mime|sha1|extmetadata',iiurlwidth:'1600',
    format:'json',formatversion:'2',origin:'*'
