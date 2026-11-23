@@ -26,14 +26,14 @@ f.addEventListener('load',function(){
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js?v=20261123-scenes5';
+     script.src='./qa-animals.js?v=20261123-unique6';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      doc.body.append(script);
    }
    if(!doc.querySelector('script[data-qa-account]')){
      const account=doc.createElement('script');
-     account.src='./qa-account.js?v=20261123-auth2';
+     account.src='./qa-account.js?v=20261123-auth3';
      account.dataset.qaAccount='true';
      doc.body.append(account);
    }
