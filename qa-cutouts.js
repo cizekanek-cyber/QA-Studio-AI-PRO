@@ -8,10 +8,16 @@ style.textContent='.qaCutouts{box-sizing:border-box;font-family:system-ui,sans-s
 document.head.append(style);
 const tab=document.createElement('button');tab.dataset.tab='qaCutoutPanel';tab.type='button';tab.textContent='🐾 Zvířata a lidé PNG';nav.append(tab);
 const section=document.createElement('section');section.className='tab qaCutouts';section.id='qaCutoutPanel';
-section.innerHTML='<div class="qac-box"><h2>Reálná zvířata a lidé bez pozadí</h2><p class="qac-note">Hotové PNG objekty můžeš opakovaně vkládat do scén bez dalšího AI generování. Soubory mají skutečnou průhlednost a můžeš je přemisťovat, zmenšovat, zvětšovat a kombinovat.</p><label><strong>Jednorázově přidej ZIP knihovnu do tohoto zařízení</strong><br><input type="file" id="qacZip" accept=".zip,application/zip,application/x-zip-compressed" multiple></label><p id="qacStatus" role="status">Zjišťuji knihovnu uloženou v telefonu…</p><p class="qac-note">ZIP obsahuje obrázky a manifest.json; import je zdarma, neplatíš kredity za další generování. Obrázky se ukládají lokálně do úložiště prohlížeče, nikoliv na náš server. Po vymazání dat prohlížeče je bude nutné nahrát znovu.</p></div><div class="qac-box"><div class="qac-tools"><select id="qacCategory"><option value="all">Všechny objekty</option><option value="zvirata">Zvířata</option><option value="lide">Lidé</option></select><input type="search" id="qacSearch" placeholder="Najdi zvíře nebo postavu…"><button id="qacMore" type="button">Další objekty</button></div><div class="qac-note" id="qacCount">Zatím žádné obrázky.</div><div id="qacGrid" class="qac-grid"></div></div>';
+section.innerHTML='<div class="qac-box"><h2>Reálná zvířata a lidé bez pozadí</h2><p class="qac-note">Hotové PNG objekty můžeš opakovaně vkládat do scén bez dalšího AI generování. Po zveřejnění souborů na webu se knihovna načte automaticky; do té doby je možné bezplatně importovat ZIP. Soubory mají průhlednost a můžeš je přemisťovat, zmenšovat, zvětšovat a kombinovat.</p><label><strong>Jednorázově přidej ZIP knihovnu do tohoto zařízení</strong><br><input type="file" id="qacZip" accept=".zip,application/zip,application/x-zip-compressed" multiple></label><p id="qacStatus" role="status">Zjišťuji knihovnu uloženou v telefonu…</p><p class="qac-note">ZIP obsahuje obrázky a manifest.json; import je zdarma, neplatíš kredity za další generování. Obrázky se ukládají lokálně do úložiště prohlížeče, nikoliv na náš server. Po vymazání dat prohlížeče je bude nutné nahrát znovu.</p></div><div class="qac-box"><div class="qac-tools"><select id="qacCategory"><option value="all">Všechny objekty</option><option value="zvirata">Zvířata</option><option value="lide">Lidé</option></select><input type="search" id="qacSearch" placeholder="Najdi zvíře nebo postavu…"><button id="qacMore" type="button">Další objekty</button></div><div class="qac-note" id="qacCount">Zatím žádné obrázky.</div><div id="qacGrid" class="qac-grid"></div></div>';
 (document.querySelector('.tab')?.parentElement||nav.parentElement).append(section);
 const q=s=>section.querySelector(s);
 let items=[],visible=48,urls=[];
+async function hostedAssets(){try{
+ const base='./assets/cutouts/';
+ const r=await fetch(base+'manifest.json',{cache:'force-cache'});if(!r.ok)return[];
+ const m=await r.json();if(!Array.isArray(m.assets))return[];
+ return m.assets.filter(x=>typeof x.id==='string'&&/^([a-z0-9]+-){1,2}[a-z0-9]+$/.test(x.id)&&['zvirata','lide'].includes(x.category)&&typeof x.file==='string'&&/^[a-z0-9/._-]+$/.test(x.file)&&!x.file.includes('..')).map(x=>({id:x.id,name:String(x.name||x.id),category:x.category,hd:!!x.hd,url:base+x.file}));
+ }catch{return[]}}
 const say=s=>q('#qacStatus').textContent=s;
 function openDatabase(){return new Promise((resolve,reject)=>{if(!('indexedDB'in window)){reject(Error('Tento prohlížeč nemá místní databázi.'));return}
 const req=indexedDB.open('qa-studio-cutouts-v1',1);
@@ -64,15 +70,14 @@ function render(){
  const grid=q('#qacGrid');grid.replaceChildren();
  for(const a of filtered.slice(0,visible)){
   const wrapper=document.createElement('div');wrapper.className='qac-card';
-  const img=document.createElement('img');img.loading='lazy';img.alt=a.name;const url=URL.createObjectURL(a.blob);urls.push(url);img.src=url;
+  const img=document.createElement('img');img.loading='lazy';img.alt=a.name;if(a.url){img.src=a.url}else{const url=URL.createObjectURL(a.blob);urls.push(url);img.src=url}
   const title=document.createElement('b');title.textContent=a.name;
   const button=document.createElement('button');button.type='button';button.textContent='Vložit do scény';
-  button.onclick=()=>{const editor=document.querySelector('.nav button[data-tab="qaSceneLib"]');if(!editor){say('Editor scén zatím není načtený.');return}
-   window.dispatchEvent(new CustomEvent('qa:insert-cutout',{detail:{blob:a.blob,name:a.name,id:a.id}}));};
+  button.onclick=async()=>{const editor=document.querySelector('.nav button[data-tab="qaSceneLib"]');if(!editor){say('Editor scén zatím není načtený.');return}try{let blob=a.blob;if(!blob&&a.url){const r=await fetch(a.url);if(!r.ok)throw Error('PNG se nenačetlo');blob=await r.blob()}if(!(blob instanceof Blob))throw Error('PNG soubor není dostupný');window.dispatchEvent(new CustomEvent('qa:insert-cutout',{detail:{blob,name:a.name,id:a.id}}))}catch(e){say('Vložení se nepodařilo: '+e.message)}};
   wrapper.append(img,title);if(a.hd){const label=document.createElement('span');label.className='qac-hd';label.textContent='HD předloha';wrapper.append(label)}wrapper.append(button);grid.append(wrapper);
  }
 }
-async function load(){try{items=(await allAssets()).sort((a,b)=>a.id.localeCompare(b.id));render();say(items.length?'Připraveno '+items.length+' samostatných PNG. Klepni na „Vložit do scény“.':'Nahraj připravený ZIP s objekty a knihovna se uloží v tomto zařízení.')}catch(e){say('Knihovnu nelze otevřít: '+e.message)}}
+async function load(){try{const [local,hosted]=await Promise.all([allAssets(),hostedAssets()]);const merged=new Map(hosted.map(x=>[x.id,x]));for(const x of local)merged.set(x.id,x);items=Array.from(merged.values()).sort((a,b)=>a.id.localeCompare(b.id));render();say(items.length?'Připraveno '+items.length+' samostatných PNG. Klepni na „Vložit do scény“.':'Web zatím nemá vložené obrázky; nahraj připravený ZIP jednou do tohoto zařízení.')}catch(e){say('Knihovnu nelze otevřít: '+e.message)}}
 q('#qacZip').onchange=async()=>{const files=Array.from(q('#qacZip').files||[]);q('#qacZip').disabled=true;try{let count=0;for(const f of files){say('Načítám '+f.name+'…');count+=await parseArchive(f)}await load();say('Importováno '+count+' PNG · knihovna obsahuje '+items.length+' uložených objektů. Žádné AI kredity se neodečetly.')}catch(e){say('Import nebyl dokončen: '+e.message)}finally{q('#qacZip').disabled=false;q('#qacZip').value=''}};
 q('#qacCategory').onchange=()=>{visible=48;render()};
 q('#qacSearch').oninput=()=>{visible=48;render()};
