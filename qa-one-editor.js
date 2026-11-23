@@ -55,6 +55,11 @@ function init(){
  function showEditor(){if(typeof oldEngineOpen==='function')oldEngineOpen.call(engineBtn);else{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===scene));nav.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===engineBtn))}}
  function open(mode){if(!quBtns[mode])mode='editor';showEditor();scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];}
  engineBtn.onclick=()=>open('backgrounds');engineBtn.textContent='🎬 Editor';
+ const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel']);
+ nav.querySelectorAll('button[data-tab]').forEach(b=>{if(!visibleTabs.has(b.dataset.tab)){b.hidden=true;b.style.display='none'}});
+ const saved=nav.querySelector('[data-tab="saved"]');if(saved)saved.textContent='📁 Moje projekty';
+ const profile=nav.querySelector('[data-tab="qaAccountPanel"]');if(profile)profile.textContent='👤 Účet / PRO / VIP';
+
  for(const [tabId,mode] of [['qaGalleryPanel','living'],['qaCutoutPanel','objects'],['qaFunnyPanel','funny'],['qaPeopleTab','objects'],['qaAnimalsTab','objects'],['qaObjectsTab','objects']]){const b=nav.querySelector('[data-tab="'+tabId+'"]');if(b){b.onclick=()=>open(mode);b.hidden=true;b.style.display='none'}}
  for(const id of ['qaGalleryPanel','qaCutoutPanel','qaFunnyPanel','qaPeopleTab','qaAnimalsTab','qaObjectsTab']){const b=nav.querySelector('[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
  // Legacy landing-page buttons may target former tabs; their handlers still work by opening a drawer.
