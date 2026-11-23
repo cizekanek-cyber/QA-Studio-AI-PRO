@@ -25,7 +25,7 @@ f.addEventListener('load',function(){
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js';
+     script.src='./qa-animals.js?v=20261123-scenes2';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      doc.body.append(script);
