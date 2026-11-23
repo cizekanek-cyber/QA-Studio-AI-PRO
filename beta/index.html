@@ -2,7 +2,7 @@
 <html lang="cs"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>QA Studio AI PRO – testovací verze</title>
+<title>QA Studio AI PRO – realistické scény BETA</title>
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:#090c19;color:white;font-family:system-ui,Arial}
@@ -30,7 +30,7 @@ frame.onload=()=>{
  if(!doc||!doc.querySelector('.nav'))throw Error('Editor se nenačetl.');
  for(const [path,key] of [['./qa-animals.js','qaAnimals'],['./qa-account.js','qaAccount']]){
   if(doc.querySelector('script[data-'+(key==='qaAnimals'?'qa-animals':'qa-account')+']'))continue;
-  const s=doc.createElement('script');s.src=path;
+  const s=doc.createElement('script');s.src=path+(key==='qaAnimals'?'?v=20261123-scenes2':'');
   if(key==='qaAnimals')s.dataset.qaAnimals='true';else s.dataset.qaAccount='true';
   s.onerror=()=>console.error('Doplněk není k dispozici: '+path);
   doc.body.append(s);
