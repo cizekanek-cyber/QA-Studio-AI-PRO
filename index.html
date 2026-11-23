@@ -19,6 +19,8 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 (function(){
 'use strict';
 const f=document.getElementById('app'),n=document.getElementById('notice');
+// Forward magic-link callback parameters into the iframe running the studio.
+if(location.search||location.hash){f.src='./index-1.html'+location.search+location.hash;}
 f.addEventListener('load',function(){
  try{
    const doc=f.contentDocument;
@@ -29,6 +31,9 @@ f.addEventListener('load',function(){
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      doc.body.append(script);
+   }
+   if(!doc.querySelector('script[data-qa-account]')){
+     const a=doc.createElement('script');a.src='./qa-account.js';a.dataset.qaAccount='true';a.onerror=function(){console.error('QA účet se nepodařilo načíst')};doc.body.append(a);
    }
    n.style.display='none';
  }catch(e){
