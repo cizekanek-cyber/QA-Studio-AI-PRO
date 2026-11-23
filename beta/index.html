@@ -13,7 +13,7 @@ header button{background:#4d3489;border:1px solid #8f78d4;border-radius:9px;colo
 #notice{position:fixed;inset:48px 0 0;display:grid;place-items:center;background:#090c19;color:#e9ecfb;text-align:center;padding:15px;font-size:14px}
 </style></head><body>
 <header><strong>QA STUDIO AI PRO <span>· BETA / bez plateb</span></strong><button id="openAccount">🔐 Můj účet</button></header>
-<iframe id="app" src="../index-1.html" title="QA Studio AI PRO – zkušební verze"></iframe>
+<iframe id="app" src="../index-1.html" title="QA Studio AI PRO – zkušební verze" allow="web-share"></iframe>
 <div id="notice">Načítám testovací verzi studia…</div>
 <script>
 (function(){
@@ -35,6 +35,8 @@ frame.onload=()=>{
   s.onerror=()=>console.error('Doplněk není k dispozici: '+path);
   doc.body.append(s);
  }
+ if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
+ if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans1';plans.dataset.qaPlans='true';doc.body.append(plans);}
  notice.style.display='none';
  }catch(e){notice.textContent='Beta verzi se nepodařilo načíst. Původní aplikace zůstává nedotčena.';console.error(e)}
 };
