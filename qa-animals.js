@@ -132,7 +132,7 @@ animals:'wild animal wildlife photograph',people:'portrait person photography',
 christmas:'christmas tree decorations lights',film:'cinematic film landscape lighting',
 water:'waterfall river lake landscape',architecture:'building architecture castle town'
 };
-const photoLoading=new Set(),photoDone=new Set(),photoOffset=new Map();
+const photoLoading=new Set(),photoDone=new Set(),photoOffset=new Map(),usedImageHashes=new Set();
 function plainText(html){
  const d=document.createElement('div');d.innerHTML=String(html||'');
  return (d.textContent||'').replace(/\s+/g,' ').trim().slice(0,95)
@@ -146,7 +146,7 @@ async function fetchUnique(cat){
   const par=new URLSearchParams({
    action:'query',generator:'search',gsrsearch:photoSearch[cat.id]+' filemime:image/jpeg',
    gsrnamespace:'6',gsrlimit:'50',gsroffset:String(offset),
-   prop:'imageinfo',iiprop:'url|size|mime|extmetadata',iiurlwidth:'1600',
+   prop:'imageinfo',iiprop:'url|size|mime|sha1|extmetadata',iiurlwidth:'1600',
    format:'json',formatversion:'2',origin:'*'
   });
   const res=await fetch('https://commons.wikimedia.org/w/api.php?'+par.toString(),{mode:'cors'});
@@ -157,16 +157,16 @@ async function fetchUnique(cat){
   let added=0;
   for(const page of pages){
    const img=page.imageinfo&&page.imageinfo[0],meta=img&&img.extmetadata;
-   if(!img||!meta||img.mime!=='image/jpeg'||!img.thumburl||img.width<1500||img.height<850)continue;
+   if(!img||!meta||img.mime!=='image/jpeg'||!img.thumburl||img.width<1500||img.height<850||img.sha1&&usedImageHashes.has(img.sha1))continue;
    if(/logo|drawing|painting|cartoon|illustration|map|diagram|advertisement|poster|flag|screenshot|icon/i.test(page.title))continue;
    const license=plainText(meta.LicenseShortName&&meta.LicenseShortName.value);
-   if(!/^(CC0|CC BY(?:\s|$)|CC-BY(?:\s|$)|Public domain|PD\b)/i.test(license))continue;
+   if(!/^(CC0|Public domain|PD\b|PDM\b)/i.test(license))continue;
    // CC BY-SA is excluded because derivative commercial distribution requires share-alike compliance.
    if(/share.?alike|BY-SA/i.test(license))continue;
    const author=plainText(meta.Artist&&meta.Artist.value)||'Wikimedia Commons';
    const title=titleFromFile(page.title);
    const source='https://commons.wikimedia.org/wiki/'+encodeURIComponent(page.title.replace(/ /g,'_'));
-   if(addPhoto(cat,img.thumburl,title,{author,source,license},img.url))added++;
+   if(addPhoto(cat,img.thumburl,title,{author,source,license},img.url)){added++;if(img.sha1)usedImageHashes.add(img.sha1)}
    if((perCategory.get(cat.id)||0)>=72)break;
   }
   photoOffset.set(cat.id,offset+50);
@@ -209,5 +209,6 @@ q('#qslSave').onclick=()=>{let p={app:'QA Studio AI PRO',format:'qa-scene-v2',pr
 button.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===section));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===button));window.scrollTo({top:0,behavior:'smooth'})};
 syncEffects();renderCards();loadBg(selected);
 loadBackgroundCatalog();
+const chip=document.querySelector('.chip');if(chip&&/200 grafik|800 AI scén/.test(chip.textContent))chip.textContent='Fotografie bez opakování · vlastní zvířata a lidé · skutečně animované počasí';
 for(const id of ['templates','luxury','christmas','collections']){const b=nav.querySelector('button[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
 })();
