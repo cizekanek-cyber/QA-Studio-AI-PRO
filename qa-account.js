@@ -135,14 +135,18 @@
    q('#qaAuthForm').style.display=auth?'none':'block';
    q('#qaSignOutBox').style.display=auth?'block':'none';
    if(!auth){adminAccess=false;q('#qaAdminPanel').classList.add('qaHidden');status.textContent='Nepřihlášený uživatel. Vytváření návrhů zdarma funguje bez účtu.';return;}
-   status.textContent='Přihlášen: '+auth.user.email+'\nOvěřuji licence…';
+   status.textContent='✓ Signed in / Přihlášen: '+auth.user.email+'\nOvěřuji licenci…';
+   window.dispatchEvent(new CustomEvent('qa:auth-ready',{detail:{user_id:auth.user.id}}));
    const res=await fetch(PROJECT+'/functions/v1/qa-template',{method:'POST',headers:{'Content-Type':'application/json','apikey':PUBLIC_KEY,'Authorization':'Bearer '+auth.access_token},body:JSON.stringify({action:'status'})});
    const j=await res.json().catch(()=>({}));
    if(!res.ok)throw Error(j.error||'Nelze ověřit licence ('+res.status+')');
    let msg=j.plus?'PLUS aktivní do '+(j.plus_until||'obnovení'):j.christmas?'Vánoční balíček je aktivní':'Bez placené licence';
    adminAccess=Boolean(j.is_admin);lastVerifiedUser=auth.user.id;q('#qaAdminPanel').classList.toggle('qaHidden',!adminAccess);status.textContent='Přihlášen: '+auth.user.email+'\n'+msg+(adminAccess?'\nPřístup majitele ověřen serverem.':'');if(adminAccess)adminStats();
-   window.dispatchEvent(new CustomEvent('qa:auth-ready',{detail:{user_id:auth.user.id,has_pro:!!j.plus,has_vip:!!j.vip}}));
-  }catch(e){status.textContent='Kontrola přístupu: '+(e?.message||'Chyba připojení')}
+  }catch(e){
+   status.textContent=auth?.user?.email?
+    '✓ Signed in / Přihlášen: '+auth.user.email+'\nLicense check needs attention / Kontrola licence není dostupná: '+(e?.message||'Server unavailable'):
+    'Sign-in error / Chyba přihlášení: '+(e?.message||'Chyba připojení');
+  }
  }
  async function startup(){
   try{
