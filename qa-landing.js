@@ -165,7 +165,16 @@ const conversionLanguages={"en":["Create Free Account","See PRO / VIP Plans","Jo
    aiNav.onclick=()=>go('ai');
   }
   if(nav&&!nav.querySelector('#qaJoinNav')){const join=document.createElement('button');join.type='button';join.id='qaJoinNav';join.textContent='♛ Get PRO';join.onclick=()=>accountFirst();nav.append(join)}
+  function finishAfterLogin(){
+    let selected=null;try{selected=sessionStorage.getItem('qa-preferred-pass')}catch{}
+    if(!validPlans.has(selected)||!window.__qaAuthenticatedUserId)return;
+    try{sessionStorage.removeItem('qa-preferred-pass')}catch{}
+    navOpen('qaPlansPanel');
+    let attempts=0;const selectNow=()=>{const el=document.querySelector('#qapPack');if(!el){if(attempts++<25)setTimeout(selectNow,180);return;}el.value=selected;el.dispatchEvent(new Event('change',{bubbles:true}));const cards=document.querySelector('#qapCards');if(cards)cards.scrollIntoView({block:'start',behavior:'smooth'});};selectNow();
+  }
+  window.addEventListener('qa:auth-ready',finishAfterLogin);
   language=get();render();navOpen('qaWelcome');
+  if(window.__qaAuthenticatedUserId)queueMicrotask(finishAfterLogin);
   const picker=document.getElementById('qaLanguagePicker');picker.addEventListener('change',()=>{language=dict[picker.value]?picker.value:'en';try{localStorage.setItem('qa-studio-language',language)}catch{}render()});
   window.addEventListener('qa:language',e=>{const next=String(e.detail?.language||'').split('-')[0];if(dict[next]){language=next;render()}});
   // Re-render on page activation so runtime-added controls remain connected.

@@ -58,8 +58,10 @@
      loginFacebook.textContent=facebook?'f · Continue with Facebook':'f · Facebook (setup needed)';
      socialStatus.textContent=google||facebook?'Select a configured provider. You will confirm login with Google or Facebook.':'Google and Facebook sign-in require OAuth provider setup in Supabase. Email registration is available below.';
    }catch(e){
-     loginGoogle.disabled=false;loginFacebook.disabled=false;
-     socialStatus.textContent='Provider status could not be verified. If social sign-in is not configured, use email registration below.';
+     loginGoogle.disabled=true;loginFacebook.disabled=true;
+     loginGoogle.textContent='G · Google (verify setup)';
+     loginFacebook.textContent='f · Facebook (verify setup)';
+     socialStatus.textContent='Social provider settings could not be verified. Use email registration; social login cannot start until its provider is configured.';
    }
  }
  async function oauth(provider){
@@ -86,6 +88,7 @@
    const r=await supa.auth.getSession();
    auth=r.data.session;
    if(!auth||auth.user.id!==lastVerifiedUser){adminAccess=false;q('#qaAdminPanel').classList.add('qaHidden');for(const id of ['qaGross','qaPayments','qaSubs'])q('#'+id).textContent='–';lastVerifiedUser=null;}
+   window.__qaAuthenticatedUserId=auth?.user?.id||null;
    q('#qaAuthForm').style.display=auth?'none':'block';
    q('#qaSignOutBox').style.display=auth?'block':'none';
    if(!auth){adminAccess=false;q('#qaAdminPanel').classList.add('qaHidden');status.textContent='Nepřihlášený uživatel. Vytváření návrhů zdarma funguje bez účtu.';return;}
@@ -95,6 +98,7 @@
    if(!res.ok)throw Error(j.error||'Nelze ověřit licence ('+res.status+')');
    let msg=j.plus?'PLUS aktivní do '+(j.plus_until||'obnovení'):j.christmas?'Vánoční balíček je aktivní':'Bez placené licence';
    adminAccess=Boolean(j.is_admin);lastVerifiedUser=auth.user.id;q('#qaAdminPanel').classList.toggle('qaHidden',!adminAccess);status.textContent='Přihlášen: '+auth.user.email+'\n'+msg+(adminAccess?'\nPřístup majitele ověřen serverem.':'');if(adminAccess)adminStats();
+   window.dispatchEvent(new CustomEvent('qa:auth-ready',{detail:{user_id:auth.user.id,has_pro:!!j.plus,has_vip:!!j.vip}}));
   }catch(e){status.textContent='Kontrola přístupu: '+(e?.message||'Chyba připojení')}
  }
  async function startup(){
