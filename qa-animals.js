@@ -91,7 +91,7 @@ section.innerHTML=[
 '<div class="qsl-row"><button class="qsl-primary" id="qslPng">Export PNG</button><button class="qsl-primary" id="qslVideo">Video WebM</button><button id="qslSave">Projekt JSON</button></div>',
 '<div class="qsl-row"><button id="qslUnlock">Ověřit PRO licenci</button><span id="qslLicense" class="qsl-note">PRO varianty lze prohlížet, export je uzamčený.</span></div>',
 '<div class="qsl-status" role="status" id="qslStatus">Vyber scénu. Efekty jsou skutečně animované, ne jen statická miniatura.</div>',
-'<p class="qsl-note">Zdarma: 5 variant/kategorie, 1280×720 PNG a krátké video. PRO: ostatní kombinace, více souběžných efektů, až 3840×2160 PNG a video dle výkonu zařízení. Výstup 4K znamená rozlišení plátna, nikoli záruku detailu zdrojové fotografie. Video vyžaduje podporu MediaRecorder. Pro přirozené vyříznutí postavy použij průhledné PNG/WebP. Samotné šablony nejsou AI generováním.</p>',
+'<p class="qsl-note">Zdarma: 5 variant/kategorie, 1280×720 PNG a krátké video. PRO: ostatní kombinace, více souběžných efektů, až 3840×2160 PNG a video dle výkonu zařízení. Výstup 4K znamená rozlišení plátna, nikoli záruku detailu zdrojové fotografie. Video vyžaduje podporu MediaRecorder. Do jedné scény můžeš zdarma vložit až 20 vlastních PNG objektů, včetně hotových lidí a zvířat z knihovny. Pro přirozené vyříznutí postavy použij průhledné PNG/WebP. Samotné šablony nejsou AI generováním.</p>',
 '<p class="qsl-note">Fotografie se načítají z veřejné fotoknihovny jako podklady pro kreativní scény. Před komerčním použitím ověř licenci zvolených podkladů a práva osob. Zpoplatněny jsou funkce kompozice, ne prodej cizích fotografií. Platby zatím nejsou zapnuté.</p>',
 '</div></div>'].join('');
 const anchor=document.querySelector('#pricing')||document.querySelector('#saved');anchor?anchor.before(section):nav.after(section);
@@ -194,7 +194,22 @@ function exportDims(){const p=q('#qslRatio').value;return p==='9:16'?(isPro?[216
 q('#qslCaption').oninput=e=>caption=e.target.value;q('#qslTextColor').oninput=e=>captionColor=e.target.value;
 q('#qslBgUpload').onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')||f.size>20000000){status('Zvol obrázek do 20 MB.');return}const url=URL.createObjectURL(f);const im=new Image();im.onload=()=>{photoToken++;photo=im;customBackground=true;status('Vlastní fotografie vložena jako pozadí.')};im.onerror=()=>status('Pozadí se nepodařilo otevřít.');im.src=url;e.target.value=''};
 q('#qslOriginalBg').onclick=()=>loadBg(selected);
-q('#qslUpload').onchange=e=>{let f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')||f.size>14e6){status('Použij PNG, WebP nebo JPG do 14 MB.');e.target.value='';return}if(!isPro&&overlayItems.length>=1){status('Základní verze podporuje jednu vloženou postavu, PRO více vrstev.');return}if(overlayItems.length>=3){status('Maximum jsou tři objekty v jedné scéně.');return}const u=URL.createObjectURL(f);URL_REVOKE.add(u);let im=new Image();im.onload=()=>{overlayItems.push({img:im,x:.5,y:.54,scale:.34,url:u});selectedOverlay=overlayItems.length-1;status('Objekt přidán. Přetáhni jej prstem nebo myší přímo ve scéně.')};im.onerror=()=>{status('Nepodařilo se načíst obrázek.');URL.revokeObjectURL(u)};im.src=u;e.target.value=''};
+q('#qslUpload').onchange=e=>{let f=e.target.files&&e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')||f.size>14e6){status('Použij PNG, WebP nebo JPG do 14 MB.');e.target.value='';return}if(overlayItems.length>=20){status('Maximum je 20 jednotlivých objektů v jedné scéně.');return}const u=URL.createObjectURL(f);URL_REVOKE.add(u);let im=new Image();im.onload=()=>{overlayItems.push({img:im,x:.5,y:.54,scale:.34,url:u});selectedOverlay=overlayItems.length-1;status('Objekt přidán. Přetáhni jej prstem nebo myší přímo ve scéně.')};im.onerror=()=>{status('Nepodařilo se načíst obrázek.');URL.revokeObjectURL(u)};im.src=u;e.target.value=''};
+window.addEventListener('qa:insert-cutout',e=>{
+ const item=e.detail||{},blob=item.blob;
+ if(!(blob instanceof Blob)){status('Objekt nemá platný PNG soubor.');return}
+ if(overlayItems.length>=20){status('Ve scéně už je 20 objektů, odeber některý před vložením dalšího.');button.click();return}
+ const url=URL.createObjectURL(blob);URL_REVOKE.add(url);
+ const im=new Image();
+ im.onload=()=>{
+  const offset=((overlayItems.length%5)-2)*.075;
+  overlayItems.push({img:im,x:Math.max(.12,Math.min(.88,.5+offset)),y:.54,scale:.3,url});
+  selectedOverlay=overlayItems.length-1;
+  button.click();status('Vloženo: '+String(item.name||'samostatné PNG')+'. Přetáhni objektem prstem a uprav jeho velikost. Použití hotového PNG nespotřebuje AI kredity.');
+ };
+ im.onerror=()=>{URL.revokeObjectURL(url);URL_REVOKE.delete(url);status('PNG objekt se nepodařilo vložit.')};
+ im.src=url;
+});
 function resizeOverlay(a){if(selectedOverlay<0||!overlayItems[selectedOverlay]){status('Nejdřív vlož obrázek postavy nebo zvířete.');return}let item=overlayItems[selectedOverlay];item.scale=Math.max(.08,Math.min(.95,item.scale*a))}q('#qslGrow').onclick=()=>resizeOverlay(1.14);q('#qslShrink').onclick=()=>resizeOverlay(.87);
 q('#qslRemove').onclick=()=>{if(selectedOverlay<0||!overlayItems[selectedOverlay])return;let gone=overlayItems.splice(selectedOverlay,1)[0];if(gone.url){URL.revokeObjectURL(gone.url);URL_REVOKE.delete(gone.url)}selectedOverlay=overlayItems.length-1;status('Objekt odebrán.')};
 let dragging=false;function coords(e){let r=can.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height}}can.addEventListener('pointerdown',e=>{if(!overlayItems.length)return;let p=coords(e);let best=overlayItems.length-1;let dist=Infinity;overlayItems.forEach((item,i)=>{let d=(item.x-p.x)**2+(item.y-p.y)**2;if(d<dist){dist=d;best=i}});selectedOverlay=best;dragging=true;can.setPointerCapture(e.pointerId)});can.addEventListener('pointermove',e=>{if(!dragging||selectedOverlay<0)return;let p=coords(e),it=overlayItems[selectedOverlay];it.x=Math.max(0,Math.min(1,p.x));it.y=Math.max(0,Math.min(1,p.y))});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>can.addEventListener(ev,()=>dragging=false));
