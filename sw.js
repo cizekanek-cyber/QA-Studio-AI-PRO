@@ -1,5 +1,6 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261123-v25-safemail';
+const VERSION='qa-shell-20261124-v26-multihost';
+const SCOPE_PATH=new URL(self.registration.scope).pathname;
 const CORE=['./','./index.html','./index-1.html','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/qa-hero-campaign.webp','./assets/gallery-animals.webp','./assets/gallery-fantasy.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
@@ -15,7 +16,7 @@ self.addEventListener('fetch',event=>{
  const req=event.request;
  if(req.method!=='GET')return;
  const url=new URL(req.url);
- if(url.origin!==location.origin||!url.pathname.startsWith('/QA-Studio-AI-PRO/'))return;
+ if(url.origin!==location.origin||!url.pathname.startsWith(SCOPE_PATH))return;
  if(url.pathname.includes('/assets/cutouts/')){event.respondWith((async()=>{
   const c=await caches.open(VERSION);
   const cached=await c.match(req);

@@ -17,3 +17,7 @@ jobs:
           node-version: '22'
       - name: Validate auth, UI modules and release links
         run: node --test tests/qa-release.test.cjs
+      - name: Build Cloudflare Pages output (without provider secrets)
+        run: node scripts/build-cloudflare.cjs
+      - name: Verify deploy assets and route security
+        run: node --test tests/qa-cloudflare.test.cjs

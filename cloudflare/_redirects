@@ -1,0 +1,5 @@
+# Short customer-facing routes. Keep original URLs valid.
+/register /login.html 302
+/sign-in /login.html 302
+/signin /login.html 302
+/account /login.html 302
