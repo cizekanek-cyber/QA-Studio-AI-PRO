@@ -40,7 +40,7 @@ f.addEventListener('load',function(){
      const attachAccount=()=>{
        if(doc.querySelector('script[data-qa-account]'))return;
        const account=doc.createElement('script');
-       account.src='./qa-account.js?v=20261123-core02';
+       account.src='./qa-account.js?v=20261124-mailguard01';
        account.dataset.qaAccount='true';
        account.onerror=()=>console.error('Account module failed to load');
        doc.body.append(account);
