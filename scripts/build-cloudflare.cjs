@@ -35,7 +35,11 @@ for(const dir of ['assets','beta']){
  }
  walk(dir);
 }
-for(const name of ['_headers','_redirects'])copy('cloudflare/'+name);
+for(const name of ['_headers','_redirects']){
+ const srcPath=path.join(root,'cloudflare',name);
+ if(!fs.statSync(srcPath).isFile())throw Error('Missing Pages configuration: '+name);
+ fs.copyFileSync(srcPath,path.join(out,name));
+}
 const forbidden=['.github','tests','scripts','.env','.git','LAUNCH_READINESS.md'];
 for(const part of forbidden)if(fs.existsSync(path.join(out,part)))throw Error('Private/development path leaked into dist: '+part);
 const files=[];
