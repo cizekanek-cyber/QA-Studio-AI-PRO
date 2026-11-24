@@ -7,7 +7,7 @@ const ui={form:by('authForm'),email:by('email'),password:by('password'),message:
 const origin=location.origin;
 const destination=new URL('./',location.href).href;
 const callback=new URL('./login.html',location.href).href;
-const VERSION='auth-core-20261123-02';
+const VERSION='auth-core-20261124-mailguard01';
 const validPlans={'qa_day':['1 den / day','59 Kč'],'qa_3days':['3 dny / days','129 Kč'],'qa_14days':['14 dní / days','279 Kč'],'qa_month':['30 dní / days','449 Kč'],'qa_3months':['90 dní / days','1 099 Kč'],'qa_year':['365 dní / days','2 990 Kč']};
 const i18n={
  cs:{home:'Domů',promoTitle:'Tvoř bez hranic. Začni bezpečně.',promoText:'Obrázky, videošablony, kreativní nástroje a připravované AI služby v jednom studiu.',benefit1:'Základní editor zdarma',benefit2:'Hotové kreativní šablony',benefit3:'PRO balíčky dle délky',benefit4:'Bez automatické obnovy',betaNote:'PRO/VIP balíčky jsou v přípravě. Veřejné platby a externí AI generování zatím nejsou aktivní.',stepOne:'① Účet',stepTwo:'② PRO / VIP',stepThree:'③ Studio',heading:'Vítej v QA Studio',subtitle:'Rychlé a zabezpečené přihlášení. Bez závislosti na externí přihlašovací knihovně.',alreadySignedIn:'Jsi ověřený. Můžeš pokračovat do studia.',enterStudio:'Vstoupit do studia',logout:'Odhlásit',email:'E-mail',password:'Heslo',show:'Zobrazit',hide:'Skrýt',signIn:'Přihlásit se',register:'Vytvořit účet',registerHint:'Máš už potvrzený e-mail? Zadej svůj e-mail a heslo z registrace a klikni na Přihlásit se. Další ověřovací e-mail nepotřebuješ.',forgot:'Zapomněl/a jsem heslo',freeEditor:'Pokračovat zdarma bez účtu',socialHeading:'Rychlé přihlášení, pokud je dostupné',socialPending:'Google a Facebook se objeví po aktivaci přihlášení u poskytovatelů.',emailHelpTitle:'Ověřit kód nebo zkopírovaný odkaz z e-mailu',emailHelpText:'Pokud zpráva obsahuje jen tlačítko Sign in, ČÍSELNÝ KÓD v ní není. Jde o jednorázový odkaz. Po potvrzení e-mailu se vrať do aplikace a přihlas se heslem z registrace. Šestimístný kód se bude odesílat až po zapnutí příslušných šablon Supabase.',sendCode:'Poslat přihlašovací e-mail',sendRecovery:'Poslat obnovu hesla',otpLabel:'Ověřovací kód (pokud ho e-mail obsahuje)',codeTypeLabel:'Kód je určený pro',codeLogin:'Přihlášení',codeRecovery:'Obnovu hesla',codeSignup:'Registraci',verifyCode:'Ověřit kód',pasteLabel:'Zkopírovaná adresa ověřovacího odkazu',verifyLink:'Ověřit odkaz bez otevření',newPasswordHeading:'Nastavení nového hesla',newPasswordHelp:'Změna hesla je dostupná pouze po úspěšném ověření účtu.',newPassword:'Nové heslo',confirmPassword:'Zopakovat nové heslo',savePassword:'Uložit nové heslo',diagnostics:'Diagnostika připojení',checkConnection:'Zkontrolovat spojení',copyDiagnostics:'Kopírovat diagnostiku',diagNote:'Diagnostika neobsahuje heslo ani přístupové tokeny. Neposílej sem žádné ověřovací odkazy.',disclaimer:'V aplikaci se neukládají čísla platebních karet. Žádná ostrá platba se zatím neúčtuje.'},
@@ -26,7 +26,7 @@ let pending=false;
 function say(cs,en,kind='info',scroll=false){ui.messageText.textContent=lang()==='cs'?cs:en;ui.message.dataset.kind=kind;ui.message.firstElementChild.textContent=kind==='error'?'⚠':kind==='ok'?'✓':kind==='warn'?'!':'ⓘ';if(scroll){ui.message.scrollIntoView({block:'center',behavior:'smooth'});ui.message.focus({preventScroll:true})}}
 function msgError(e){
   const code=String(e?.code||'').toLowerCase(),m=String(e?.message||'');lastCode=code||'unknown';
-  if(code==='invalid_credentials'||/invalid login credentials/i.test(m))return ['Účet existuje, ale e-mail nebo heslo nesouhlasí. Zkontroluj heslo přes „Zobrazit“. Neregistruj se znovu. Pokud heslo neznáš, použij obnovu až po uvolnění e-mailového limitu.','The account exists, but the email or password is incorrect. Check your password with Show. Do not register again. If forgotten, use recovery after the email limit resets.'];
+  if(code==='invalid_credentials'||/invalid login credentials/i.test(m))return ['E-mail nebo heslo nesouhlasí, případně účet ještě není vytvořený. Zkontroluj údaje. Pokud už máš účet, použij obnovu hesla až po uvolnění e-mailového limitu.','The email or password is incorrect, or the account has not been created yet. Check your details. If you already have an account, use password recovery after the email limit resets.'];
   if(code==='over_email_send_rate_limit'||e.status===429||/email rate limit/i.test(m))return ['Supabase nyní blokuje odesílání dalších e-mailů (429). Více pokusů nepomůže. Nejde to obejít v aplikaci.','Supabase is blocking additional emails (429). Repeating requests will not help. The app cannot override the server limit.'];
   if(code==='email_not_confirmed')return ['E-mail účtu ještě není potvrzený. Ověř ho pomocí platného kódu nebo odkazu.','The account email is not confirmed. Verify it with a valid code or link.'];
   if(code==='otp_expired'||code==='token_expired'||/token not found|expired/i.test(m))return ['Ověřovací odkaz vypršel nebo už byl použit. Pokud byl e-mail mezitím potvrzený, přihlas se heslem z registrace – další odkaz není potřeba.','The verification link expired or was already used. If the email is already confirmed, sign in with your registration password; no new link is needed.'];
@@ -54,7 +54,7 @@ function cooldown(){try{return Number(localStorage.getItem(cooldownKey))||0}catc
 function lockEmailsIfNeeded(){
  const seconds=Math.max(0,Math.ceil((cooldown()-Date.now())/1000));
  const blocked=seconds>0;
- for(const id of ['sendCode','sendRecovery'])by(id).disabled=blocked;
+ for(const id of ['sendCode','sendRecovery','register'])by(id).disabled=blocked||pending;
  setRateNotice(blocked,seconds);
  return blocked;
 }
@@ -80,9 +80,11 @@ ui.form.onsubmit=e=>{e.preventDefault();action(by('login'),async()=>{
   await signedIn(data);
 })};
 by('register').onclick=()=>action(by('register'),async()=>{
+  if(lockEmailsIfNeeded()){say('Další registrační e-mail zatím nelze vyžádat. Přihlášení heslem a ověření již doručeného kódu jsou stále dostupné.','Another registration email cannot be requested yet. Password sign-in and verification of a received code are still available.','warn',true);return}
   const email=validEmail(),password=ui.password.value;if(password.length<8)throw Object.assign(new Error('Pro nový účet je potřeba heslo o minimálně 8 znacích.'),{code:'weak_password'});
   const {data,error}=await need().signUp({email,password,options:{emailRedirectTo:callback}});if(error)throw error;
   if(data.session){await signedIn(data);return}
+  startCooldown(MAIL_PAUSE);
   by('codeType').value='signup';
   ui.help.open=true;
   say('Registrace přijata. Potvrď e-mail jednou pomocí odkazu nebo kódu, pokud ho zpráva obsahuje. Zpráva s tlačítkem Sign in nemá číselný kód! Po potvrzení se vrať sem a přihlas se heslem z registrace; nový účet nezakládej.','Registration received. Confirm your email once using its link, or the code if present. An email with only a Sign in button has no numeric code! After confirmation return here and sign in with your registration password; do not sign up again.','ok',true)
