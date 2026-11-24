@@ -107,3 +107,16 @@ test('Recovery tokens become a session only after Supabase verification',async()
   assert.equal(changed.data.user.id,user.id);
   assert(t.calls.some(c=>c.url.endsWith('/auth/v1/user')&&c.method==='PUT'));
 });
+
+
+test('Email sign-in accurately distinguishes code email from Sign in link',()=>{
+ const html=file('login.html'),login=file('qa-login.js');
+ assert.match(html,/registerHint/);
+ assert.match(login,/by\('codeType'\)\.value='signup'/);
+ assert.match(login,/Sign in.*neobsahuje kód/);
+ for(const fileName of ['supabase/email-templates/confirm-signup.html','supabase/email-templates/magic-link.html','supabase/email-templates/reset-password.html']){
+  const template=file(fileName);
+  assert.match(template,/\{\{ \.Token \}\}/);
+  assert.doesNotMatch(template,/\{\{ \.ConfirmationURL \}\}/);
+ }
+});
