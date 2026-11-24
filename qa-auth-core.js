@@ -143,6 +143,17 @@
         history.replaceState(null,'',location.pathname+location.search.replace(/(?:^\?|&)error(?:_code|_description)?=[^&]*/g,''));
         return {event:'AUTH_ERROR',error:e};
       }
+      // Supabase email templates can redirect with ?token_hash=...&type=... rather than a session fragment.
+      const tokenHash=query.get('token_hash');
+      const emailType=query.get('type');
+      if(tokenHash && ['signup','email','magiclink','recovery','invite'].includes(emailType)){
+        history.replaceState(null,'',location.pathname);
+        try{
+          const verified=await auth.verifyOtp({token_hash:tokenHash,type:emailType});
+          if(verified.error)throw verified.error;
+          return {event:emailType==='recovery'?'PASSWORD_RECOVERY':'SIGNED_IN',error:null};
+        }catch(e){return {event:'AUTH_ERROR',error:e}}
+      }
       if(!hash.has('access_token')||!hash.has('refresh_token'))return {event:'NO_CALLBACK',error:null};
       const payload={access_token:hash.get('access_token'),refresh_token:hash.get('refresh_token'),
         expires_in:Number(hash.get('expires_in'))||3600,token_type:hash.get('token_type')||'bearer'};

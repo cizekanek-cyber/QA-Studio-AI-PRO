@@ -21,6 +21,51 @@ function setText(query,text,attr='textContent'){
 function allText(query,text){
  for(const el of document.querySelectorAll(query))if(el.textContent!==text)el.textContent=text;
 }
+
+/* Translate legacy help content without altering editable user content. */
+const legacyHelpEn=[
+ ['Rychlý návod a nastavení – jak na to?','Quick guide and settings'],
+ ['Začni během minuty:','Get started in one minute:'],
+ ['klikni na Pozadí, vyber scénu, potom na Průhledné objekty a vlož postavu.','select Background, choose a scene, then insert a character from Transparent objects.'],
+ ['V „Úpravy a export“ změníš text, efekty, formát 9:16 pro TikTok, 1:1 nebo 16:9 a stáhneš PNG nebo video WebM.','In Edit and export, adjust text, effects and aspect ratio (9:16, 1:1 or 16:9), then export PNG or WebM.'],
+ ['K čemu je co?','What does each tool do?'],
+ ['Pozadí = prostředí za postavou. Průhledné objekty = samostatné PNG/WebP vrstvy. Lidé a tvorové = fotografie, ne vždy vyříznuté postavy. Funny šablony = hotové animované motivy, které lze přenést do scény.','Background = the scene behind a character. Transparent objects = PNG/WebP layers. People and creatures = photos, not always cutouts. Funny templates = ready-made animated scenes.'],
+ ['Cena a přístup:','Pricing and access:'],
+ ['čtyři základní předlohy z každé kategorie jsou zdarma. PRO/VIP odemyká placené hotové šablony na dobu balíčku. Externí AI generování vyžaduje přidělené kredity a zatím není aktivní; za žádnou nezapnutou AI funkci se nic neodečítá.','Four basic templates per category are free. PRO/VIP unlocks premium templates for the purchased period. External AI generation requires credits and is not active; inactive tools do not consume credits.'],
+ ['Ukládání:','Saving:'],
+ ['PNG je hotový obrázek, WebM krátké video podle podpory telefonu. Projekt JSON nyní ukládá parametry scény, ale nepřikládá vlastní nahrané fotografie. Uschovej si i své originální soubory.','PNG exports an image; WebM exports a short video where supported. Project JSON stores scene settings but not uploaded photos. Keep your original files.'],
+ ['U cizích fotografií a hudby ověř licenci a práva osob před zveřejněním nebo komerčním použitím. Pokud některá prémiová předloha zůstává zamčená, otevři Účet / PRO a ověř přihlášení. Pomoc si můžeš znovu zobrazit kdykoliv.','Check licenses and image rights before publishing third-party photos or music. If a premium template remains locked, open Account / PRO and check your sign-in. You can reopen this guide anytime.'],
+ ['Vyber pozadí','Choose background'],['Přidej postavu / objekt','Add character / object'],['Uprav a exportuj','Edit and export'],
+ ['Pozadí','Background'],['Objekty','Objects'],['Funny','Funny'],['Úpravy','Edit'],['Ceník a kredity','Pricing and credits'],
+ ['AI asistenti – jaké AI k čemu?','AI assistants — what can each do?'],
+ ['Vyber, co chceš vytvořit. Ukážeme, k čemu je vhodný daný poskytovatel a co už funguje. Nepřipojené funkce nelze objednat ani za ně zaplatit.','Choose what to create. See which provider fits and which features work. Unconnected features cannot be purchased.'],
+ ['Co chceš vytvořit?','What do you want to create?'],
+ ['Lokální editor','Local editor'],
+ ['funguje bez API kreditu: vlastní fotografie, PNG vrstvy, texty, animace a podporovaný export.','works without API credits: your photos, PNG layers, text, animations and supported exports.'],
+ ['Zkontrolovat AI služby','Check AI services'],
+ ['Placené externí AI služby zatím nejsou spuštěné.','Paid external AI services are not active yet.'],
+ ['Rychlý návod','Quick guide'],
+ ['Text / scénář','Text / script'],['AI obrázek','AI image'],['AI video','AI video'],['Dabing / hlas','Voiceover / voice'],['Hudba','Music'],['Pohyb úst','Lip sync'],
+ ['Zjišťuji bezpečný stav poskytovatelů…','Checking provider availability…'],
+ ['Stav AI není dostupný:','AI status unavailable:'],
+ ['Lokální editor může dál fungovat.','The local editor may still work.']
+];
+const originalHelpText=new WeakMap();
+function translateLegacyHelp(){
+ const root=document.querySelector('#qaUnifiedTools');
+ if(!root)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ let node;
+ while((node=walker.nextNode())){
+  if(node.parentElement?.closest('script,style,textarea,[contenteditable="true"]'))continue;
+  const original=originalHelpText.get(node)??node.nodeValue;
+  if(!originalHelpText.has(node))originalHelpText.set(node,original);
+  let translated=original;
+  if(current!=='cs')for(const [cs,en] of legacyHelpEn)translated=translated.split(cs).join(en);
+  if(node.nodeValue!==translated)node.nodeValue=translated;
+ }
+}
+
 function apply(){
  if(busy)return;busy=true;
  const t=TRANSLATIONS[current]||TRANSLATIONS.en;
@@ -66,6 +111,7 @@ function apply(){
  setText('#qaPlansPanel h2','QA Studio AI PRO — '+t.prices);
  setText('#qaSocialPanel h2',t.share);
  picker.setAttribute('aria-label',t.language);
+ translateLegacyHelp();
  busy=false;
 }
 let scheduled=false;
