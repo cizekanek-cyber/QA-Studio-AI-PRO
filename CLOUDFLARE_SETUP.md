@@ -46,3 +46,11 @@ node --test tests/qa-cloudflare.test.cjs
 Cloudflare Pages Git integration redeploys each new `main` commit. This repository includes no third-party billing keys or OAuth secrets.
 
 Official documentation: https://developers.cloudflare.com/pages/get-started/git-integration/
+
+## First-production-deployment recovery (522 on pages.dev)
+If `qa-studio-ai-pro.pages.dev` reports Cloudflare 522 and the Pages dashboard says **No production deployment yet**, the frontend has **not** been published successfully. A green GitHub Actions check is *not* a successful Cloudflare deployment.
+1. In Cloudflare **Workers & Pages → qa-studio-ai-pro → Deployments**, inspect the production deployment and its build logs (the row for `main`).
+2. Verify Git project connection and project settings: production branch `main`, framework `None`, build command `node scripts/build-cloudflare.cjs`, output directory `dist`, root directory blank.
+3. A new commit to `main` triggers the Git-integrated build again. Confirm **Cloudflare** reports a *production deployment success* before opening `pages.dev`.
+4. If builds complete successfully but `pages.dev` remains 522, inspect Cloudflare Pages status and project deployment details; open Cloudflare support with the Ray ID, timestamp, project name and deployment ID. Do not change DNS as a workaround.
+This documentation update also intentionally triggers a harmless new deployment attempt from main.
