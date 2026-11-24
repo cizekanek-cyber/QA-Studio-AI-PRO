@@ -7,7 +7,7 @@ const root=path.resolve(__dirname,'..');
 const dist=path.join(root,'dist');
 const text=name=>fs.readFileSync(path.join(dist,name),'utf8');
 test('Cloudflare output has all static entrypoints, app modules and media',()=>{
-  for(const name of ['index.html','index-1.html','login.html','manifest.webmanifest','sw.js','qa-auth-core.js','qa-login.js','qa-account.js','qa-landing.js','qa-plans.js','assets/qa-hero-campaign.webp','_headers','_redirects']){
+  for(const name of ['index.html','index-1.html','login.html','licenses.html','manifest.webmanifest','sw.js','qa-auth-core.js','qa-login.js','qa-account.js','qa-landing.js','qa-plans.js','assets/qa-hero-campaign.webp','_headers','_redirects']){
     assert(fs.statSync(path.join(dist,name)).isFile(),'Missing '+name);
   }
 });

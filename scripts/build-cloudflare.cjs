@@ -15,7 +15,7 @@ function copy(relative){
   fs.mkdirSync(path.dirname(destination),{recursive:true});
   fs.copyFileSync(source,destination);
 }
-const required=['index.html','index-1.html','login.html','icon.svg','manifest.webmanifest','sw.js'];
+const required=['index.html','index-1.html','login.html','licenses.html','icon.svg','manifest.webmanifest','sw.js'];
 fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
 for(const filename of required)copy(filename);
 const modules=fs.readdirSync(root).filter(n=>/^qa-[A-Za-z0-9-]+\.js$/.test(n));

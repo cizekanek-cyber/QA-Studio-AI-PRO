@@ -20,6 +20,7 @@
  const sec=document.createElement('section');sec.className='tab';sec.id='qaAccountPanel';sec.innerHTML='<div class="qaAccPanel"><h2>🔐 Můj účet • QA Studio AI PRO</h2><p>Ověřte svůj e-mail a spravujte přístup k zakoupeným šablonám. Zákaznické platby zatím nejsou povolené.</p><div id="qaAuthForm"><label for="qaEmail">E-mail</label><div><input type="email" autocomplete="email" id="qaEmail" placeholder="vas@email.cz"></div><button id="qaSignIn">Poslat odkaz na e-mail</button></div><div id="qaSignOutBox" style="display:none"><button id="qaSignOut">Odhlásit</button><button id="qaRefresh">Zkontrolovat licenci</button></div><div id="qaAccountStatus" class="qaAccStatus" role="status">Připojuji bezpečné přihlášení…</div><div class="qaNote">Platba je zatím vypnutá, abychom před spuštěním dokončili zabezpečení a zkušební nákup. Neomezené používání šablon nezahrnuje neomezené AI generování.</div><div class="qaNote">Šest časových balíčků od 59 Kč za 24 hodin po 2 990 Kč za 365 dní. Po aktivaci se zpřístupní všechny hotové PRO/VIP předlohy a přidělené AI kredity. Najdeš je v záložce AI kredity / ceník. Platby a skutečné AI čerpání ještě nejsou aktivní.</div></div>';
  const parent=document.querySelector('.tab')?.parentElement||nav.parentElement;parent.append(sec);
  const form=sec.querySelector('#qaAuthForm');
+ sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend','<p class="qaNote"><a href="./licenses.html" target="_top" rel="noopener" style="color:#d7bcff">📄 Podmínky licencí / License information</a></p>');
  sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend',`<div id="qaRecoveryBox" class="qaHidden" style="border:2px solid #a98af4;border-radius:15px;padding:18px;margin:18px 0;background:#202149">
  <h3>🔑 Set your new password / Nové heslo</h3>
  <p>You opened a password reset link. Choose a new password and save it. / Po otevření odkazu z e-mailu si nastav nové heslo.</p>
@@ -144,7 +145,14 @@
    const res=await fetch(PROJECT+'/functions/v1/qa-template',{method:'POST',headers:{'Content-Type':'application/json','apikey':PUBLIC_KEY,'Authorization':'Bearer '+auth.access_token},body:JSON.stringify({action:'status'})});
    const j=await res.json().catch(()=>({}));
    if(!res.ok)throw Error(j.error||'Nelze ověřit licence ('+res.status+')');
-   let msg=j.plus?'PLUS aktivní do '+(j.plus_until||'obnovení'):j.christmas?'Vánoční balíček je aktivní':'Bez placené licence';
+   const tier=j.is_admin?'ADMIN':j.vip?'VIP':j.plus?'PRO':'FREE';
+   const expiry=j.plus_until?new Date(j.plus_until):null;
+   const formatted=expiry&&Number.isFinite(expiry.getTime())?new Intl.DateTimeFormat('cs-CZ',{dateStyle:'medium',timeStyle:'short',timeZone:'Europe/Prague'}).format(expiry):null;
+   let msg='Licence / License: '+tier;
+   if(formatted&&!j.is_admin)msg+='\nPlatnost do / Valid until: '+formatted;
+   if(j.prepaid_active)msg+='\nJednorázový balíček / Prepaid pass · bez automatického obnovení';
+   if(j.christmas)msg+='\nVánoční balíček: aktivní';
+   if(!j.plus&&!j.is_admin&&!j.christmas)msg+='\nNení aktivní placená licence. / No paid license is active.';
    adminAccess=Boolean(j.is_admin);lastVerifiedUser=auth.user.id;q('#qaAdminPanel').classList.toggle('qaHidden',!adminAccess);status.textContent='Přihlášen: '+auth.user.email+'\n'+msg+(adminAccess?'\nPřístup majitele ověřen serverem.':'');if(adminAccess)adminStats();
   }catch(e){
    status.textContent=auth?.user?.email?

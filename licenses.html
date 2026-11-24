@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="cs"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#121932"><meta name="robots" content="index,follow">
+<title>Licence / Licenses · QA Studio AI PRO</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(130deg,#0b132b,#211631);color:#f6f4ff;padding:20px;min-height:100vh}
+main{max-width:850px;margin:36px auto;background:#171e39;border:1px solid #645485;border-radius:24px;padding:clamp(20px,5vw,42px)}
+a{color:#d6b5ff}h1{font-size:clamp(25px,6vw,38px)}h2{font-size:21px;margin:27px 0 9px}p,li{line-height:1.65;color:#d7dcf3}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;border-bottom:1px solid #3a4364;padding:11px 8px}th{color:#dcbcfb}
+small{color:#b8c3db}.note{background:#26284c;padding:15px;border-left:3px solid #b68aff;border-radius:8px}
+header{max-width:850px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:16px}header a{text-decoration:none;font-weight:750}
+button{border-radius:10px;border:1px solid #8e75b4;background:#272c55;color:white;padding:9px 16px;cursor:pointer}
+@media(max-width:540px){table{font-size:12px}th,td{padding:9px 5px}}
+</style></head><body>
+<header><a href="./">✦ QA STUDIO AI PRO</a><button id="langBtn" type="button">English / Česky</button></header>
+<main>
+<div data-cs><h1>Licence a kreditové balíčky</h1>
+<p>Aktuální informace o připravovaných přístupech do QA Studio AI PRO. Toto je přehled funkčnosti, <strong>nikoli finální právní obchodní podmínky</strong>.</p>
+<p class="note"><strong>Veřejný prodej a placené AI generování zatím nejsou spuštěné.</strong> Nikdo si přes tuto stránku nemůže koupit licenci ani aktivovat platbu.</p>
+<h2>Přístupové úrovně</h2>
+<p><strong>FREE</strong> – bezplatné dostupné nástroje. <strong>PRO</strong> – časový přístup k připraveným prémiovým šablonám a přiděleným kreditům po aktivaci platby. <strong>VIP</strong> – plánovaná rozšířená úroveň, zatím bez veřejného prodeje. <strong>ADMIN</strong> – interní ověřený správce.</p></div>
+<div data-en hidden><h1>Licenses and credit passes</h1>
+<p>Current overview of planned QA Studio AI PRO access. This page is a product explanation, <strong>not final legal terms</strong>.</p>
+<p class="note"><strong>Public checkout and paid AI generation are not available yet.</strong> This page cannot charge customers or activate paid access.</p>
+<h2>Access levels</h2>
+<p><strong>FREE</strong> – available free tools. <strong>PRO</strong> – time-limited access to eligible premium templates and allocated credits when billing is active. <strong>VIP</strong> – planned expanded tier, not for sale. <strong>ADMIN</strong> – verified internal owner.</p></div>
+<table><thead><tr><th>Licence / Pass</th><th>Dní / Days</th><th>Cena / Price</th><th>Kredity / Credits</th></tr></thead><tbody>
+<tr><td>1 day</td><td>1</td><td>59 Kč</td><td>70</td></tr>
+<tr><td>3 days</td><td>3</td><td>129 Kč</td><td>150</td></tr>
+<tr><td>14 days</td><td>14</td><td>279 Kč</td><td>370</td></tr>
+<tr><td>30 days</td><td>30</td><td>449 Kč</td><td>550</td></tr>
+<tr><td>90 days</td><td>90</td><td>1 099 Kč</td><td>1 550</td></tr>
+<tr><td>365 days</td><td>365</td><td>2 990 Kč</td><td>4 500</td></tr>
+</tbody></table>
+<div data-cs>
+<h2>Jak licence funguje</h2>
+<p>Jde o jednorázové časové balíčky bez automatického obnovování. Platnost se počítá po potvrzené aktivaci a skončí uplynutím přiděleného období. Předpokládané AI kredity nejsou peníze, nelze je směnit za hotovost a placené generování musí předem zobrazit konečnou cenu v kreditech. Samotný předplacený přístup nezaručuje neomezené AI generování.</p>
+<p>Licence k používání aplikace nezakládá vlastnictví modelů AI, cizích fotografií ani hudebních děl. Uživatel musí mít práva k obsahu, který nahraje; dostupnost a obchodní použití vygenerovaných výstupů bude nutné ověřit podle podmínek použitých dodavatelů. Pravidla odstoupení, reklamací, ochrany osobních údajů a podpory musí být zveřejněna a dokončena před spuštěním prodeje.</p>
+<p><strong>Stav:</strong> technický licenční systém je připravený k testování, ale zákaznické platby nejsou aktivní.</p>
+</div>
+<div data-en hidden>
+<h2>How passes work</h2>
+<p>These are one-time, non-renewing time passes. Access starts on confirmed activation and expires at the end of the purchased period. Credits have no cash value. Paid AI generation must show the final credit cost before each operation and is not unlimited.</p>
+<p>Access to this app does not transfer ownership of third-party AI models, photos, or musical works. Users must have the rights to uploaded material; commercial use of generated results depends on applicable provider terms. Consumer rights, privacy and support policies must be completed before public sales.</p>
+<p><strong>Status:</strong> licensing backend prepared for testing; customer payments are not active.</p>
+</div>
+<p><a href="./login.html">← Přihlášení / Sign in</a> · <a href="./">Studio / Home</a></p>
+<small>QA Studio AI PRO · Přehled produktu / Product overview · 24. 11. 2026</small>
+</main>
+<script>
+const btn=document.getElementById('langBtn');
+let lang=(navigator.language||'cs').toLowerCase().startsWith('cs')?'cs':'en';
+function render(){for(const el of document.querySelectorAll('[data-cs]'))el.hidden=lang!=='cs';for(const el of document.querySelectorAll('[data-en]'))el.hidden=lang!=='en';document.documentElement.lang=lang}
+btn.addEventListener('click',()=>{lang=lang==='cs'?'en':'cs';render()});render();
+</script></body></html>
