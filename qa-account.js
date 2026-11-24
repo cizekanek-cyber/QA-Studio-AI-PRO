@@ -186,7 +186,17 @@
    }
   }catch(e){status.textContent='Přihlášení není dostupné: '+(e?.message||'Chyba načtení')}
  }
- q('#qaSignIn').onclick=async()=>{const email=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Zadejte platnou e-mailovou adresu.';return}if(!supa){status.textContent='Připojení zatím není hotové.';return}const b=q('#qaSignIn');b.disabled=true;try{const r=await supa.auth.signInWithOtp({email,options:{emailRedirectTo:REDIRECT_URL}});if(r.error)throw r.error;status.textContent='Žádost přijata. Zkontroluj spam a nejnovější e-mail. Pokud odkaz vrací na localhost, v Supabase Authentication → URL Configuration povol URL beta aplikace. Pro zákaznické e-maily je potřeba vlastní SMTP.'}catch(e){status.textContent='Přihlášení: '+(e?.message||'Chyba')}finally{b.disabled=false}};
+ const mailCooldownKey='qa-studio-auth-mail-cooldown-v2';
+ let mailPending=false;
+ async function guardedMail(task){
+   let until=0;try{until=Number(localStorage.getItem(mailCooldownKey))||0}catch{}
+   if(mailPending||until>Date.now())throw Error('Please wait before requesting another email / Vyčkej před odesláním dalšího e-mailu.');
+   mailPending=true;
+   try{const result=await task();if(result.error)throw result.error;if(!result.data?.session){try{localStorage.setItem(mailCooldownKey,String(Date.now()+10*60*1000))}catch{}}return result;}
+   catch(e){if(e.status===429||e.code==='over_email_send_rate_limit'){try{localStorage.setItem(mailCooldownKey,String(Date.now()+60*60*1000))}catch{}}throw e;}
+   finally{mailPending=false;}
+ }
+ q('#qaSignIn').onclick=async()=>{const email=q('#qaEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Zadejte platnou e-mailovou adresu.';return}if(!supa){status.textContent='Připojení zatím není hotové.';return}const b=q('#qaSignIn');b.disabled=true;try{const r=await guardedMail(()=>supa.auth.signInWithOtp({email,options:{emailRedirectTo:REDIRECT_URL}}));if(r.error)throw r.error;status.textContent='Žádost přijata. Zkontroluj spam a nejnovější e-mail. Pokud odkaz vrací na localhost, v Supabase Authentication → URL Configuration povol URL beta aplikace. Pro zákaznické e-maily je potřeba vlastní SMTP.'}catch(e){status.textContent='Přihlášení: '+(e?.message||'Chyba')}finally{b.disabled=false}};
  q('#qaSignOut').onclick=async()=>{try{await supa?.auth.signOut()}catch(e){status.textContent=e?.message||'Chyba odhlášení'}await sessionInfo()};
  q('#qaRefresh').onclick=sessionInfo;
  q('#qaModePassword').onclick=()=>{q('#qaPasswordBox').classList.remove('qaHidden');q('#qaSignIn').classList.add('qaHidden')};
@@ -207,13 +217,13 @@
    (code==='email_not_confirmed'?'Confirm your email first. / Nejdřív potvrď e-mail.':'Sign in failed / Přihlášení selhalo: '+msg);
   }finally{b.disabled=false}
  };
- q('#qaPassRegister').onclick=async()=>{try{const email=qEmail(),password=q('#qaPassword').value;if(password.length<8)throw Error('Heslo musí mít alespoň 8 znaků.');const r=await supa.auth.signUp({email,password,options:{emailRedirectTo:REDIRECT_URL}});if(r.error)throw r.error;status.textContent=r.data.session?'Registrace dokončena.':'Registrace přijata. Potvrď e-mail; veřejné doručování vyžaduje vlastní SMTP.';if(r.data.session)await sessionInfo()}catch(e){status.textContent='Registrace: '+(e.message||e)}};
+ q('#qaPassRegister').onclick=async()=>{try{const email=qEmail(),password=q('#qaPassword').value;if(password.length<8)throw Error('Heslo musí mít alespoň 8 znaků.');const r=await guardedMail(()=>supa.auth.signUp({email,password,options:{emailRedirectTo:REDIRECT_URL}}));if(r.error)throw r.error;status.textContent=r.data.session?'Registrace dokončena.':'Registrace přijata. Potvrď e-mail; veřejné doručování vyžaduje vlastní SMTP.';if(r.data.session)await sessionInfo()}catch(e){status.textContent='Registrace: '+(e.message||e)}};
  q('#qaPassReset').textContent='🔑 Reset password / Obnovit heslo';
  q('#qaPassReset').onclick=async()=>{
   const b=q('#qaPassReset');b.disabled=true;
   try{
    if(!supa)throw Error('Authentication is loading');
-   const {error}=await supa.auth.resetPasswordForEmail(qEmail(),{redirectTo:REDIRECT_URL});
+   const {error}=await guardedMail(()=>supa.auth.resetPasswordForEmail(qEmail(),{redirectTo:REDIRECT_URL}));
    if(error)throw error;
    status.textContent='✓ Password reset email requested. Open only the NEWEST message, then choose a new password in the app. / Odkaz pro obnovu byl vyžádán. Otevři pouze NEJNOVĚJŠÍ e-mail a v aplikaci nastav nové heslo.';
   }catch(e){status.textContent='Password recovery error / Chyba obnovy hesla: '+(e.message||e)}
