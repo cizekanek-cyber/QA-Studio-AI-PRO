@@ -109,7 +109,7 @@ by('verifyLink').onclick=()=>action(by('verifyLink'),async()=>{
  const raw=by('pastedLink').value.trim();let url;try{url=new URL(raw)}catch{throw new Error('Vlož úplnou adresu odkazu (https://...).')}
  if(url.origin!=='https://naxotlqvimewbfowxwmw.supabase.co'||url.pathname!=='/auth/v1/verify')throw new Error('Použij pouze oficiální neotevřený odkaz ze Supabase, ne odkaz z jiné stránky.');
  const type=url.searchParams.get('type');if(!['email','signup','invite','magiclink','recovery'].includes(type))throw new Error('Tento typ odkazu není podporovaný.');
- const token_hash=url.searchParams.get('token_hash')||url.searchParams.get('token');if(!token_hash||!/^[a-zA-Z0-9_=-]{12,512}$/.test(token_hash))throw new Error('V odkazu chybí platný ověřovací token.');
+ const token_hash=url.searchParams.get('token_hash');if(!token_hash||!/^[a-zA-Z0-9_=-]{12,512}$/.test(token_hash))throw new Error('V odkazu chybí platný ověřovací token.');
  const {data,error}=await need().verifyOtp({token_hash,type});if(error)throw error;
  by('pastedLink').value='';await handleVerified(data,type)
 });
