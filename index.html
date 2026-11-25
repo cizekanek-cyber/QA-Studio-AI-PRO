@@ -42,7 +42,7 @@ f.addEventListener('load',async function(){
    if(!doc.defaultView.QAAuthCore){const core=doc.createElement('script');core.src='./qa-auth-core.js?v=20261123-core02';core.dataset.qaCore='true';await loadModule(core)}
    if(!doc.querySelector('script[data-qa-account]')){const account=doc.createElement('script');account.src='./qa-account.js?v=20261124-mailguard01';account.dataset.qaAccount='true';await loadModule(account)}
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';await loadModule(social);}
-   if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261125-editor01';plans.dataset.qaPlans='true';await loadModule(plans);}
+   if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261125-editor02';plans.dataset.qaPlans='true';await loadModule(plans);}
    if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-clean13';cutouts.dataset.qaCutouts='true';await loadModule(cutouts);}
    if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-funny01';start.dataset.qaStart='true';await loadModule(start);}
    if(!doc.querySelector('script[data-qa-gallery]')){const gallery=doc.createElement('script');gallery.src='./qa-gallery.js?v=20261125-clean13';gallery.dataset.qaGallery='true';gallery.onerror=()=>console.error('Galerii fotošablon se nepodařilo načíst');await loadModule(gallery);}
