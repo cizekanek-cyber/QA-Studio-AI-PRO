@@ -108,3 +108,15 @@ body .nav #qaJoinNav{background:linear-gradient(180deg,#f8e6b3,#d49b3f)!importan
 #qaSceneLib.qaFullPhotoLibrary .qsl-editor,#qaSceneLib.qaFullPhotoLibrary #qaUnifiedTools,#qaSceneLib.qaFullPhotoLibrary #qaUnifiedDrawer{display:none!important}
 #qaSceneLib.qaFullPhotoLibrary .qsl-gallery{display:block!important}
 @media(max-width:650px){#qaCutoutPanel .qac-shell{grid-template-columns:minmax(0,1fr)}#qaCutoutPanel .qac-sidebar{position:static;flex-direction:row;overflow-x:auto;max-height:none;gap:6px;padding:7px}#qaCutoutPanel .qac-sidebar strong{display:none}#qaCutoutPanel .qac-sidebar button{flex:0 0 auto;white-space:nowrap}#qaCutoutPanel .qac-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
+
+/* Full page photo collections use the same sidebar navigation on desktop. */
+@media(min-width:800px){
+#qaSceneLib.qaFullPhotoLibrary.active{display:grid!important;grid-template-columns:220px minmax(0,1fr);gap:12px;max-width:1560px!important;align-items:start}
+#qaSceneLib.qaFullPhotoLibrary .qsl-head{grid-column:1/-1}
+#qaSceneLib.qaFullPhotoLibrary #qaPhotoBack{grid-column:1/-1;justify-self:start}
+#qaSceneLib.qaFullPhotoLibrary #qslCategories{grid-column:1;grid-row:3/5;display:flex!important;flex-direction:column;align-items:stretch;max-height:72vh;overflow:auto;padding:10px;border:1px solid #725a32;border-radius:14px;background:#171719}
+#qaSceneLib.qaFullPhotoLibrary #qslCategories button{text-align:left;min-height:43px}
+#qaSceneLib.qaFullPhotoLibrary #qslCategories button.active{background:#e7c88c!important;color:#171410!important}
+#qaSceneLib.qaFullPhotoLibrary .qsl-toolbar,#qaSceneLib.qaFullPhotoLibrary .qsl-layout{grid-column:2;min-width:0}
+#qaSceneLib.qaFullPhotoLibrary .qsl-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))!important}
+}

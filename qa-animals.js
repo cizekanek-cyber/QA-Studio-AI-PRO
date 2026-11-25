@@ -95,7 +95,7 @@ function addPhoto(cat,photo,title,credit=null,photoFull=null){
 }
 for(const cat of cats)picIds[cat.id].forEach((p,i)=>addPhoto(cat,p,cat.subjects[i]));
 const photoUrl=(id,width)=>(id.startsWith('https://')||id.startsWith('./assets/photos/'))?id:('https://images.unsplash.com/'+id+'?auto=format&fit=crop&w='+width+'&q=85');
-let selected=sceneList[0],activeCat='all',filter='all',query='',visible=30,photo=null,photoFailed=false,photoToken=0,customBackground=false;
+let selected=sceneList[0],activeCat='all',filter='all',query='',visible=70,photo=null,photoFailed=false,photoToken=0,customBackground=false;
 let effects=['snow'],density=65,wind=16,caption='',captionColor='#ffffff',overlayItems=[],selectedOverlay=-1,isPro=false,licensePromise=null,recording=false,mediaRecorder=null,recTimer=null;
 const style=document.createElement('style');
 style.textContent='#qaSceneLib{color:#f0f4ff;font-family:system-ui,Arial,sans-serif}#qaSceneLib *{box-sizing:border-box}'+
@@ -250,7 +250,7 @@ async function loadBackgroundCatalog(){
 }
 
 q('#qaPhotoBack').onclick=()=>section.classList.remove('qaFullPhotoLibrary');
-const catsBar=q('#qslCategories');[{id:'all',name:'Všechna pozadí'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name;b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else if(c.id==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
+const catsBar=q('#qslCategories');[{id:'all',name:'Všechna pozadí'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name;b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=70;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else if(c.id==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
 window.addEventListener('qa:use-gallery-image',event=>{
  const image=event.detail&&event.detail.image;
  if(typeof image!=='string'||!image.startsWith('data:image/png;base64,')||image.length>15000000)return;
@@ -270,7 +270,7 @@ window.addEventListener('qa:use-gallery-image',event=>{
 });
 window.addEventListener('qa:open-category',event=>{const id=String(event.detail?.category||'');const match=Array.from(catsBar.querySelectorAll('button[data-cat]')).find(b=>b.dataset.cat===id);if(!match)return;q('#qslSearch').value='';query='';q('#qslTier').value='all';filter='all';q('#qslGenre').value='all';match.click();});
 const genre=q('#qslGenre');Object.keys(fxNames).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=fxNames[k];genre.append(o)});
-q('#qslTier').onchange=e=>{filter=e.target.value;visible=30;renderCards()};genre.onchange=()=>{visible=30;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=30;renderCards()};q('#qslMore').onclick=()=>{visible+=36;renderCards();if(activeCat==='all')loadBackgroundCatalog();else if(activeCat==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(cats.find(x=>x.id===activeCat))};
+q('#qslTier').onchange=e=>{filter=e.target.value;visible=70;renderCards()};genre.onchange=()=>{visible=70;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=70;renderCards()};q('#qslMore').onclick=()=>{visible+=70;renderCards();if(activeCat==='all')loadBackgroundCatalog();else if(activeCat==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(cats.find(x=>x.id===activeCat))};
 q('#qslDensity').oninput=e=>density=Number(e.target.value);q('#qslWind').oninput=e=>wind=Number(e.target.value);
 q('#qslRatio').onchange=e=>{const p=e.target.value.split(':').map(Number);can.width=p[0]>p[1]?960:540;can.height=Math.round(can.width*p[1]/p[0]);can.style.aspectRatio=p[0]+'/'+p[1]};
 function exportDims(){const p=q('#qslRatio').value;return p==='9:16'?(isPro?[2160,3840]:[720,1280]):p==='1:1'?(isPro?[2160,2160]:[1080,1080]):(isPro?[3840,2160]:[1280,720])}
