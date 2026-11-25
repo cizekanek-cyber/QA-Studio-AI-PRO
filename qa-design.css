@@ -120,3 +120,13 @@ body .nav #qaJoinNav{background:linear-gradient(180deg,#f8e6b3,#d49b3f)!importan
 #qaSceneLib.qaFullPhotoLibrary .qsl-toolbar,#qaSceneLib.qaFullPhotoLibrary .qsl-layout{grid-column:2;min-width:0}
 #qaSceneLib.qaFullPhotoLibrary .qsl-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))!important}
 }
+
+/* Full page library navigation — compact previews with actual asset counts. */
+#qaCutoutPanel .qac-actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+#qaCutoutPanel #qacAdd{background:linear-gradient(120deg,#f2d899,#c48f42)!important;color:#171410!important;font-weight:750}
+#qaCutoutPanel .qac-actions button{min-height:44px}
+#qaCutoutPanel #qacPageTitle{scroll-margin-top:75px}
+#qaCutoutPanel .qac-card button:disabled{opacity:.45;cursor:not-allowed}
+#qaCutoutPanel #qacEmpty{padding:18px;background:#1e1c19;border:1px solid #685638;border-radius:10px}
+#qaCutoutPanel .qac-grid{content-visibility:auto;contain-intrinsic-size:auto 650px}
+@media(max-width:650px){#qaCutoutPanel .qac-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#qaCutoutPanel .qac-actions button{font-size:12px}#qaCutoutPanel .qac-sidebar{position:sticky;top:0;z-index:3}}
