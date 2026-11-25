@@ -130,3 +130,6 @@ test('Reference dashboard contains responsive sidebar, tools and plan rail',()=>
 test('Dashboard boot is ordered and beta redirects to the same release',()=>{const html=file('index.html');assert.match(html,/await loadModule\(landing\)/);assert.match(html,/await loadModule\(uni\)/);assert.match(html,/qaHomeShell/);assert.match(file('beta/index.html'),/location.replace\(target.href\)/);assert.match(file('sw.js'),/fetch\(req,\{cache:'no-cache'\}\)/)});
 
 test('Modern shell removes legacy chrome and mobile menu is accessible',()=>{assert.match(file('qa-landing.js'),/qaModernShell/);assert.match(file('qa-landing.js'),/qaMobileMenu/);assert.match(file('qa-design.css'),/body\.qaModernShell>\.wrap>\.hero/);assert.match(file('qa-design.css'),/qaMenuExpanded/)});
+
+
+test('Reference artwork, current cache and mobile dock ship together',()=>{const s=file('qa-landing.js');assert.match(s,/reference-fantasy\.webp/);assert(fs.existsSync(path.join(root,'assets/reference-fantasy.webp')));assert.match(s,/document\.body\.append\(mobile\)/);assert.match(file('qa-design.css'),/body>\.qaMobileDock/);assert.match(file('index.html'),/20261125-reference9/);assert.match(file('beta/index.html'),/20261125-reference9/);assert.match(file('sw.js'),/v37-reference9/)});

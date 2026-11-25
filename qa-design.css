@@ -264,3 +264,100 @@ body.qaModernShell .nav #qaMobileMenu{display:none!important}
  #qaWelcome.qaReferenceHome .qaShowcaseCard small{font-size:9px!important;padding:2px 5px!important}
  #qaWelcome.qaReferenceHome .qaCardPreviews{display:none}
 }
+
+/* Reference v9: actual responsive controls over a black and champagne-gold interface. */
+html body.qaModernShell{background:#070708!important;color:#f7f4ed!important}
+body.qaModernShell>.wrap{box-sizing:border-box}
+body.qaModernShell .nav{min-height:54px;box-shadow:0 2px 8px #c6954a33;gap:7px!important}
+body.qaModernShell .nav #qaTopBrand{display:inline-flex!important;align-items:center;gap:8px;text-align:left;font-size:clamp(16px,1.6vw,24px)!important;line-height:1.05}
+#qaTopBrand svg{width:39px;height:36px;flex:none}
+#qaTopBrand span{color:#f7f4ee}
+#qaTopBrand small{display:block;color:#e8d9bb;font-size:8px;letter-spacing:.26em;margin-top:4px}
+body.qaModernShell .nav #qaJoinNav{background:linear-gradient(#ffedbb,#ce963d)!important;color:#170f05!important;box-shadow:0 0 12px #eab75130!important}
+#qaWelcome.qaReferenceHome.qlaLandingActive{padding:5px 8px 70px!important;width:100%!important;box-sizing:border-box}
+#qaWelcome .qaHomeShell{grid-template-columns:150px minmax(0,1fr) 205px;gap:8px;border:1px solid #a57636;border-radius:11px;padding:8px;box-shadow:inset 0 0 12px #e9bd5725,0 0 10px #e9bd5720}
+#qaWelcome .qaHomeSidebar{grid-column:1;grid-row:1/4;min-height:calc(100vh - 80px);border-color:#5c431f;top:64px}
+#qaWelcome .qaHomeCenter{grid-column:2;grid-row:1}
+#qaWelcome .qaHomeRail{grid-column:3;grid-row:1;gap:8px}
+#qaWelcome .qaHomeFeatured{grid-column:2/4;grid-row:2;margin-top:0}
+#qaWelcome .qaHomeExtras{grid-column:2/4;grid-row:3;color:#dfc38c}
+#qaWelcome .qaHomeExtras summary{cursor:pointer;padding:12px;background:#171411;border:1px solid #735b37;border-radius:9px}
+#qaWelcome .qaHomeIcon svg,.qaMobileDock svg{display:block;width:25px;height:25px}
+#qaWelcome.qaReferenceHome .qlaHero{min-height:255px!important;border:0!important;border-radius:8px!important;background:#080809!important;box-shadow:inset 0 -1px #a47c42,0 3px 12px #8d5c252b!important}
+#qaWelcome.qaReferenceHome .qlaHeroArt{width:67%!important;height:100%!important;object-position:65% center!important;filter:saturate(1.1)!important}
+#qaWelcome.qaReferenceHome .qlaHero::before{background:linear-gradient(90deg,#080809 0%,#080809 27%,#080809cc 40%,#08080900 74%),linear-gradient(0deg,#080809a8,transparent 45%)!important}
+#qaWelcome.qaReferenceHome .qlaHeroContent{justify-content:space-between!important;padding:16px!important}
+#qaWelcome.qaReferenceHome .qlaHero h1{font-size:clamp(28px,3.7vw,55px)!important;letter-spacing:-.035em!important;font-weight:850!important;font-style:italic}
+#qaWelcome.qaReferenceHome .qlaHero h1 em{color:#e9bc64!important}
+#qaWelcome.qaReferenceHome .qlaKicker{display:none}
+#qaWelcome.qaReferenceHome .qlaLead{color:#fff!important;max-width:55%;font-size:clamp(14px,1.5vw,22px)!important}
+#qaWelcome.qaReferenceHome .qlaSublead{max-width:50%;font-size:12px}
+#qaWelcome.qaReferenceHome .qlaToolGrid{max-width:760px;gap:7px!important;margin:12px 0 0!important}
+#qaWelcome .qaHomeTool{min-height:68px;background:linear-gradient(155deg,#2b2216,#09090a 65%);border:1px solid #ad803d!important;box-shadow:inset 0 0 12px #b982242e,0 0 7px #dba94d20!important}
+#qaWelcome .qaHomeTool:last-child{border-color:#f9d58b!important;box-shadow:0 0 12px #e6ac4c70!important}
+#qaWelcome .qaHomeTool strong{font-size:11px}
+#qaWelcome .qaToolStatus{font-size:9px;line-height:1}
+#qaWelcome .qaHomeRail .qlaConversionCard{min-width:0;text-align:center;border:1px solid #b39460!important;background:linear-gradient(145deg,#0a0a0b 30%,#28241b 85%,#b88d45)!important;padding:15px 10px!important}
+#qaWelcome .qaHomeRail .qlaVip{background:radial-gradient(ellipse at 98% 4%,#92621f,transparent 50%),linear-gradient(145deg,#0a0909 30%,#22170a 75%,#bd8836)!important;box-shadow:0 0 9px #d7a44b50!important}
+#qaWelcome .qaHomeRail .qlaConversionCard h2{font-size:32px!important;line-height:1.1;color:#fff!important}
+#qaWelcome .qaHomeRail .qlaVip h2{color:#f8d07d!important}
+#qaWelcome .qaHomeRail .qlaConversionCard button{border:1px solid #f8d688!important;min-height:36px}
+#qaWelcome .qaHomeRail .qlaLive{margin:0!important;width:auto!important;font-size:11px!important;line-height:1.4}
+#qaWelcome.qaReferenceHome .qaShowcaseCard{isolation:isolate;display:flex;align-items:flex-start;justify-content:flex-end;overflow:hidden;min-height:105px!important;aspect-ratio:2.08!important;border:1px solid #b08a50!important;background:#171411!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard[hidden]{display:none!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard>img{object-position:center;filter:saturate(1.12)}
+#qaWelcome.qaReferenceHome .qaShowcaseCard::before{background:linear-gradient(90deg,#080809d9,transparent 84%),linear-gradient(0deg,#080809c9,transparent 60%)}
+#qaWelcome.qaReferenceHome .qaShowcaseCard strong{font-size:clamp(12px,1.2vw,17px);text-shadow:0 1px 5px #000}
+#qaWelcome .qaCardPreviews{height:25px;gap:3px}
+#qaWelcome .qaCardPreviews img{flex:1;min-width:0}
+#qaWelcome .qaHomeStrip button{flex:0 0 100px}
+#qaWelcome .qaHomeStrip img{height:68px}
+body>.qaMobileDock{display:none}
+@media(max-width:1050px) and (min-width:761px){#qaWelcome .qaHomeShell{grid-template-columns:123px minmax(0,1fr) 165px}}
+@media(max-width:760px){
+ body.qaModernShell{padding-bottom:66px!important}
+ body.qaModernShell .nav{min-height:46px;gap:4px!important}
+ body.qaModernShell .nav #qaTopBrand{font-size:15px!important;flex:1 1 0!important;min-width:0}
+ #qaTopBrand svg{width:27px;height:26px}
+ #qaTopBrand small{display:none}
+ #qaWelcome.qaReferenceHome.qlaLandingActive{padding:3px 5px 8px!important}
+ #qaWelcome .qaHomeShell{display:grid;grid-template-columns:minmax(0,1fr);padding:3px;gap:6px;border:0;box-shadow:none}
+ #qaWelcome .qaHomeSidebar{display:none}
+ #qaWelcome .qaHomeCenter{display:contents}
+ #qaWelcome .qaHomeShell>.qlaHero{grid-column:1;grid-row:1}
+ #qaWelcome .qaHomeRail{grid-column:1;grid-row:2;grid-template-columns:1fr 1fr;gap:6px}
+ #qaWelcome .qaHomeShell>#qaCollectionSection{grid-column:1;grid-row:3}
+ #qaWelcome .qaHomeFeatured{grid-column:1;grid-row:4}
+ #qaWelcome .qaHomeExtras{grid-column:1;grid-row:5}
+ #qaWelcome.qaReferenceHome .qlaHero{min-height:0!important;display:block!important}
+ #qaWelcome.qaReferenceHome .qlaHeroArt{width:100%!important;height:clamp(115px,36vw,190px)!important;object-position:center!important}
+ #qaWelcome.qaReferenceHome .qlaHero::before{background:linear-gradient(0deg,#080809 0%,#080809 49%,#08080900 85%)!important}
+ #qaWelcome.qaReferenceHome .qlaHeroContent{margin-top:-14px!important;padding:0 3px 4px!important}
+ #qaWelcome.qaReferenceHome .qlaHero h1{font-size:clamp(22px,6vw,31px)!important;font-style:normal}
+ #qaWelcome.qaReferenceHome .qlaLead{max-width:100%;font-size:12px!important}
+ #qaWelcome.qaReferenceHome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important;margin:6px 0 0!important}
+ #qaWelcome .qaHomeTool{min-height:54px!important;padding:4px 2px!important}
+ #qaWelcome .qaHomeTool .qaHomeIcon svg{width:21px;height:21px}
+ #qaWelcome .qaHomeTool strong{font-size:10px!important}
+ #qaWelcome .qaToolStatus{font-size:8px!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard{padding:6px 5px!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard h2{font-size:22px!important;margin:0!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard p{min-height:0!important;font-size:10px!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard button{min-height:30px;font-size:11px!important}
+ #qaWelcome .qaHomeRail .qlaVip{background:linear-gradient(150deg,#ffe6a1,#c59032)!important;color:#1c1307!important}
+ #qaWelcome .qaHomeRail .qlaVip :is(h2,p){color:#1b1108!important}
+ #qaWelcome .qaHomeRail .qlaLive,#qaWelcome .qaHomeRailNotice{grid-column:1/-1;font-size:9px!important;text-align:center}
+ #qaWelcome.qaReferenceHome .qaShowcase{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard{min-height:57px!important;aspect-ratio:2.6!important;padding:5px!important}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard strong{font-size:12px!important}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard small{font-size:9px!important}
+ #qaWelcome.qaReferenceHome .qlaHeader{gap:4px}
+ #qaWelcome.qaReferenceHome .qlaHeader h2{font-size:15px!important}
+ #qaHomeCollectionSearch{max-width:none;flex:1 1 100%;min-height:34px}
+ body>.qaMobileDock{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#09090bf7;border-top:1px solid #b68c47;padding:4px 5px max(4px,env(safe-area-inset-bottom));box-shadow:0 -3px 14px #0009}
+ body>.qaMobileDock button{border:0;background:transparent;color:#f4dfb7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:49px;font-size:10px}
+ body>.qaMobileDock button[data-go=editor] .qaHomeIcon{background:linear-gradient(#ffe5a0,#b77c2c);color:#171004;border-radius:50%;padding:6px}
+ body>.qaMobileDock button[data-go=editor] svg{width:20px;height:20px}
+ body>.qaMobileDock small{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){#qaWelcome *,body>.qaMobileDock *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
