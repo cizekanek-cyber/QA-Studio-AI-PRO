@@ -69,7 +69,8 @@ function init(){
  // The primary editor remains the only active scene canvas. Inner galleries are selectors, not editors.
  const head=scene.querySelector('.qsl-head h2');if(head)head.textContent='Profesionální editor obrázků a videí';
  const notes=scene.querySelector('.qsl-head .qsl-sub');if(notes)notes.textContent='Jedno plátno pro pozadí, postavy, objekty, text, efekty a export. První čtyři motivy v každé kategorii zdarma; zbytek s platnou licencí PRO / VIP.';
- open('backgrounds');
+ // Do not override the landing screen when late-loaded modules initialize.
+ if(scene.classList.contains('active')){open('backgrounds')}else{scene.classList.add('qu-backgrounds');quBtns.backgrounds.setAttribute('aria-pressed','true')}
  return true;
 }
 let tries=0;function tick(){if(init())return;if(++tries<24)setTimeout(tick,350);}tick();

@@ -126,3 +126,5 @@ test('PNG library has dedicated collection navigation and measured dimensions',(
 test('Full library exposes import actions and transitions to photos',()=>{const lib=file('qa-cutouts.js');assert.match(lib,/qacAdd/);assert.match(lib,/qacOwn/);assert.match(lib,/allAssets\(\)\.catch/);assert.match(file('qa-one-editor.js'),/window\.qaOpenPhotoLibrary/);assert.match(file('qa-landing.js'),/scifi:'scifi'/)});
 
 test('Reference dashboard contains responsive sidebar, tools and plan rail',()=>{const s=file('qa-landing.js');for(const token of ['qaHomeSidebar','qaHomeRail','qaHomeTool','qaHomeCollectionSearch','qaHomeFeatured'])assert(s.includes(token));assert.match(file('qa-design.css'),/qaHomeShell/);assert.match(s,/qaAiPanel/)});
+
+test('Dashboard boot is ordered and beta redirects to the same release',()=>{const html=file('index.html');assert.match(html,/await loadModule\(landing\)/);assert.match(html,/await loadModule\(uni\)/);assert.match(html,/qaHomeShell/);assert.match(file('beta/index.html'),/location.replace\(target.href\)/);assert.match(file('sw.js'),/fetch\(req,\{cache:'no-cache'\}\)/)});

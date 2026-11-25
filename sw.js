@@ -1,5 +1,5 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261125-v34-reference-home';
+const VERSION='qa-shell-20261125-v35-dashboard';
 const SCOPE_PATH=new URL(self.registration.scope).pathname;
 const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/qa-hero-campaign.webp','./assets/gallery-animals.webp','./assets/gallery-fantasy.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
@@ -29,8 +29,6 @@ self.addEventListener('fetch',event=>{
   try{const res=await fetch(req);if(res.ok)(await caches.open(VERSION)).put(req,res.clone());return res;}catch{const cached=await caches.match(req);return cached||Response.error();}
  })());return;}
  if(/\.(?:js|css|svg|webmanifest)$/i.test(url.pathname)){event.respondWith((async()=>{
-  const cache=await caches.open(VERSION),fallback=await cache.match(req);
-  const update=fetch(req).then(r=>{if(r.ok)cache.put(req,r.clone());return r}).catch(()=>null);
-  return fallback||(await update)||Response.error();
+  const cache=await caches.open(VERSION);try{const res=await fetch(req,{cache:'no-cache'});if(res.ok){await cache.put(req,res.clone());return res}return (await cache.match(req))||res}catch{return (await cache.match(req))||Response.error()}
  })());}
 });

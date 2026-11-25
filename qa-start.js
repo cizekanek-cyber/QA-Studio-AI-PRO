@@ -162,5 +162,5 @@ tab.onclick=()=>{
  window.scrollTo({top:0,behavior:'smooth'});
 };
 arrangeNavigation();
-setTimeout(()=>{arrangeNavigation();tab.click()},250);
+setTimeout(()=>{arrangeNavigation()},250);
 })();

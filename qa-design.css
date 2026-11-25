@@ -199,3 +199,18 @@ body .nav #qaTopBrand{border:0!important;background:transparent!important;white-
 #qaWelcome .qaMobileDock small{font-size:10px}
 #qaWelcome .qaCardPreviews{height:19px}
 }
+
+/* Apply reference palette to the existing editor and all gallery views. */
+body .nav{position:sticky!important;top:0;z-index:90;overflow-x:auto;flex-wrap:nowrap!important;max-width:100%;padding:6px!important;scrollbar-width:thin}
+body .nav button{flex:0 0 auto;white-space:nowrap}
+body #qaSceneLib{--qa-editor-gold:#f0c87f;color:#f5eee2!important;padding:10px!important;max-width:1560px!important}
+body #qaSceneLib :is(.qsl-head,.qsl-editor,.qsl-gallery,#qaUnifiedTools){background:#101011!important;border:1px solid #8b6736!important;border-radius:11px!important;box-shadow:0 0 18px #ac78351a!important}
+body #qaSceneLib :is(.qsl-card,.qsl-item){border-color:#9a7740!important;border-radius:9px!important;background:#171411!important;overflow:hidden}
+body #qaSceneLib :is(.qsl-card,.qsl-item) img{object-fit:cover!important;aspect-ratio:16/10!important}
+body #qaSceneLib :is(button,select,input:not([type=color]):not([type=range])){border-color:#94703c!important;background:#171411!important;color:#f4e8d0!important;border-radius:8px!important}
+body #qaSceneLib input[type=range]{accent-color:#e3b35e}
+body #qaSceneLib :is(.qsl-primary,button.active,button[aria-pressed=true]){background:linear-gradient(180deg,#ffe1a2,#bc842d)!important;color:#160f08!important;border-color:#f5ce83!important}
+body #qaSceneLib .qsl-grid{gap:8px!important}
+body #qaSceneLib #qaUnifiedTools h2{color:#eac886}
+body #qaSceneLib #qslCanvas{border:1px solid #a27a40!important}
+@media(max-width:650px){body #qaSceneLib .qsl-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body #qaSceneLib .qsl-card{font-size:12px!important}body #qaSceneLib #qaUnifiedTools{padding:10px!important}body #qaSceneLib .qsl-editor{padding:10px!important}}
