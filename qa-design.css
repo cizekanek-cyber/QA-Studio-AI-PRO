@@ -82,3 +82,29 @@ body .promo .proNote{background:#2a261f!important;border-color:#786848!important
 body .nav #qaJoinNav{background:linear-gradient(180deg,#f8e6b3,#d49b3f)!important;color:#171410!important}
 @media(max-width:1000px){#qaWelcome .qaShowcase{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:640px){#qaWelcome .qaShowcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#qaWelcome .qaShowcaseCard,#qaWelcome .qaShowcaseCard:first-child{grid-column:auto;min-height:125px;aspect-ratio:4/3}#qaWelcome .qlaHero{min-height:510px!important}#qaWelcome .qlaHero h1{font-size:clamp(29px,8vw,42px)!important}}
+
+#qaCutoutPanel{max-width:1560px!important;margin:auto!important;padding:12px!important}
+#qaCutoutPanel .qac-shell{display:grid;grid-template-columns:minmax(190px,230px) minmax(0,1fr);gap:14px;align-items:start}
+#qaCutoutPanel .qac-sidebar{position:sticky;top:70px;max-height:calc(100vh - 90px);overflow:auto;background:#171719;border:1px solid #725a32;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:5px}
+#qaCutoutPanel .qac-sidebar strong{padding:10px;color:#e8c985;font-size:13px}
+#qaCutoutPanel .qac-sidebar button{display:flex;align-items:center;justify-content:space-between;gap:7px;text-align:left;font-size:13px;min-height:43px}
+#qaCutoutPanel .qac-sidebar button span{font-size:11px;color:#d6c397;background:#101012;padding:3px 7px;border-radius:9px}
+#qaCutoutPanel .qac-sidebar button[aria-pressed=true]{background:linear-gradient(120deg,#e3bc72,#b17a30)!important;color:#15110d!important;border-color:#f9d58c!important;font-weight:800}
+#qaCutoutPanel .qac-main{min-width:0}
+#qaCutoutPanel #qacPageTitle{font-size:clamp(26px,4vw,46px);color:#e9cc8c;margin:5px 0}
+#qaCutoutPanel #qacPageInfo{color:#c9c1b2;margin:6px 0 14px;font-size:13px}
+#qaCutoutPanel .qac-box{background:#171719!important;border-color:#685638!important;padding:12px!important}
+#qaCutoutPanel .qac-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
+#qaCutoutPanel .qac-card{border-color:#705a36!important;background:#222124!important;border-radius:12px;padding:7px!important}
+#qaCutoutPanel .qac-card img{height:auto!important;aspect-ratio:1/1;object-fit:contain}
+#qaCutoutPanel .qac-card b{font-size:13px;min-height:30px}
+#qaCutoutPanel .qac-hd{display:block;color:#e5c991!important;min-height:18px;margin:4px}
+#qaCutoutPanel .qac-card button{background:#e7c88c!important;color:#171410!important;border-color:#f1d69d!important}
+#qaCutoutPanel #qacSearch{flex:1;min-width:140px}
+#qaCutoutPanel .qac-import{margin-top:15px;border:1px solid #665638;border-radius:12px;padding:12px}
+#qaCutoutPanel .qac-import summary{cursor:pointer;color:#e8c985}
+#qaSceneLib #qaPhotoBack{display:none}
+#qaSceneLib.qaFullPhotoLibrary #qaPhotoBack{display:inline-flex}
+#qaSceneLib.qaFullPhotoLibrary .qsl-editor,#qaSceneLib.qaFullPhotoLibrary #qaUnifiedTools,#qaSceneLib.qaFullPhotoLibrary #qaUnifiedDrawer{display:none!important}
+#qaSceneLib.qaFullPhotoLibrary .qsl-gallery{display:block!important}
+@media(max-width:650px){#qaCutoutPanel .qac-shell{grid-template-columns:minmax(0,1fr)}#qaCutoutPanel .qac-sidebar{position:static;flex-direction:row;overflow-x:auto;max-height:none;gap:6px;padding:7px}#qaCutoutPanel .qac-sidebar strong{display:none}#qaCutoutPanel .qac-sidebar button{flex:0 0 auto;white-space:nowrap}#qaCutoutPanel .qac-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}

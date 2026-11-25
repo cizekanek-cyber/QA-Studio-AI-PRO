@@ -11,12 +11,24 @@ const section=document.createElement('section');section.className='tab qaCutouts
 section.innerHTML='<div class="qac-box"><h2>Lidé, zvířata, auta a věci jako jednotlivé PNG</h2><p class="qac-note">Importuj jednotlivé PNG nebo ZIP knihovnu a opakovaně je vkládej do scén zdarma. Pro objekty bez pozadí používej průhledné PNG. V editoru můžeš každou položku samostatně přesouvat, měnit její velikost a kombinovat ji s dalšími.</p><label><strong>Jednorázově přidej ZIP knihovnu do tohoto zařízení</strong><br><input type="file" id="qacZip" accept=".zip,application/zip,application/x-zip-compressed" multiple></label><div class="qac-tools"><label>Uložit do kategorie <select id="qacImportCategory"><option value="zvirata">Zvířata</option><option value="lide">Lidé</option><option value="postavy">Fantasy postavy</option><option value="auta">Auta</option><option value="motorky">Motorky</option><option value="predmety">Věci a předměty</option><option value="technika">Technika a stroje</option><option value="produkty">Produkty</option><option value="bydleni">Domy a vybavení</option><option value="priroda">Příroda</option></select></label><label>Vložit jednotlivé PNG / WebP <input type="file" id="qacImages" accept="image/png,image/webp" multiple></label></div><p id="qacStatus" role="status">Zjišťuji knihovnu uloženou v telefonu…</p><p class="qac-note">ZIP obsahuje obrázky a manifest.json; import je zdarma, neplatíš kredity za další generování. Obrázky se ukládají lokálně do úložiště prohlížeče, nikoliv na náš server. Po vymazání dat prohlížeče je bude nutné nahrát znovu.</p></div><div class="qac-box"><div class="qac-tools"><select id="qacCategory"><option value="all">Všechny objekty</option><option value="zvirata">Zvířata</option><option value="lide">Lidé</option><option value="postavy">Fantasy postavy</option><option value="auta">Auta</option><option value="motorky">Motorky</option><option value="predmety">Věci a předměty</option><option value="technika">Technika a stroje</option><option value="produkty">Produkty</option><option value="bydleni">Domy a vybavení</option><option value="priroda">Příroda</option></select><input type="search" id="qacSearch" placeholder="Najdi zvíře nebo postavu…"><button id="qacMore" type="button">Další objekty</button></div><div class="qac-note" id="qacCount">Zatím žádné obrázky.</div><div id="qacGrid" class="qac-grid"></div></div>';
 (document.querySelector('.tab')?.parentElement||nav.parentElement).append(section);
 const q=s=>section.querySelector(s);
-let items=[],visible=48,urls=[];
+let items=[],visible=70,urls=[];
+const libraryCategories=[["all","Všechny objekty","All objects","▦"],["zvirata","Zvířata","Animals","🐾"],["lide","Lidé","People","♟"],["postavy","Fantasy","Fantasy","✦"],["scifi","Mimozemšťané / Sci-fi","Aliens / Sci-fi","🛸"],["vanoce","Vánoce","Christmas","🎄"],["efekty","Speciální efekty","Special effects","⚡"],["stavby","Stavební technika","Construction machinery","▧"],["funny","Funny / Vtipné","Funny","☺"],["auta","Auta a vozidla","Vehicles","🚗"],["motorky","Motorky","Motorcycles","◉"],["technika","Technika","Technology","⚙"],["produkty","Produkty a luxus","Products & luxury","◇"],["predmety","Předměty","Objects","⬡"],["bydleni","Bydlení a architektura","Homes & architecture","⌂"],["priroda","Příroda a rostliny","Nature & plants","❧"],["jidlo","Jídlo","Food","✳"],["sport","Sport","Sports","●"]];
+const lang=()=>{try{return localStorage.getItem('qa-studio-language')==='cs'?'cs':'en'}catch{return 'en'}};
+const categoryName=c=>c[lang()==='cs'?1:2];
+const validCategory=x=>libraryCategories.some(c=>c[0]===x&&x!=='all');
+const options=(all)=>libraryCategories.filter(c=>all||c[0]!=='all').map(c=>new Option(categoryName(c),c[0]));
+function syncOptions(){for(const [id,all] of [['qacCategory',true],['qacImportCategory',false]]){const el=q('#'+id),old=el.value;el.replaceChildren(...options(all));if(Array.from(el.options).some(o=>o.value===old))el.value=old;}}
+const boxes=section.querySelectorAll('.qac-box');const imports=document.createElement('details');imports.className='qac-import';const summary=document.createElement('summary');summary.id='qacImportSummary';imports.append(summary,boxes[0]);const shell=document.createElement('div');shell.className='qac-shell';const sidebar=document.createElement('aside');sidebar.className='qac-sidebar';sidebar.setAttribute('aria-label','Collections');const main=document.createElement('main');main.className='qac-main';const heading=document.createElement('h1');heading.id='qacPageTitle';const info=document.createElement('p');info.id='qacPageInfo';const empty=document.createElement('p');empty.id='qacEmpty';empty.className='qac-note';const back=document.createElement('button');back.type='button';back.id='qacBack';back.onclick=()=>nav.querySelector('[data-tab="qaSceneLib"]')?.click();main.append(heading,info,back,boxes[1],empty,imports);shell.append(sidebar,main);section.append(shell);syncOptions();
+function selectCategory(id){if(id!=='all'&&!validCategory(id))return;q('#qacCategory').value=id;q('#qacSearch').value='';visible=70;render();}
+function renderSidebar(){sidebar.replaceChildren();const label=document.createElement('strong');label.textContent=lang()==='cs'?'KATEGORIE':'COLLECTIONS';sidebar.append(label);for(const c of libraryCategories){const b=document.createElement('button');b.type='button';b.dataset.category=c[0];b.setAttribute('aria-pressed',String(q('#qacCategory').value===c[0]));const n=items.filter(a=>c[0]==='all'||a.category===c[0]).length;b.textContent=c[3]+' '+categoryName(c);const count=document.createElement('span');count.textContent=String(n);b.append(count);b.onclick=()=>selectCategory(c[0]);sidebar.append(b)}}
+window.qaOpenAssetLibrary=(id='all')=>{tab.click();selectCategory(id)};
+window.addEventListener('qa:language',()=>{syncOptions();render()});
+
 async function hostedAssets(){try{
  const base='./assets/cutouts/';
  const r=await fetch(base+'manifest.json',{cache:'no-cache'});if(!r.ok)return[];
  const m=await r.json();if(!Array.isArray(m.assets))return[];
- return m.assets.filter(x=>typeof x.id==='string'&&/^([a-z0-9]+-){1,2}[a-z0-9]+$/.test(x.id)&&['zvirata','lide','postavy','auta','motorky','predmety','technika','produkty','bydleni','priroda'].includes(x.category)&&typeof x.file==='string'&&/^[a-z0-9/._-]+$/.test(x.file)&&!x.file.includes('..')).map(x=>({id:x.id,name:String(x.name||x.id),category:x.category,hd:!!x.hd,url:base+x.file}));
+ return m.assets.filter(x=>typeof x.id==='string'&&/^([a-z0-9]+-){1,2}[a-z0-9]+$/.test(x.id)&&validCategory(x.category)&&typeof x.file==='string'&&/^[a-z0-9/._-]+$/.test(x.file)&&!x.file.includes('..')).map(x=>({id:x.id,name:String(x.name||x.id),category:x.category,width:x.width,height:x.height,hd:!!x.hd,url:base+x.file}));
  }catch{return[]}}
 const say=s=>q('#qacStatus').textContent=s;
 function openDatabase(){return new Promise((resolve,reject)=>{if(!('indexedDB'in window)){reject(Error('Tento prohlížeč nemá místní databázi.'));return}
@@ -53,7 +65,7 @@ async function parseArchive(file){
  if(!Array.isArray(manifest.assets))throw Error('Neplatný seznam objektů.');
  const batch=[];
  for(const x of manifest.assets){
-  if(typeof x.id!=='string'||!/^([a-z0-9]+-){1,2}[a-z0-9]+$/.test(x.id)||!['zvirata','lide','postavy','auta','motorky','predmety','technika','produkty','bydleni','priroda'].includes(x.category))continue;
+  if(typeof x.id!=='string'||!/^([a-z0-9]+-){1,2}[a-z0-9]+$/.test(x.id)||!validCategory(x.category))continue;
   const bytes=files.get(x.file);if(!bytes||bytes.length<50||bytes[0]!==137||bytes[1]!==80||bytes[2]!==78||bytes[3]!==71)continue;
   batch.push({id:x.id,name:String(x.name||x.id).slice(0,80),category:x.category,hd:!!x.hd,blob:new Blob([bytes],{type:'image/png'}),width:x.width,height:x.height});
  }
@@ -64,8 +76,9 @@ function normalized(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u
 function render(){
  for(const url of urls)URL.revokeObjectURL(url);urls=[];
  const type=q('#qacCategory').value,query=normalized(q('#qacSearch').value);
+ const cs=lang()==='cs';renderSidebar();heading.textContent=categoryName(libraryCategories.find(c=>c[0]===type)||libraryCategories[0]);info.textContent=cs?'Samostatné PNG objekty • cílová kolekce: 70 unikátních motivů na kategorii':'Individual PNG assets • collection target: 70 unique designs per category';summary.textContent=cs?'Přidat vlastní PNG nebo ZIP':'Import PNG or ZIP';back.textContent=cs?'Zpět do editoru':'Back to editor';
  const filtered=items.filter(a=>(type==='all'||a.category===type)&&(normalized(a.name).includes(query)||a.id.includes(query)));
- q('#qacCount').textContent='Uloženo '+items.length+' objektů · nalezeno '+filtered.length+' · zobrazeno '+Math.min(filtered.length,visible)+'.';
+ q('#qacCount').textContent=cs?'Nalezeno '+filtered.length+' · zobrazeno '+Math.min(filtered.length,visible):'Found '+filtered.length+' · showing '+Math.min(filtered.length,visible);empty.hidden=filtered.length!==0;empty.textContent=cs?'V této kategorii zatím nejsou dostupné objekty. Můžeš přidat vlastní PNG.':'No available objects in this collection yet. You can import your own PNGs.';
  q('#qacMore').hidden=filtered.length<=visible;
  const grid=q('#qacGrid');grid.replaceChildren();
  for(const a of filtered.slice(0,visible)){
@@ -75,7 +88,7 @@ function render(){
   const button=document.createElement('button');button.type='button';button.textContent='Vložit do scény';
   button.onclick=async()=>{const editor=document.querySelector('.nav button[data-tab="qaSceneLib"]');if(!editor){say('Editor scén zatím není načtený.');return}try{let blob=a.blob;if(!blob&&a.url){const r=await fetch(a.url);if(!r.ok)throw Error('PNG se nenačetlo');blob=await r.blob()}if(!(blob instanceof Blob))throw Error('PNG soubor není dostupný');window.dispatchEvent(new CustomEvent('qa:insert-cutout',{detail:{blob,name:a.name,id:a.id}}))}catch(e){say('Vložení se nepodařilo: '+e.message)}};
   img.style.cursor='pointer';img.title='Vložit do scény / Insert into scene';img.addEventListener('click',()=>button.click());
-  wrapper.append(img,title);if(a.hd){const label=document.createElement('span');label.className='qac-hd';label.textContent='HD předloha';wrapper.append(label)}wrapper.append(button);grid.append(wrapper);
+  const label=document.createElement('span');label.className='qac-hd';const dims=()=>{const w=img.naturalWidth,h=img.naturalHeight;if(!w||!h)return;label.textContent=w+' × '+h+' px'+(Math.max(w,h)>=3840&&Math.min(w,h)>=2160?' · 4K dimensions':'')};img.addEventListener('load',dims);if(img.complete)dims();button.textContent=cs?'Vložit do scény':'Insert into scene';wrapper.append(img,title,label,button);grid.append(wrapper);
  }
 }
 async function load(){try{const [local,hosted]=await Promise.all([allAssets(),hostedAssets()]);const merged=new Map(hosted.map(x=>[x.id,x]));for(const x of local)merged.set(x.id,x);items=Array.from(merged.values()).sort((a,b)=>a.id.localeCompare(b.id));render();say(items.length?'Připraveno '+items.length+' samostatných objektů. Vyber kategorii a použij Vložit do scény.':'Knihovna nemá zatím předem nahrané PNG objekty. Přidej vlastní PNG po jednom, hromadně, nebo importuj ZIP.')}catch(e){say('Knihovnu nelze otevřít: '+e.message)}}
@@ -96,14 +109,14 @@ q('#qacImages').onchange=async()=>{
  }catch(e){say('Import obrázků se nepodařil: '+e.message)}
  finally{input.disabled=false;input.value=''}
 };
-q('#qacCategory').onchange=()=>{visible=48;render()};
-q('#qacSearch').oninput=()=>{visible=48;render()};
-q('#qacMore').onclick=()=>{visible+=48;render()};
+q('#qacCategory').onchange=()=>{visible=70;render()};
+q('#qacSearch').oninput=()=>{visible=70;render()};
+q('#qacMore').onclick=()=>{visible+=70;render()};
 tab.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===section));nav.querySelectorAll('button').forEach(t=>t.classList.toggle('active',t===tab));window.scrollTo({top:0,behavior:'smooth'})};
 const peopleTab=document.createElement('button');peopleTab.type='button';peopleTab.dataset.tab='qaPeopleTab';peopleTab.textContent='👤 People';nav.insertBefore(peopleTab,tab);
 const animalsTab=document.createElement('button');animalsTab.type='button';animalsTab.dataset.tab='qaAnimalsTab';animalsTab.textContent='🐾 Animals';nav.insertBefore(animalsTab,tab);
 function showCategory(type,selected){
- q('#qacCategory').value=type;visible=48;render();tab.click();
+ q('#qacCategory').value=type;visible=70;render();tab.click();
  nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===selected));
 }
 peopleTab.onclick=()=>showCategory('lide',peopleTab);

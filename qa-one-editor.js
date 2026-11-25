@@ -40,7 +40,7 @@ function init(){
  const wrap=document.createElement('div');wrap.id='qaUnifiedTools';wrap.innerHTML=`<h2>🎬 Jeden editor pro všechno</h2><p>Vyber pozadí, přidej samostatnou průhlednou postavu nebo zvíře, uprav vrstvy a exportuj ze stejného plátna.</p><div class="quTabs" role="group" aria-label="Knihovna hlavního editoru"></div><div class="quHint" id="quHint"></div>`;
  scene.insertBefore(wrap,layout);
  const dock=document.createElement('div');dock.id='qaUnifiedDrawer';scene.append(dock);
- const targets={objects:cutouts,living:oldGallery,funny:funny};
+ const targets={living:oldGallery,funny:funny};
  for(const [k,element] of Object.entries(targets)){const box=document.createElement('div');box.dataset.quDrawer=k;box.hidden=true;dock.append(box);element.classList.remove('tab');element.classList.remove('active');box.append(element)}
  const modes=[
  ['backgrounds','🏞️ Pozadí','Vyber čisté prostředí ze scén. U fotografických podkladů ověř, že neobsahují postavy.'],
@@ -53,15 +53,16 @@ function init(){
  const quBtns={};
  for(const [key,text] of modes){const b=document.createElement('button');b.type='button';b.textContent=text;b.onclick=()=>open(key);b.setAttribute('aria-pressed','false');tabs.append(b);quBtns[key]=b;}
  function showEditor(){if(typeof oldEngineOpen==='function')oldEngineOpen.call(engineBtn);else{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===scene));nav.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===engineBtn))}}
- function open(mode){if(!quBtns[mode])mode='editor';showEditor();scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];}
+ function open(mode){if(!quBtns[mode])mode='editor';if(mode==='objects'&&typeof window.qaOpenAssetLibrary==='function'){window.qaOpenAssetLibrary();return}showEditor();scene.classList.remove('qaFullPhotoLibrary');scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];}
  engineBtn.onclick=()=>open('backgrounds');engineBtn.textContent='🎬 Editor';
- const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel']);
+ const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel','qaCutoutPanel']);
  nav.querySelectorAll('button[data-tab]').forEach(b=>{if(!visibleTabs.has(b.dataset.tab)){b.hidden=true;b.style.display='none'}});
+ const libraryButton=nav.querySelector('[data-tab="qaCutoutPanel"]');if(libraryButton){libraryButton.hidden=false;libraryButton.style.display='';libraryButton.textContent='▦ Knihovna PNG'}
  const saved=nav.querySelector('[data-tab="saved"]');if(saved)saved.textContent='📁 Moje projekty';
  const profile=nav.querySelector('[data-tab="qaAccountPanel"]');if(profile)profile.textContent='👤 Účet / PRO / VIP';
 
- for(const [tabId,mode] of [['qaGalleryPanel','living'],['qaCutoutPanel','objects'],['qaFunnyPanel','funny'],['qaPeopleTab','objects'],['qaAnimalsTab','objects'],['qaObjectsTab','objects']]){const b=nav.querySelector('[data-tab="'+tabId+'"]');if(b){b.onclick=()=>open(mode);b.hidden=true;b.style.display='none'}}
- for(const id of ['qaGalleryPanel','qaCutoutPanel','qaFunnyPanel','qaPeopleTab','qaAnimalsTab','qaObjectsTab']){const b=nav.querySelector('[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
+ for(const [tabId,mode] of [['qaGalleryPanel','living'],['qaFunnyPanel','funny'],['qaPeopleTab','objects'],['qaAnimalsTab','objects'],['qaObjectsTab','objects']]){const b=nav.querySelector('[data-tab="'+tabId+'"]');if(b){b.onclick=()=>open(mode);b.hidden=true;b.style.display='none'}}
+ for(const id of ['qaGalleryPanel','qaFunnyPanel','qaPeopleTab','qaAnimalsTab','qaObjectsTab']){const b=nav.querySelector('[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
  // Legacy landing-page buttons may target former tabs; their handlers still work by opening a drawer.
  window.addEventListener('qa:open-funny',()=>{open('funny')});
  window.addEventListener('qa:open-gallery',()=>{open('living')});

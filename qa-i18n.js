@@ -26,7 +26,7 @@ function apply(){
  const t=TRANSLATIONS[current]||TRANSLATIONS.en;
  document.documentElement.lang=current;
  setText('button[data-tab="qaWelcome"]','⌂ '+t.home);
- setText('button[data-tab="qaCutoutPanel"]','🖼 '+t.all);
+ setText('button[data-tab="qaCutoutPanel"]',current==='cs'?'▦ Knihovna PNG':'▦ PNG Library');
  setText('button[data-tab="qaPeopleTab"]','👤 '+t.people);
  setText('button[data-tab="qaAnimalsTab"]','🐾 '+t.animals);
  setText('button[data-tab="qaSceneLib"]','🎬 '+t.editor);

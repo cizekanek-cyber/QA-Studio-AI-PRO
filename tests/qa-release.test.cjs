@@ -120,3 +120,5 @@ test('Email sign-in accurately distinguishes code email from Sign in link',()=>{
   assert.doesNotMatch(template,/\{\{ \.ConfirmationURL \}\}/);
  }
 });
+
+test('PNG library has dedicated collection navigation and measured dimensions',()=>{const lib=file('qa-cutouts.js');assert.match(lib,/visible=70/);assert.match(lib,/qaOpenAssetLibrary/);assert.match(lib,/img.naturalWidth/);assert.match(lib,/img.naturalHeight/);assert.match(lib,/scifi/);assert.match(lib,/vanoce/);assert.match(lib,/efekty/);assert.match(file('qa-one-editor.js'),/targets=\{living:oldGallery,funny:funny\}/);assert.match(file('qa-design.css'),/qac-sidebar/)});

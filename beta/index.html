@@ -13,7 +13,7 @@ header button{background:#4d3489;border:1px solid #8f78d4;border-radius:9px;colo
 #notice{position:fixed;inset:48px 0 0;display:grid;place-items:center;background:#090c19;color:#e9ecfb;text-align:center;padding:15px;font-size:14px}
 </style><link rel="manifest" href="../manifest.webmanifest">
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../qa-design.css?v=20261125-obsidian2">
+<link rel="stylesheet" href="../qa-design.css?v=20261125-full-library3">
 </head><body>
 <header><strong>QA STUDIO AI PRO <span>· BETA / payments disabled</span></strong><button id="openAccount">🔐 My account</button></header>
 <iframe id="app" src="../index-1.html?v=pricing-20261123-4" title="QA Studio AI PRO – zkušební verze" allow="web-share"></iframe>
@@ -30,7 +30,7 @@ document.getElementById('openAccount').onclick=()=>{
 frame.onload=()=>{
  try{
  const doc=frame.contentDocument;
-   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261125-obsidian2';doc.head.append(design);}
+   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261125-full-library3';doc.head.append(design);}
  if(!doc||!doc.querySelector('.nav'))throw Error('Editor se nenačetl.');
  for(const [path,key] of [['./qa-animals.js','qaAnimals'],['./qa-account.js','qaAccount']]){
   if(doc.querySelector('script[data-'+(key==='qaAnimals'?'qa-animals':'qa-account')+']'))continue;
@@ -41,10 +41,10 @@ frame.onload=()=>{
  }
  if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
  if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-plans3';plans.dataset.qaPlans='true';doc.body.append(plans);}
- if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-cutouts2';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
+ if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-full-library3';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
  if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-start2';start.dataset.qaStart='true';doc.body.append(start);}
  if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261123-v4';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');doc.body.append(pricing);}
- if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261123-i18n2';i18n.dataset.qaI18n='true';doc.body.append(i18n);}
+ if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261125-full-library3';i18n.dataset.qaI18n='true';doc.body.append(i18n);}
  notice.style.display='none';
  }catch(e){notice.textContent='Beta verzi se nepodařilo načíst. Původní aplikace zůstává nedotčena.';console.error(e)}
 };
