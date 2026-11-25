@@ -1,7 +1,7 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261124-v28-email-help';
+const VERSION='qa-shell-20261125-v29-obsidian';
 const SCOPE_PATH=new URL(self.registration.scope).pathname;
-const CORE=['./','./index.html','./index-1.html','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/qa-hero-campaign.webp','./assets/gallery-animals.webp','./assets/gallery-fantasy.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
+const CORE=['./','./index.html','./index-1.html','./qa-design.css','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/qa-hero-campaign.webp','./assets/gallery-animals.webp','./assets/gallery-fantasy.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
   const cache=await caches.open(VERSION);
