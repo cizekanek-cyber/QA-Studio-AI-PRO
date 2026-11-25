@@ -74,6 +74,7 @@ function render(){
   const title=document.createElement('b');title.textContent=a.name;
   const button=document.createElement('button');button.type='button';button.textContent='Vložit do scény';
   button.onclick=async()=>{const editor=document.querySelector('.nav button[data-tab="qaSceneLib"]');if(!editor){say('Editor scén zatím není načtený.');return}try{let blob=a.blob;if(!blob&&a.url){const r=await fetch(a.url);if(!r.ok)throw Error('PNG se nenačetlo');blob=await r.blob()}if(!(blob instanceof Blob))throw Error('PNG soubor není dostupný');window.dispatchEvent(new CustomEvent('qa:insert-cutout',{detail:{blob,name:a.name,id:a.id}}))}catch(e){say('Vložení se nepodařilo: '+e.message)}};
+  img.style.cursor='pointer';img.title='Vložit do scény / Insert into scene';img.addEventListener('click',()=>button.click());
   wrapper.append(img,title);if(a.hd){const label=document.createElement('span');label.className='qac-hd';label.textContent='HD předloha';wrapper.append(label)}wrapper.append(button);grid.append(wrapper);
  }
 }
