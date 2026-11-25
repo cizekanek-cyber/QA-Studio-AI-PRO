@@ -130,3 +130,57 @@ body .nav #qaJoinNav{background:linear-gradient(180deg,#f8e6b3,#d49b3f)!importan
 #qaCutoutPanel #qacEmpty{padding:18px;background:#1e1c19;border:1px solid #685638;border-radius:10px}
 #qaCutoutPanel .qac-grid{content-visibility:auto;contain-intrinsic-size:auto 650px}
 @media(max-width:650px){#qaCutoutPanel .qac-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#qaCutoutPanel .qac-actions button{font-size:12px}#qaCutoutPanel .qac-sidebar{position:sticky;top:0;z-index:3}}
+
+/* User-approved dashboard: black/gold three-column desktop, condensed two-column mobile. */
+body .nav{background:#0b0b0d!important;border-bottom:1px solid #a17b3e!important}
+body .nav #qaTopBrand{border:0!important;background:transparent!important;white-space:nowrap;font-size:18px;font-weight:800;letter-spacing:-.025em;flex:0 0 auto}
+#qaTopBrand span,#qaTopBrand em{color:#efc97e;font-style:normal}
+#qaWelcome.qaReferenceHome.qlaLandingActive{max-width:1800px!important;padding:8px 10px 36px!important}
+#qaWelcome .qaHomeShell{display:grid;grid-template-columns:154px minmax(0,1fr) 205px;gap:12px;align-items:start}
+#qaWelcome .qaHomeSidebar{background:#0b0b0d;border:1px solid #604926;border-radius:13px;padding:9px;position:sticky;top:10px;display:flex;flex-direction:column;gap:5px}
+#qaWelcome .qaHomeSidebar button{display:flex;align-items:center;gap:9px;border:1px solid transparent;background:transparent;color:#eee;text-align:left;padding:9px 8px;min-height:40px;border-radius:9px;font-size:13px;white-space:normal}
+#qaWelcome .qaHomeSidebar .qaHomeSelected{border-color:#f3d389;background:linear-gradient(110deg,#604319,#d39b3e,#392512);box-shadow:0 0 15px #d69b444d;color:#fff}
+#qaWelcome .qaHomeIcon{font-size:24px;color:#edc577;line-height:1}
+#qaWelcome .qaHomeCenter{min-width:0}
+#qaWelcome .qaHomeRail{display:flex;flex-direction:column;gap:12px}
+#qaWelcome .qaHomeRail .qlaConversionCard{padding:16px 13px!important;border-color:#866634!important;background:linear-gradient(145deg,#0d0e10,#1a1510)!important;border-radius:14px!important}
+#qaWelcome .qaHomeRail .qlaVip{background:radial-gradient(ellipse at 100% 0,#a56d23a0,transparent 56%),linear-gradient(150deg,#20170e,#111)!important}
+#qaWelcome .qaHomeRail h2{font-size:36px!important;text-align:center;color:#f2d08d}
+#qaWelcome .qaHomeRail .qlaMini{text-align:center;font-size:10px}
+#qaWelcome .qaHomeRail p{min-height:0;font-size:12px}
+#qaWelcome .qaHomeRail button{width:100%;background:linear-gradient(180deg,#ffe4a1,#c88b32)!important;color:#160e05!important;font-weight:800;border-radius:22px!important;font-size:13px;padding:10px 5px}
+#qaWelcome .qaHomeBenefits{list-style:none;padding:0;margin:12px 0;color:#eee;font-size:12px;line-height:1.6}
+#qaWelcome .qaHomeBenefits li{margin:5px 0}
+#qaWelcome .qaHomeRailNotice{color:#c5b69e;text-align:center;line-height:1.5}
+#qaWelcome.qaReferenceHome .qlaHero{min-height:280px!important;align-items:stretch!important;border-radius:14px!important;margin-bottom:11px!important}
+#qaWelcome.qaReferenceHome .qlaHeroContent{width:100%!important;padding:20px 16px 13px!important;display:flex;flex-direction:column;justify-content:flex-end}
+#qaWelcome.qaReferenceHome .qlaHeroArt{width:80%!important;height:100%!important;object-position:60% center!important}
+#qaWelcome.qaReferenceHome .qlaHero::before{background:linear-gradient(90deg,#08090bf5,#0d0d0ecb 28%,#0c0c0d44 65%,transparent),linear-gradient(0deg,#0a0a0bed,transparent 60%)!important}
+#qaWelcome.qaReferenceHome .qlaHero h1{font-size:clamp(28px,3.4vw,52px)!important;margin:0 0 5px!important;letter-spacing:-.045em!important}
+#qaWelcome.qaReferenceHome .qlaKicker{font-size:10px;margin-bottom:7px}
+#qaWelcome.qaReferenceHome .qlaLead{font-size:clamp(14px,1.5vw,20px)!important;margin:0 0 6px}
+#qaWelcome.qaReferenceHome .qlaSublead{font-size:12px;max-width:420px;margin:0 0 10px}
+#qaWelcome.qaReferenceHome .qlaHeroActions{display:flex!important;gap:7px}
+#qaWelcome.qaReferenceHome .qlaHeroActions button{min-height:34px;padding:8px 11px;font-size:11px}
+#qaWelcome.qaReferenceHome .qlaLive{margin:9px 0 8px;font-size:10px;padding:4px 7px;width:fit-content}
+#qaWelcome.qaReferenceHome .qlaToolGrid{grid-template-columns:repeat(8,minmax(0,1fr))!important;gap:6px!important;margin-top:10px}
+#qaWelcome .qaHomeTool{min-width:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:linear-gradient(155deg,#292119e8,#0d0e10f5);border:1px solid #98733d;border-radius:11px;min-height:70px;padding:6px 3px;color:#fff;text-align:center;box-shadow:inset 0 0 10px #a1702e1f}
+#qaWelcome .qaHomeTool strong{font-size:11px;line-height:1.1}
+#qaWelcome .qaHomeTool small{font-size:9px;color:#cbbb9d}
+#qaWelcome .qaHomeTool:hover{border-color:#f0c777;box-shadow:0 0 14px #e8b04f50}
+#qaWelcome.qaReferenceHome #qaCollectionSection{margin:12px 0!important}
+#qaWelcome.qaReferenceHome .qlaHeader{align-items:center;margin:0 0 9px;flex-wrap:wrap}
+#qaWelcome.qaReferenceHome .qlaHeader h2{font-size:21px!important}
+#qaHomeCollectionSearch{flex:1;min-width:110px;max-width:280px;background:#141416;border:1px solid #7a603a;color:#fff;padding:8px;border-radius:12px}
+#qaWelcome.qaReferenceHome .qaShowcase{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard,#qaWelcome.qaReferenceHome .qaShowcaseCard:first-child{min-height:100px;aspect-ratio:2/1;grid-column:auto;padding:10px;border-radius:10px;border-color:#8d7045}
+#qaWelcome.qaReferenceHome .qaShowcaseCard strong{font-size:clamp(12px,1.3vw,17px)}
+#qaWelcome.qaReferenceHome .qaShowcaseCard small{background:#e7be72;color:#17110a;padding:3px 8px;border-radius:12px;font-size:10px}
+#qaWelcome .qaHomeFeatured{border-top:1px solid #b28a49;padding:12px 0}
+#qaWelcome .qaHomeFeatured h2{font-size:18px}
+#qaWelcome .qaHomeStrip{display:flex;gap:7px;overflow-x:auto;padding:5px 0}
+#qaWelcome .qaHomeStrip button{flex:0 0 105px;border:1px solid #80643e;background:#181818;color:#eee;padding:4px;border-radius:9px;font-size:10px;text-align:left;overflow:hidden}
+#qaWelcome .qaHomeStrip img{width:100%;height:65px;object-fit:cover;border-radius:6px;display:block;margin-bottom:5px}
+#qaWelcome.qaReferenceHome .qlaTwoCols{grid-template-columns:1fr 1fr}
+@media(max-width:1050px){#qaWelcome .qaHomeShell{grid-template-columns:125px minmax(0,1fr) 175px;gap:8px}#qaWelcome .qaHomeSidebar{padding:5px}#qaWelcome.qaReferenceHome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#qaWelcome.qaReferenceHome .qaShowcase{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:760px){#qaWelcome.qaReferenceHome.qlaLandingActive{padding:6px 8px 80px!important}#qaWelcome .qaHomeShell{grid-template-columns:minmax(0,1fr)}#qaWelcome .qaHomeSidebar{display:none}#qaWelcome .qaHomeRail{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-row:2}#qaWelcome .qaHomeRailNotice{grid-column:1/-1}#qaWelcome.qaReferenceHome .qlaHero{min-height:385px!important}#qaWelcome.qaReferenceHome .qlaHeroArt{width:100%!important;height:70%!important}#qaWelcome.qaReferenceHome .qlaHero::before{background:linear-gradient(0deg,#0b0b0d 0%,#0b0b0d 34%,#0b0b0dbb 62%,transparent 100%)!important}#qaWelcome.qaReferenceHome .qlaHeroContent{padding:12px!important}#qaWelcome.qaReferenceHome .qlaHero h1{font-size:clamp(25px,7vw,36px)!important}#qaWelcome.qaReferenceHome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#qaWelcome .qaHomeTool{min-height:58px;gap:4px}#qaWelcome .qaHomeTool strong{font-size:10px}#qaWelcome .qaHomeTool small{font-size:8px}#qaWelcome.qaReferenceHome .qaShowcase{grid-template-columns:repeat(2,minmax(0,1fr))!important}#qaWelcome.qaReferenceHome .qaShowcaseCard,#qaWelcome.qaReferenceHome .qaShowcaseCard:first-child{min-height:90px;aspect-ratio:1.65}#qaWelcome.qaReferenceHome .qlaTwoCols{grid-template-columns:1fr}#qaWelcome .qaHomeRail .qlaConversionCard{padding:10px!important}#qaWelcome .qaHomeRail h2{font-size:29px!important}}
