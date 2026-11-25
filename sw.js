@@ -1,7 +1,7 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261125-v40-4k12';
+const VERSION='qa-shell-20261125-v41-clean13';
 const SCOPE_PATH=new URL(self.registration.scope).pathname;
-const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-reference-covers.webp','./assets/qa-hero-campaign.webp','./assets/gallery-animals.webp','./assets/gallery-fantasy.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
+const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-social.js','./qa-cutouts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-hero-campaign.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
   const cache=await caches.open(VERSION);
@@ -17,7 +17,7 @@ self.addEventListener('fetch',event=>{
  if(req.method!=='GET')return;
  const url=new URL(req.url);
  if(url.origin!==location.origin||!url.pathname.startsWith(SCOPE_PATH))return;
- if((url.pathname.endsWith('/assets/reference-fantasy.webp')||url.pathname.endsWith('/assets/qa-reference-covers.webp'))||url.pathname.includes('/assets/cutouts/')){event.respondWith((async()=>{
+ if((url.pathname.endsWith('/assets/reference-fantasy.webp'))||url.pathname.includes('/assets/cutouts/')){event.respondWith((async()=>{
   const c=await caches.open(VERSION);
   const cached=await c.match(req);
   if(cached)return cached;

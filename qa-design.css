@@ -414,7 +414,7 @@ body>.qaMobileDock{display:none}
 }
 
 /* Artwork cut from the approved visual reference. Covers are visual previews, not native 4K assets. */
-.qaReferenceArtwork{display:block;background-image:url('./assets/qa-reference-covers.webp');background-size:400% 300%!important;background-repeat:no-repeat!important}
+.qaReferenceArtwork{display:block;background-size:400% 300%!important;background-repeat:no-repeat!important}
 #qaWelcome .qaExactCategoryCover{position:absolute;inset:0 0 0 auto;width:64%;height:100%;z-index:-2;border-radius:inherit}
 #qaWelcome.qaReferenceHome .qaShowcaseCard:has(.qaExactCategoryCover)::before{background:linear-gradient(90deg,#0a0909 5%,#0a0909e8 24%,#0a090944 68%,transparent 100%),linear-gradient(0deg,#090909d9,transparent 45%)}
 #qaWelcome .qaCardPreviews .qaReferenceArtwork{flex:1;min-width:0;border:1px solid #a7854f;border-radius:4px}

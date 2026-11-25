@@ -123,7 +123,7 @@ test('Email sign-in accurately distinguishes code email from Sign in link',()=>{
 
 test('PNG library has dedicated collection navigation and measured dimensions',()=>{const lib=file('qa-cutouts.js');assert.match(lib,/visible=70/);assert.match(lib,/qaOpenAssetLibrary/);assert.match(lib,/img.naturalWidth/);assert.match(lib,/img.naturalHeight/);assert.match(lib,/scifi/);assert.match(lib,/vanoce/);assert.match(lib,/efekty/);assert.match(file('qa-one-editor.js'),/targets=\{living:oldGallery,funny:funny\}/);assert.match(file('qa-design.css'),/qac-sidebar/)});
 
-test('Full library exposes import actions and transitions to photos',()=>{const lib=file('qa-cutouts.js');assert.match(lib,/qacAdd/);assert.match(lib,/qacOwn/);assert.match(lib,/allAssets\(\)\.catch/);assert.match(file('qa-one-editor.js'),/window\.qaOpenPhotoLibrary/);assert.match(file('qa-landing.js'),/scifi:'scifi'/)});
+test('Full library exposes import actions and transitions to photos',()=>{const lib=file('qa-cutouts.js');assert.match(lib,/qacAdd/);assert.match(lib,/qacOwn/);assert.match(lib,/allAssets\(\)\.catch/);assert.match(file('qa-one-editor.js'),/window\.qaOpenPhotoLibrary/);assert.match(file('qa-landing.js'),/qaOpenTemplateCategory/)});
 
 test('Reference dashboard contains responsive sidebar, tools and plan rail',()=>{const s=file('qa-landing.js');for(const token of ['qaHomeSidebar','qaHomeRail','qaHomeTool','qaHomeCollectionSearch','qaHomeFeatured'])assert(s.includes(token));assert.match(file('qa-design.css'),/qaHomeShell/);assert.match(s,/qaAiPanel/)});
 
@@ -132,13 +132,13 @@ test('Dashboard boot is ordered and beta redirects to the same release',()=>{con
 test('Modern shell removes legacy chrome and mobile menu is accessible',()=>{assert.match(file('qa-landing.js'),/qaModernShell/);assert.match(file('qa-landing.js'),/qaMobileMenu/);assert.match(file('qa-design.css'),/body\.qaModernShell>\.wrap>\.hero/);assert.match(file('qa-design.css'),/qaMenuExpanded/)});
 
 
-test('Reference artwork, current cache and mobile dock ship together',()=>{const s=file('qa-landing.js');assert.match(s,/reference-fantasy\.webp/);assert(fs.existsSync(path.join(root,'assets/reference-fantasy.webp')));assert.match(s,/document\.body\.append\(mobile\)/);assert.match(file('qa-design.css'),/body>\.qaMobileDock/);assert.match(file('index.html'),/20261125-4k12/);assert.match(file('beta/index.html'),/20261125-4k12/);assert.match(file('sw.js'),/v40-4k12/)});
+test('Reference artwork, current cache and mobile dock ship together',()=>{const s=file('qa-landing.js');assert.match(s,/reference-fantasy\.webp/);assert(fs.existsSync(path.join(root,'assets/reference-fantasy.webp')));assert.match(s,/document\.body\.append\(mobile\)/);assert.match(file('qa-design.css'),/body>\.qaMobileDock/);assert.match(file('index.html'),/20261125-clean13/);assert.match(file('beta/index.html'),/20261125-clean13/);assert.match(file('sw.js'),/v41-clean13/)});
 
 
-test('Home cards use catalog records and real photo routes',()=>{const landing=file('qa-landing.js');assert.match(landing,/qaPhotoCatalog/);assert.match(landing,/qaPortraitCatalog/);assert.match(landing,/qaCutoutCount/);assert.match(landing,/qa:open-category/);assert.match(file('qa-animals.js'),/window\.qaPhotoCatalog/);assert.match(file('qa-gallery.js'),/window\.qaPortraitCatalog/);assert.match(file('qa-cutouts.js'),/window\.qaCutoutCount/)});
+test('Home routes template collections to PNG and preserves backgrounds separately',()=>{const s=file('qa-landing.js');assert.match(s,/qaOpenTemplateCategory/);assert.match(s,/qaOpenPhotoLibrary/);assert.match(s,/qaOpenAssetLibrary/);assert.match(file('qa-gallery.js'),/qaPortraitCatalog=\(\)=>\[\]/);assert.match(file('qa-animals.js'),/window\.qaPhotoCatalog/)});
 
 
-test('Approved reference artwork ships with all twelve home category covers',()=>{const s=file('qa-landing.js');assert.match(s,/function referenceArt/);assert.match(s,/qaExactCategoryCover/);assert.match(s,/showReferenceInGallery/);assert(fs.existsSync(path.join(root,'assets/qa-reference-covers.webp')));assert.match(file('qa-design.css'),/qa-reference-covers\.webp/);assert.match(file('sw.js'),/qa-reference-covers\.webp/)});
+test('Old category artwork is removed',()=>{for(const p of ['assets/gallery-animals.webp','assets/gallery-fantasy.webp','assets/qa-reference-covers.webp'])assert(!fs.existsSync(path.join(root,p)));assert.doesNotMatch(file('qa-landing.js'),/qaExactCategoryCover/)});
 
 
-test('4K catalogue checks both source dimensions and offers full image preview',()=>{const a=file('qa-animals.js');assert.match(a,/Math\.max\(Number\(w\)\|\|0,Number\(h\)\|\|0\)>=3840/);assert.match(a,/!is4K\(img.width,img.height\)/);assert.match(a,/count4K\(cat.id\)>=50/);assert.match(a,/img.naturalWidth/);assert.match(a,/t.photoFull\|\|photoUrl/);assert.match(file('qa-landing.js'),/quality:'4k'/);assert.match(file('qa-cutouts.js'),/Original preview/)});
+test('4K catalogue checks both source dimensions and offers full image preview',()=>{const a=file('qa-animals.js');assert.match(a,/Math\.max\(Number\(w\)\|\|0,Number\(h\)\|\|0\)>=3840/);assert.match(a,/!is4K\(img.width,img.height\)/);assert.match(a,/count4K\(cat.id\)>=50/);assert.match(a,/img.naturalWidth/);assert.match(a,/t.photoFull\|\|photoUrl/);assert.match(file('qa-landing.js'),/qaOpenPhotoLibrary/);assert.match(file('qa-cutouts.js'),/Original preview/)});

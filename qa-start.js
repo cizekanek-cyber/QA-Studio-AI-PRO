@@ -91,10 +91,10 @@ const section=document.createElement('section');section.id='qaWelcome';section.c
 section.innerHTML=`
 <section aria-label="Nejnovější upgrade">
 <div class="qwHero"><img src="./assets/gallery-hero.webp?v=20261123-hd" alt="Reklamní módní fotografie na úvodu QA Studio" fetchpriority="high">
-<div class="qwHeroBody"><div class="qwKicker">✦ NOVÝ UPGRADE · 38 REALISTICKÝCH FOTOPŘEDLOH</div>
+<div class="qwHeroBody"><div class="qwKicker">✦ NOVÁ KNIHOVNA</div>
 <h1>Vytvářej poutavé fotky a profesionální reklamy.</h1>
-<p>Objev 38 nových motivů ze skutečně dodané kolekce, od lidí se zvířaty až po fantasy postavy a módu. Každý obrázek otevřeš zvlášť a můžeš ho upravit v editoru.</p>
-<div class="qwActions"><button class="qwPrimary" data-go="qaGalleryPanel">38 nových fotošablon</button><button class="qwSecondary" data-go="qaSceneLib">Otevřít editor</button><button id="qwBrowse" class="qwSecondary">Všechny kategorie</button></div>
+<p>Knihovna je připravena pro nové samostatné motivy. Původní pozadí zůstávají dostupná v editoru.</p>
+<div class="qwActions"><button class="qwPrimary" data-go="qaGalleryPanel">Knihovna šablon</button><button class="qwSecondary" data-go="qaSceneLib">Otevřít editor</button><button id="qwBrowse" class="qwSecondary">Všechny kategorie</button></div>
 </div></div><div class="qwPromos" id="qwPromos"></div></section>
 <section aria-labelledby="qwToolsHeading"><div class="qwHeading"><div class="qwKicker">VŠECHNY FUNKCE</div><h2 id="qwToolsHeading">Co chceš vytvořit?</h2><p>Přímý vstup do editoru a všech dostupných nástrojů.</p></div>
 <div class="qwFunctions">
@@ -116,7 +116,7 @@ section.innerHTML=`
 root.append(section);
 const q=s=>section.querySelector(s);
 function goto(id){const b=nav.querySelector('button[data-tab="'+id+'"]');if(!b){q('#qwError').textContent='Tento nástroj se ještě nenačetl, obnov stránku a zkus to znovu.';return false}q('#qwError').textContent='';b.click();return true}
-function openCategory(id){if(id==='living'){if(goto('qaGalleryPanel'))window.dispatchEvent(new CustomEvent('qa:open-gallery',{detail:{category:'Živí tvorové – předlohy'}}));return;}if(goto('qaSceneLib'))window.dispatchEvent(new CustomEvent('qa:open-category',{detail:{category:id}}))}
+function openCategory(id){if(window.qaOpenTemplateCategory)window.qaOpenTemplateCategory(id);else if(id==='backgrounds')window.qaOpenPhotoLibrary?.();else window.qaOpenAssetLibrary?.();}
 q('#qwBrowse').onclick=()=>q('#qwCatAnchor').scrollIntoView({behavior:'smooth',block:'start'});
 section.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>goto(b.dataset.go));
 for(const [id,name,imgId,kicker] of [
@@ -125,16 +125,16 @@ for(const [id,name,imgId,kicker] of [
  ['products','Reklamní obrázky','photo-1541643600914-78b084683601','PRO ZNAČKY']
 ]){
  const b=document.createElement('button');b.type='button';b.className='qwPromo';
- const img=document.createElement('img');img.src=photo(imgId,780);img.loading='lazy';img.alt='';img.onerror=()=>img.remove();
+
  const small=document.createElement('small');small.textContent=kicker;
  const strong=document.createElement('strong');strong.textContent=name;
- b.append(img,small,strong);b.onclick=()=>openCategory(id);q('#qwPromos').append(b);
+ b.append(small,strong);b.onclick=()=>openCategory(id);q('#qwPromos').append(b);
 }
 const grid=q('#qwCategories');
 categories.forEach(([id,name,imgId],i)=>{
  const b=document.createElement('button');b.type='button';b.className='qwCategory';b.dataset.category=id;if(i>=12)b.hidden=true;
- const img=document.createElement('img');img.loading='lazy';img.src=photo(imgId,460);img.alt='';img.onerror=()=>img.remove();
- const title=document.createElement('span');title.textContent=name;b.append(img,title);b.onclick=()=>openCategory(id);grid.append(b);
+
+ const title=document.createElement('span');title.textContent=name;b.append(title);b.onclick=()=>openCategory(id);grid.append(b);
 });
 let showAll=false;
 q('#qwToggle').textContent='Zobrazit všech '+categories.length+' kategorií';
