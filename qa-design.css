@@ -67,3 +67,18 @@ body .promo .proNote{background:#2a261f!important;border-color:#786848!important
 @media(max-width:760px){#qaWelcome.qlaLandingActive{padding:8px 10px 36px!important}#qaWelcome .qlaHero{min-height:590px!important;align-items:flex-end}#qaWelcome .qlaHeroArt{width:100%;height:66%;object-position:60% 20%}#qaWelcome .qlaHero::before{background:linear-gradient(0deg,#101113 0%,#101113fa 25%,#101113b5 49%,#10111305 85%)!important}#qaWelcome .qlaHeroContent{width:100%;padding:22px!important}#qaWelcome .qlaHero h1{font-size:clamp(32px,8.5vw,48px)!important}#qaWelcome .qlaHeroActions{display:grid!important;grid-template-columns:1fr;gap:8px!important}#qaWelcome .qlaToolGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#qaWelcome .qlaTool{padding:14px!important;min-height:155px!important}#qaWelcome .qaShowcase{grid-template-columns:1fr 1fr;gap:9px}#qaWelcome .qaShowcaseCard{min-height:160px;padding:12px}#qaWelcome .qaShowcaseCard:first-child{grid-column:1/-1;min-height:210px}#qaWelcome .qlaConversionCard{padding:18px!important}}
 @media(max-width:360px){#qaWelcome .qlaTool{padding:10px!important}#qaWelcome .qlaTool strong{font-size:14px!important}#qaWelcome .qlaToolText{font-size:12px!important}}
 @media(prefers-reduced-motion:reduce){#qaWelcome .qla button{transition:none!important;transform:none!important}}
+
+#qaWelcome .qlaHero h1 em{font-style:normal;color:#f4d697}
+#qaWelcome .qlaHero{border-color:#967343!important;box-shadow:0 0 24px #bd8b3624!important}
+#qaWelcome .qlaPrimary,#qaWelcome .qlaGold{background:linear-gradient(180deg,#fff0b9,#e9b34d 55%,#a96d23)!important;box-shadow:0 5px 22px #dca44a40!important}
+#qaWelcome .qlaConversionCard.qlaVip{background:radial-gradient(ellipse at 90% 0,#ad793b45,transparent 65%),linear-gradient(145deg,#312516,#161616)!important;border-color:#ad8545!important}
+#qaWelcome .qaShowcase{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+#qaWelcome .qaShowcaseCard{min-height:150px;aspect-ratio:4/3;padding:12px;border-color:#665333;border-radius:12px;box-shadow:inset 0 0 0 1px #d7ad5b1a}
+#qaWelcome .qaShowcaseCard[hidden]{display:none!important}
+#qaWelcome .qaShowcaseCard strong{font-size:clamp(14px,1.3vw,18px);text-shadow:0 1px 4px #000}
+#qaWelcome .qaShowcaseCard small{font-size:11px;color:#f1d9a4}
+#qaWelcome .qaShowcaseCard:hover{border-color:var(--qa-gold-light);box-shadow:0 0 17px #e5b85540}
+#qaAllCollections{margin:16px auto 0;display:block}
+body .nav #qaJoinNav{background:linear-gradient(180deg,#f8e6b3,#d49b3f)!important;color:#171410!important}
+@media(max-width:1000px){#qaWelcome .qaShowcase{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:640px){#qaWelcome .qaShowcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#qaWelcome .qaShowcaseCard,#qaWelcome .qaShowcaseCard:first-child{grid-column:auto;min-height:125px;aspect-ratio:4/3}#qaWelcome .qlaHero{min-height:510px!important}#qaWelcome .qlaHero h1{font-size:clamp(29px,8vw,42px)!important}}

@@ -30,7 +30,7 @@ for(const dir of ['assets','beta']){
     const next=path.posix.join(relative,e.name);
     if(e.isSymbolicLink())throw Error('No symlinks: '+next);
     if(e.isDirectory())walk(next);
-    else if(e.isFile()&&/\.(?:html|webp|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i.test(e.name))copy(next);
+    else if(e.isFile()&&(/\.(?:html|webp|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i.test(e.name)||['assets/cutouts/manifest.json','assets/photos/manifest.json'].includes(next)))copy(next);
   }
  }
  walk(dir);
