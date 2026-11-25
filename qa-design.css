@@ -1,0 +1,84 @@
+/* QA Studio AI PRO / Obsidian & Champagne. Presentation only. */
+:root{--qa-bg:#101113;--qa-surface:#1a1c20;--qa-raised:#24262b;--qa-line:#414349;--qa-text:#f4f3ef;--qa-muted:#c2c3c7;--qa-gold:#e7c88c;--qa-gold-light:#f9e6b8;--qa-ink:#171410;color-scheme:dark}
+html body{background:var(--qa-bg)!important;color:var(--qa-text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+body :is(button,a,input,select,textarea):focus-visible{outline:2px solid var(--qa-gold-light)!important;outline-offset:3px}
+body button:disabled{opacity:.55;cursor:not-allowed}
+body .nav{background:#141518!important;border-color:var(--qa-line)!important;gap:8px!important;box-shadow:0 6px 22px #0004}
+body .nav button:not([hidden]),body .nav #qaLanguagePicker{border:1px solid var(--qa-line)!important;background:var(--qa-surface)!important;color:var(--qa-text)!important;border-radius:10px!important;min-height:44px;box-shadow:none!important}
+body .nav button.active,body .nav #qaJoinNav{background:var(--qa-gold)!important;color:var(--qa-ink)!important;border-color:var(--qa-gold-light)!important;font-weight:800}
+body .nav #qlaAiNav{border-color:#88734d!important;color:var(--qa-gold-light)!important}
+#qaWelcome.qlaLandingActive{max-width:1360px!important;padding:16px 22px 48px!important}
+#qaWelcome .qlaHero{min-height:490px;border:1px solid #585044!important;border-radius:24px!important;background:#18191c!important;box-shadow:none!important;margin-bottom:16px!important}
+#qaWelcome .qlaHeroArt{width:72%;filter:saturate(.87) contrast(1.05)!important;object-position:60% 50%}
+#qaWelcome .qlaHero::before{background:linear-gradient(90deg,#101113 0%,#101113f2 27%,#101113b8 48%,#10111310 85%)!important}
+#qaWelcome .qlaGlow{box-shadow:none!important}
+#qaWelcome .qlaHero h1{font-size:clamp(34px,5vw,70px)!important;font-weight:760!important;letter-spacing:-.055em!important;text-shadow:none!important;text-wrap:balance}
+#qaWelcome .qlaKicker,#qaWelcome .qlaMini{color:var(--qa-gold)!important;letter-spacing:.15em!important}
+#qaWelcome .qlaLead,#qaWelcome .qlaSublead{color:var(--qa-muted)!important}
+#qaWelcome .qlaPrimary,#qaWelcome .qlaGold,#qaWelcome .qlaPriceCard button{background:linear-gradient(135deg,#f4dfaa,#d9b36d)!important;color:var(--qa-ink)!important;border:1px solid #f2d69d!important;box-shadow:none!important;border-radius:11px!important;font-weight:800!important}
+#qaWelcome .qlaOutline,#qaWelcome .qlaMiniLink{background:#1b1d21e8!important;color:var(--qa-text)!important;border:1px solid #626066!important;border-radius:11px!important}
+#qaWelcome .qlaLive{background:#17191ce8!important;border:1px solid #4b4d52!important;color:var(--qa-muted)!important}
+#qaWelcome .qlaConversions{gap:12px!important;margin:0 0 34px!important}
+#qaWelcome .qlaConversionCard,#qaWelcome .qlaPanel,#qaWelcome .qlaPriceCard,#qaWelcome .qlaTool{background:var(--qa-surface)!important;border:1px solid var(--qa-line)!important;box-shadow:none!important;border-radius:16px!important}
+#qaWelcome .qlaConversionCard:first-child{background:linear-gradient(120deg,#31291d,#1a1b1e 70%)!important;border-color:#947b4e!important}
+#qaWelcome .qlaConversionCard.qlaVip,#qaWelcome .qlaProPanel{background:linear-gradient(130deg,#262420,#191b1f)!important;border-color:#675c48!important}
+#qaWelcome .qlaConversionCard p,#qaWelcome .qlaHeader p,#qaWelcome .qlaPanel>p,#qaWelcome .qlaToolText,#qaWelcome .qlaStep small,#qaWelcome .qlaPricingNote,#qaWelcome .qlaFooter{color:var(--qa-muted)!important}
+#qaWelcome .qlaSection{margin:32px 0!important}
+#qaWelcome .qla h2{font-weight:760!important;letter-spacing:-.035em}
+#qaWelcome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+#qaWelcome .qlaTool{align-items:flex-start!important;text-align:start!important;padding:20px!important;min-height:164px!important}
+#qaWelcome .qlaTool:first-child{border-color:#947b4e!important;background:#24221d!important}
+#qaWelcome .qlaToolIcon{color:var(--qa-gold)!important;text-shadow:none!important;font-size:30px!important;line-height:1.1}
+#qaWelcome .qlaTool strong{font-size:16px!important}
+#qaWelcome .qlaToolText{font-size:13px!important}
+#qaWelcome .qlaState.soon{background:#27292d!important;color:#d4d4d7!important;border-color:#55565b!important}
+#qaWelcome .qlaState.active{background:#1e352b!important;color:#bbefcf!important;border-color:#42735a!important}
+#qaWelcome .qlaPriceCard.qlaBest,#qaWelcome .qlaPriceCard.qlaPopular{border-color:#aa8b55!important;background:#26231e!important}
+#qaWelcome .qlaRibbon,#qaWelcome .qlaCount{background:var(--qa-gold)!important;color:var(--qa-ink)!important}
+#qaWelcome .qlaPriceIcon{color:var(--qa-gold)!important}
+#qaWelcome .qlaStepVisual{background:#24262b!important;border-color:var(--qa-line)!important}
+#qaWelcome .qlaVisual2{background:repeating-conic-gradient(#37393e 0% 25%,#282a2e 0% 50%) 50%/24px 24px!important}
+#qaWelcome .qaShowcase{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#qaWelcome .qaShowcaseCard{position:relative;overflow:hidden;isolation:isolate;min-height:216px;border-radius:16px;border:1px solid var(--qa-line);padding:18px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;background:#222429;color:#fff;text-align:start}
+#qaWelcome .qaShowcaseCard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+#qaWelcome .qaShowcaseCard::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#0b0c0ff5,transparent 85%);z-index:-1}
+#qaWelcome .qaShowcaseCard strong{font-size:clamp(16px,2.1vw,23px);line-height:1.2}
+#qaWelcome .qaShowcaseCard small{margin-top:6px;color:#eee3c9;font-size:12px}
+body :is(#qaSceneLib,#qaAccountPanel,#qaPlansPanel,#qaGalleryPanel,#qaCutoutPanel,#qaFunnyPanel){color:var(--qa-text)!important}
+body :is(.qsl-head,.qsl-editor,.qsl-gallery,#qaUnifiedTools,.qaAccPanel,.qap-card,.qap-box,.qagHeader,.qagDetail){background:var(--qa-surface)!important;border-color:var(--qa-line)!important;box-shadow:none!important;border-radius:15px!important}
+body :is(#qaSceneLib,#qaAccountPanel,#qaPlansPanel,#qaGalleryPanel,#qaCutoutPanel,#qaFunnyPanel) :is(button,input:not([type=color]):not([type=range]),select,textarea){background:var(--qa-raised)!important;color:var(--qa-text)!important;border-color:#57595f!important;border-radius:9px!important}
+body :is(#qaSceneLib,#qaAccountPanel,#qaPlansPanel,#qaGalleryPanel,#qaCutoutPanel,#qaFunnyPanel) button{min-height:40px}
+body :is(#qaSceneLib,#qaPlansPanel) :is(.qsl-primary,button[aria-pressed=true],.qap-card.selected button){background:var(--qa-gold)!important;color:var(--qa-ink)!important;border-color:var(--qa-gold-light)!important}
+body #qaPlansPanel .qap-card.selected{border-color:var(--qa-gold)!important;background:#29251d!important}
+body #qaSceneLib #qslCanvas{border:1px solid #505156;border-radius:8px;background:#090a0b}
+body #qaSceneLib .qsl-sub,body #qaUnifiedTools p,body #qaPlansPanel p{color:var(--qa-muted)!important}
+/* Direct account and license screens. Keep all status/error colors and hidden state. */
+body .promo,body .auth{background:var(--qa-surface)!important;border-color:var(--qa-line)!important;box-shadow:none!important;border-radius:20px!important}
+body .promo::before{background:radial-gradient(circle,#dfbd7742,transparent 68%)!important}
+body .promo .kicker,body .brand span{color:var(--qa-gold)!important}
+body .promo p,body .auth .subtitle,body .auth .helptext{color:var(--qa-muted)!important}
+body .auth input,body .topActions select,body .auth .btn:not(.primary):not(.gold):not(.textBtn){background:var(--qa-raised)!important;border-color:#66686c!important;color:var(--qa-text)!important}
+body .auth .btn.primary,body .auth .btn.gold{background:var(--qa-gold)!important;color:var(--qa-ink)!important;border-color:var(--qa-gold-light)!important;box-shadow:none!important}
+body .auth .btn.textBtn{color:var(--qa-gold-light)!important}
+body .auth details,body .auth .progress span{background:var(--qa-raised)!important;border-color:var(--qa-line)!important}
+body .auth .progress span:first-child{border-color:var(--qa-gold)!important;color:var(--qa-gold-light)!important}
+body .promo .art>span{background:#2c2922!important;border-color:#695b42!important}
+body .promo .proNote{background:#2a261f!important;border-color:#786848!important;color:var(--qa-gold-light)!important}
+@media(max-width:760px){#qaWelcome.qlaLandingActive{padding:8px 10px 36px!important}#qaWelcome .qlaHero{min-height:590px!important;align-items:flex-end}#qaWelcome .qlaHeroArt{width:100%;height:66%;object-position:60% 20%}#qaWelcome .qlaHero::before{background:linear-gradient(0deg,#101113 0%,#101113fa 25%,#101113b5 49%,#10111305 85%)!important}#qaWelcome .qlaHeroContent{width:100%;padding:22px!important}#qaWelcome .qlaHero h1{font-size:clamp(32px,8.5vw,48px)!important}#qaWelcome .qlaHeroActions{display:grid!important;grid-template-columns:1fr;gap:8px!important}#qaWelcome .qlaToolGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}#qaWelcome .qlaTool{padding:14px!important;min-height:155px!important}#qaWelcome .qaShowcase{grid-template-columns:1fr 1fr;gap:9px}#qaWelcome .qaShowcaseCard{min-height:160px;padding:12px}#qaWelcome .qaShowcaseCard:first-child{grid-column:1/-1;min-height:210px}#qaWelcome .qlaConversionCard{padding:18px!important}}
+@media(max-width:360px){#qaWelcome .qlaTool{padding:10px!important}#qaWelcome .qlaTool strong{font-size:14px!important}#qaWelcome .qlaToolText{font-size:12px!important}}
+@media(prefers-reduced-motion:reduce){#qaWelcome .qla button{transition:none!important;transform:none!important}}
+
+#qaWelcome .qlaHero h1 em{font-style:normal;color:#f4d697}
+#qaWelcome .qlaHero{border-color:#967343!important;box-shadow:0 0 24px #bd8b3624!important}
+#qaWelcome .qlaPrimary,#qaWelcome .qlaGold{background:linear-gradient(180deg,#fff0b9,#e9b34d 55%,#a96d23)!important;box-shadow:0 5px 22px #dca44a40!important}
+#qaWelcome .qlaConversionCard.qlaVip{background:radial-gradient(ellipse at 90% 0,#ad793b45,transparent 65%),linear-gradient(145deg,#312516,#161616)!important;border-color:#ad8545!important}
+#qaWelcome .qaShowcase{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+#qaWelcome .qaShowcaseCard{min-height:150px;aspect-ratio:4/3;padding:12px;border-color:#665333;border-radius:12px;box-shadow:inset 0 0 0 1px #d7ad5b1a}
+#qaWelcome .qaShowcaseCard[hidden]{display:none!important}
+#qaWelcome .qaShowcaseCard strong{font-size:clamp(14px,1.3vw,18px);text-shadow:0 1px 4px #000}
+#qaWelcome .qaShowcaseCard small{font-size:11px;color:#f1d9a4}
+#qaWelcome .qaShowcaseCard:hover{border-color:var(--qa-gold-light);box-shadow:0 0 17px #e5b85540}
+#qaAllCollections{margin:16px auto 0;display:block}
+body .nav #qaJoinNav{background:linear-gradient(180deg,#f8e6b3,#d49b3f)!important;color:#171410!important}
+@media(max-width:1000px){#qaWelcome .qaShowcase{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:640px){#qaWelcome .qaShowcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#qaWelcome .qaShowcaseCard,#qaWelcome .qaShowcaseCard:first-child{grid-column:auto;min-height:125px;aspect-ratio:4/3}#qaWelcome .qlaHero{min-height:510px!important}#qaWelcome .qlaHero h1{font-size:clamp(29px,8vw,42px)!important}}

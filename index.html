@@ -13,10 +13,11 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="./qa-design.css?v=20261125-obsidian2">
 </head>
 <body>
 <div id="notice">Loading QA Studio AI PRO…</div>
-<iframe id="app" src="./index-1.html?v=signupfunnel-20261123-login02" title="QA Studio AI PRO" allow="web-share"></iframe>
+<iframe id="app" src="./index-1.html?v=obsidian-20261125-2" title="QA Studio AI PRO" allow="web-share"></iframe>
 <script>
 if(location.hash.includes('access_token=')||location.search.includes('error_code=')){
  location.replace('./login.html'+location.search+location.hash);
@@ -24,14 +25,15 @@ if(location.hash.includes('access_token=')||location.search.includes('error_code
 (function(){
 'use strict';
 const f=document.getElementById('app'),n=document.getElementById('notice');
-if(location.search||location.hash)f.src='./index-1.html?v=signupfunnel-20261123-login02'+(location.search?'&'+location.search.slice(1):'')+location.hash;
+if(location.search||location.hash)f.src='./index-1.html?v=obsidian-20261125-2'+(location.search?'&'+location.search.slice(1):'')+location.hash;
 f.addEventListener('load',function(){
  try{
    const doc=f.contentDocument;
+   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261125-obsidian2';doc.head.append(design);}
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js?v=20261123-launch02';
+     script.src='./qa-animals.js?v=20261125-library2';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      doc.body.append(script);
@@ -55,15 +57,15 @@ f.addEventListener('load',function(){
    }
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';doc.body.append(social);}
    if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-core02';plans.dataset.qaPlans='true';doc.body.append(plans);}
-   if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261123-cutouts3';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
+   if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-cutouts2';cutouts.dataset.qaCutouts='true';doc.body.append(cutouts);}
    if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-funny01';start.dataset.qaStart='true';doc.body.append(start);}
    if(!doc.querySelector('script[data-qa-gallery]')){const gallery=doc.createElement('script');gallery.src='./qa-gallery.js?v=20261123-unify01';gallery.dataset.qaGallery='true';gallery.onerror=()=>console.error('Galerii fotošablon se nepodařilo načíst');doc.body.append(gallery);}
    if(!doc.querySelector('script[data-qa-funny]')){const funny=doc.createElement('script');funny.src='./qa-funny.js?v=20261123-unify01';funny.dataset.qaFunny='true';funny.onerror=()=>console.error('Funny Lab se nepodařilo načíst');doc.body.append(funny);}
-   if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261123-launch02';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');doc.body.append(uni);}
+   if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261125-library2';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');doc.body.append(uni);}
    if(!doc.querySelector('script[data-qa-help]')){const help=doc.createElement('script');help.src='./qa-help.js?v=20261123-onboard01';help.dataset.qaHelp='true';help.onerror=()=>console.error('Nápovědu nebylo možné načíst');doc.body.append(help);}
    if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261123-v6';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');doc.body.append(pricing);}
    if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261123-i18n3';i18n.dataset.qaI18n='true';doc.body.append(i18n);}
-   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261123-login01';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');doc.body.append(landing);}
+   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261125-obsidian2';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');doc.body.append(landing);}
    n.style.display='none';
  }catch(e){
    n.textContent='Studio se nepodařilo načíst v tomto prostředí. Otevři soubor index-1.html přímo z webového serveru.';

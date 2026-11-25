@@ -1,5 +1,5 @@
 /* QA Studio AI PRO – realisticky editor scen v2.0
-   14 x 72 = 1008 kombinovatelnych scen. 4 zdarma v kategorii; ostatní PRO/VIP.
+   Cil: 50–100 skutecne odlisnych fotografii v tematicke kategorii. 4 zdarma v kategorii; ostatní PRO/VIP.
    Fotografie jsou exter. inspiracni podklady; placene odemykani overuje server.
    Cesky UI, desktop + mobil, Canvas PNG / MediaRecorder WebM.
 */
@@ -94,7 +94,7 @@ function addPhoto(cat,photo,title,credit=null,photoFull=null){
  return true;
 }
 for(const cat of cats)picIds[cat.id].forEach((p,i)=>addPhoto(cat,p,cat.subjects[i]));
-const photoUrl=(id,width)=>id.startsWith('https://')?id:('https://images.unsplash.com/'+id+'?auto=format&fit=crop&w='+width+'&q=85');
+const photoUrl=(id,width)=>(id.startsWith('https://')||id.startsWith('./assets/photos/'))?id:('https://images.unsplash.com/'+id+'?auto=format&fit=crop&w='+width+'&q=85');
 let selected=sceneList[0],activeCat='all',filter='all',query='',visible=30,photo=null,photoFailed=false,photoToken=0,customBackground=false;
 let effects=['snow'],density=65,wind=16,caption='',captionColor='#ffffff',overlayItems=[],selectedOverlay=-1,isPro=false,licensePromise=null,recording=false,mediaRecorder=null,recTimer=null;
 const style=document.createElement('style');
@@ -162,7 +162,7 @@ let lastFrame=0;function frame(ts){if(section.classList.contains('active')&&ts-l
 const effectBox=q('#qslEffects');Object.keys(fxNames).forEach(kind=>{let b=document.createElement('button');b.textContent=fxNames[kind];b.dataset.fx=kind;b.onclick=()=>{if(effects.includes(kind)){if(effects.length>1)effects=effects.filter(x=>x!==kind);else return}else{if(effects.length>= (isPro?3:1)){status('Více souběžných efektů je funkce PRO. Ověř licenci.');return}effects.push(kind)}syncEffects()};effectBox.append(b)});
 function syncEffects(){effectBox.querySelectorAll('button').forEach(b=>b.classList.toggle('active',effects.includes(b.dataset.fx)))}
 function select(t){selected=t;effects=[t.fx];q('#qslTitle').textContent=t.name;q('#qslTierMark').textContent=t.pro?'PRO / VIP – ukázka':'ZDARMA';q('#qslTierMark').style.color=t.pro?'#dfc37b':'#9df2ce';q('#qslCaption').value='';caption='';syncEffects();loadBg(t);const credit=q('#qslCredit');credit.replaceChildren();if(t.credit){const a=document.createElement('a');a.href=t.credit.source;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Fotografie: '+t.credit.author+' · '+t.credit.license;credit.append(a)}else credit.textContent='Původní fotografický podklad; ověř podmínky využití.';renderCards()}
-function filtered(){return sceneList.filter(t=>(t.cat!=='animals'&&t.cat!=='people')&&(activeCat==='all'||(activeCat==='living'?['animals','people','fantasy'].includes(t.cat):t.cat===activeCat))&&(filter==='all'||(filter==='pro'?t.pro:!t.pro))&&(!q('#qslGenre').value||q('#qslGenre').value==='all'||t.fx===q('#qslGenre').value)&&(!query||(t.name+' '+t.catName+' '+fxNames[t.fx]).toLocaleLowerCase('cs-CZ').includes(query)))}
+function filtered(){return sceneList.filter(t=>(activeCat==='all'||(activeCat==='living'?['animals','people','fantasy'].includes(t.cat):t.cat===activeCat))&&(filter==='all'||(filter==='pro'?t.pro:!t.pro))&&(!q('#qslGenre').value||q('#qslGenre').value==='all'||t.fx===q('#qslGenre').value)&&(!query||(t.name+' '+t.catName+' '+fxNames[t.fx]).toLocaleLowerCase('cs-CZ').includes(query)))}
 function renderCards(){let result=filtered(),grid=q('#qslGrid');grid.replaceChildren();result.slice(0,visible).forEach(t=>{let b=document.createElement('button');b.className='qsl-card'+(t.id===selected.id?' active':'');b.type='button';let thumb=document.createElement('div');thumb.className='qsl-thumb';thumb.style.backgroundImage='linear-gradient(0deg,rgba(0,0,0,.35),transparent 58%),url("'+photoUrl(t.photo,440)+'")';let pill=document.createElement('span');pill.className='qsl-pill'+(t.pro?' pro':'');pill.textContent=t.pro?'PRO':'ZDARMA';thumb.append(pill);let name=document.createElement('div');name.className='qsl-cardname';name.textContent=t.name+' · '+fxNames[t.fx];b.append(thumb,name);b.onclick=()=>select(t);grid.append(b)});q('#qslResults').textContent='Zobrazeno '+Math.min(result.length,visible)+' z '+result.length+' jedinečných fotografií';q('#qslRealCount').textContent=sceneList.length+' skutečně různých fotografií';q('#qslMore').hidden=result.length<=visible&&activeCat==='all';q('#qslMore').textContent=visible>=result.length?'Načíst další unikátní fotografie':'Zobrazit další fotografie'}
 
 const photoSearch={
@@ -170,7 +170,7 @@ winter:'snow mountains trees winter',weather:'thunderstorm storm clouds rain',
 forest:'forest nature woodland landscape',mountain:'alpine mountain snow landscape',
 sea:'beach ocean tropical island',city:'city street skyline architecture',
 space:'astronomy stars nebula milky way',fantasy:'misty forest fog landscape',
-animals:'wild animal wildlife photograph',people:'portrait person photography',
+animals:'cat dog horse bird wildlife animal photograph',people:'portrait person photography',
 christmas:'christmas tree decorations lights',film:'cinematic film landscape lighting',
 water:'waterfall river lake landscape',architecture:'building architecture castle town',
 cars:"supercar sports car road vintage automotive photography",
@@ -239,6 +239,7 @@ async function fetchUnique(cat){
  }catch(err){if(activeCat===cat.id)status('Některé fotografie se nepodařilo načíst: '+err.message+'. Dostupné karty zůstávají v knihovně.')}
  finally{photoLoading.delete(cat.id)}
 }
+async function loadStudioPhotos(){try{const response=await fetch('./assets/photos/manifest.json',{cache:'no-cache'});if(!response.ok)return;const data=await response.json();if(!Array.isArray(data.assets))return;const seen=new Set();for(const x of data.assets){const cat=cats.find(c=>c.id===x.category);if(!cat||typeof x.id!=='string'||seen.has(x.id)||typeof x.file!=='string'||!(/^[a-z0-9][a-z0-9/_.-]*\\.(webp|png|jpg|jpeg)$/i.test(x.file))||x.file.includes('..'))continue;seen.add(x.id);const path='./assets/photos/'+x.file;addPhoto(cat,path,String(x.name||x.id).slice(0,85),{author:'QA Studio AI PRO',source:path,license:'QA Studio original asset'},path)}renderCards()}catch{}}
 let filling=false;
 async function loadBackgroundCatalog(){
  if(filling)return;
@@ -248,7 +249,7 @@ async function loadBackgroundCatalog(){
  filling=false;
 }
 
-const catsBar=q('#qslCategories');[{id:'all',name:'Všechna pozadí'}].concat(cats.filter(c=>!['animals','people'].includes(c.id))).forEach(c=>{let b=document.createElement('button');b.textContent=c.name+((c.id==='all'||c.id==='living')?'':' · až 72');b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else if(c.id==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
+const catsBar=q('#qslCategories');[{id:'all',name:'Všechna pozadí'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name;b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=30;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else if(c.id==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
 window.addEventListener('qa:use-gallery-image',event=>{
  const image=event.detail&&event.detail.image;
  if(typeof image!=='string'||!image.startsWith('data:image/png;base64,')||image.length>15000000)return;
@@ -315,4 +316,5 @@ syncEffects();renderCards();loadBg(selected);
 fetchUnique(cats[0]);
 const chip=document.querySelector('.chip');if(chip&&/200 grafik|800 AI scén/.test(chip.textContent))chip.textContent='Fotografie bez opakování · vlastní zvířata a lidé · skutečně animované počasí';
 for(const id of ['templates','luxury','christmas','collections']){const b=nav.querySelector('button[data-tab="'+id+'"]');if(b){b.hidden=true;b.style.display='none'}}
+loadStudioPhotos();
 })();

@@ -15,7 +15,7 @@ function copy(relative){
   fs.mkdirSync(path.dirname(destination),{recursive:true});
   fs.copyFileSync(source,destination);
 }
-const required=['index.html','index-1.html','login.html','licenses.html','icon.svg','manifest.webmanifest','sw.js'];
+const required=['index.html','index-1.html','login.html','licenses.html','icon.svg','manifest.webmanifest','sw.js','qa-design.css'];
 fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
 for(const filename of required)copy(filename);
 const modules=fs.readdirSync(root).filter(n=>/^qa-[A-Za-z0-9-]+\.js$/.test(n));
@@ -30,7 +30,7 @@ for(const dir of ['assets','beta']){
     const next=path.posix.join(relative,e.name);
     if(e.isSymbolicLink())throw Error('No symlinks: '+next);
     if(e.isDirectory())walk(next);
-    else if(e.isFile()&&/\.(?:html|webp|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i.test(e.name))copy(next);
+    else if(e.isFile()&&(/\.(?:html|webp|png|jpe?g|gif|svg|ico|mp4|webm|woff2?)$/i.test(e.name)||['assets/cutouts/manifest.json','assets/photos/manifest.json'].includes(next)))copy(next);
   }
  }
  walk(dir);
