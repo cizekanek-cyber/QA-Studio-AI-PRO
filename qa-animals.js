@@ -85,17 +85,19 @@ const cats=[
 const looks=['Přirozené světlo','Kino HDR','Zlatá hodina','Měsíční noc','Studený film','Dramatický kontrast','Jemná mlha','Luxusní detail','Filmový noir','Vzdušná perspektiva','Teplý podvečer','Tajemná modř'];
 const fxNames={snow:'Jemné sněžení',blizzard:'Silná vánice',rain:'Realistický déšť',fog:'Pohyblivá mlha',frost:'Mrazivý závoj',sparkle:'Světelné jiskry',dust:'Částečky v protisvětle',fireflies:'Světlušky',sunrays:'Sluneční paprsky',lightning:'Bouřka'};
 const sceneList=[],usedPhotoIDs=new Set(),perCategory=new Map();
-function addPhoto(cat,photo,title,credit=null,photoFull=null){
+const is4K=(w,h)=>Math.max(Number(w)||0,Number(h)||0)>=3840&&Math.min(Number(w)||0,Number(h)||0)>=2160;
+const count4K=id=>sceneList.filter(t=>t.cat===id&&is4K(t.width,t.height)).length;
+function addPhoto(cat,photo,title,credit=null,photoFull=null,width=0,height=0){
  if(!photo||usedPhotoIDs.has(photo)||((perCategory.get(cat.id)||0)>=72))return false;
  const n=perCategory.get(cat.id)||0;perCategory.set(cat.id,n+1);usedPhotoIDs.add(photo);
  sceneList.push({id:cat.id+'-img-'+String(n+1).padStart(3,'0'),
  cat:cat.id,catName:cat.name,subject:cat.subjects[n%6],look:looks[Math.floor(n/6)%looks.length],
- fx:cat.fx[n%6],photo,photoFull,credit,pro:n>=4,idx:n,name:title||cat.subjects[n%6]});
+ fx:cat.fx[n%6],photo,photoFull,credit,width,height,pro:n>=4,idx:n,name:title||cat.subjects[n%6]});
  return true;
 }
 for(const cat of cats)picIds[cat.id].forEach((p,i)=>addPhoto(cat,p,cat.subjects[i]));
 const photoUrl=(id,width)=>(id.startsWith('https://')||id.startsWith('./assets/photos/'))?id:('https://images.unsplash.com/'+id+'?auto=format&fit=crop&w='+width+'&q=85');
-let selected=sceneList[0],activeCat='all',filter='all',query='',visible=70,photo=null,photoFailed=false,photoToken=0,customBackground=false;
+let selected=sceneList[0],activeCat='all',filter='all',query='',visible=70,only4K=false,photo=null,photoFailed=false,photoToken=0,customBackground=false;
 let effects=['snow'],density=65,wind=16,caption='',captionColor='#ffffff',overlayItems=[],selectedOverlay=-1,isPro=false,licensePromise=null,recording=false,mediaRecorder=null,recTimer=null;
 const style=document.createElement('style');
 style.textContent='#qaSceneLib{color:#f0f4ff;font-family:system-ui,Arial,sans-serif}#qaSceneLib *{box-sizing:border-box}'+
@@ -121,6 +123,7 @@ section.innerHTML=[
 '<button type="button" id="qaPhotoBack">Editor / Export</button><div class="qsl-cats" id="qslCategories"></div>',
 '<div class="qsl-toolbar"><input type="search" id="qslSearch" placeholder="Hledej: auta, motorky, domy, jídlo, vánoce…">',
 '<select id="qslTier"><option value="all">Všechny varianty</option><option value="free">Zdarma</option><option value="pro">PRO – náhled</option></select>',
+'<select id="qslQuality" aria-label="Kvalita / Quality"><option value="all">Všechna rozlišení</option><option value="4k">Pouze 4K</option></select>',
 '<select id="qslGenre"><option value="all">Všechna počasí</option></select></div>',
 '<div class="qsl-layout"><div class="qsl-gallery"><div id="qslResults" class="qsl-sub"></div><div id="qslGrid" class="qsl-grid"></div><div class="qsl-row"><button id="qslMore">Zobrazit další scény</button></div></div>',
 '<div class="qsl-editor"><strong id="qslTitle" class="qsl-title">Editor</strong> <span id="qslTierMark" class="qsl-badge"></span>',
@@ -162,9 +165,10 @@ let lastFrame=0;function frame(ts){if(section.classList.contains('active')&&ts-l
 const effectBox=q('#qslEffects');Object.keys(fxNames).forEach(kind=>{let b=document.createElement('button');b.textContent=fxNames[kind];b.dataset.fx=kind;b.onclick=()=>{if(effects.includes(kind)){if(effects.length>1)effects=effects.filter(x=>x!==kind);else return}else{if(effects.length>= (isPro?3:1)){status('Více souběžných efektů je funkce PRO. Ověř licenci.');return}effects.push(kind)}syncEffects()};effectBox.append(b)});
 function syncEffects(){effectBox.querySelectorAll('button').forEach(b=>b.classList.toggle('active',effects.includes(b.dataset.fx)))}
 function select(t){selected=t;effects=[t.fx];q('#qslTitle').textContent=t.name;q('#qslTierMark').textContent=t.pro?'PRO / VIP – ukázka':'ZDARMA';q('#qslTierMark').style.color=t.pro?'#dfc37b':'#9df2ce';q('#qslCaption').value='';caption='';syncEffects();loadBg(t);const credit=q('#qslCredit');credit.replaceChildren();if(t.credit){const a=document.createElement('a');a.href=t.credit.source;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Fotografie: '+t.credit.author+' · '+t.credit.license;credit.append(a)}else credit.textContent='Původní fotografický podklad; ověř podmínky využití.';renderCards()}
-function filtered(){return sceneList.filter(t=>(activeCat==='all'||(activeCat==='living'?['animals','people','fantasy'].includes(t.cat):t.cat===activeCat))&&(filter==='all'||(filter==='pro'?t.pro:!t.pro))&&(!q('#qslGenre').value||q('#qslGenre').value==='all'||t.fx===q('#qslGenre').value)&&(!query||(t.name+' '+t.catName+' '+fxNames[t.fx]).toLocaleLowerCase('cs-CZ').includes(query)))}
-window.qaPhotoCatalog=()=>sceneList.map(t=>({id:t.id,category:t.cat,title:t.name,thumb:photoUrl(t.photo,440),pro:t.pro}));
-function renderCards(){window.dispatchEvent(new Event('qa:catalog-updated'));let result=filtered(),grid=q('#qslGrid');grid.replaceChildren();result.slice(0,visible).forEach(t=>{let b=document.createElement('button');b.className='qsl-card'+(t.id===selected.id?' active':'');b.type='button';let thumb=document.createElement('div');thumb.className='qsl-thumb';thumb.style.backgroundImage='linear-gradient(0deg,rgba(0,0,0,.35),transparent 58%),url("'+photoUrl(t.photo,440)+'")';let pill=document.createElement('span');pill.className='qsl-pill'+(t.pro?' pro':'');pill.textContent=t.pro?'PRO':'ZDARMA';thumb.append(pill);let name=document.createElement('div');name.className='qsl-cardname';name.textContent=t.name+' · '+fxNames[t.fx];b.append(thumb,name);b.onclick=()=>{section.classList.remove('qaFullPhotoLibrary');select(t);q('#qslCanvas')?.scrollIntoView({block:'start',behavior:'smooth'});};grid.append(b)});q('#qslResults').textContent='Zobrazeno '+Math.min(result.length,visible)+' z '+result.length+' jedinečných fotografií';q('#qslRealCount').textContent=sceneList.length+' skutečně různých fotografií';q('#qslMore').hidden=result.length<=visible&&activeCat==='all';q('#qslMore').textContent=visible>=result.length?'Načíst další unikátní fotografie':'Zobrazit další fotografie'}
+function filtered(){return sceneList.filter(t=>(!only4K||is4K(t.width,t.height))&&(activeCat==='all'||(activeCat==='living'?['animals','people','fantasy'].includes(t.cat):t.cat===activeCat))&&(filter==='all'||(filter==='pro'?t.pro:!t.pro))&&(!q('#qslGenre').value||q('#qslGenre').value==='all'||t.fx===q('#qslGenre').value)&&(!query||(t.name+' '+t.catName+' '+fxNames[t.fx]).toLocaleLowerCase('cs-CZ').includes(query)))}
+window.qaPhotoCatalog=()=>sceneList.map(t=>({id:t.id,category:t.cat,title:t.name,thumb:photoUrl(t.photo,440),pro:t.pro,width:t.width,height:t.height,is4K:is4K(t.width,t.height)}));
+function fullPreview(t){const d=document.createElement('dialog');d.className='qa4KPreview';const top=document.createElement('div');const title=document.createElement('strong');title.textContent=t.name;const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Close preview');close.onclick=()=>d.close();top.append(title,close);const note=document.createElement('p');note.textContent='Načítám originál / Loading original…';const img=new Image();img.alt=t.name;img.decoding='async';img.onload=()=>{note.textContent=img.naturalWidth+' × '+img.naturalHeight+' px'+(is4K(img.naturalWidth,img.naturalHeight)?' · 4K':' · not 4K');};img.onerror=()=>{note.textContent='Originál nelze načíst / Original unavailable';};img.src=t.photoFull||photoUrl(t.photo,3840);d.append(top,note,img);d.addEventListener('close',()=>d.remove(),{once:true});document.body.append(d);d.showModal()}
+function renderCards(){window.dispatchEvent(new Event('qa:catalog-updated'));let result=filtered(),grid=q('#qslGrid');grid.replaceChildren();result.slice(0,visible).forEach(t=>{let b=document.createElement('button');b.className='qsl-card'+(t.id===selected.id?' active':'');b.type='button';let thumb=document.createElement('div');thumb.className='qsl-thumb';thumb.style.backgroundImage='linear-gradient(0deg,rgba(0,0,0,.35),transparent 58%),url("'+photoUrl(t.photo,440)+'")';let pill=document.createElement('span');pill.className='qsl-pill'+(t.pro?' pro':'');pill.textContent=t.pro?'PRO':'ZDARMA';thumb.append(pill);let name=document.createElement('div');name.className='qsl-cardname';name.textContent=t.name+' · '+fxNames[t.fx];if(is4K(t.width,t.height)){const mark=document.createElement('small');mark.className='qa4KMark';mark.textContent='4K · '+t.width+' × '+t.height;name.append(mark)}b.append(thumb,name);b.onclick=()=>{section.classList.remove('qaFullPhotoLibrary');select(t);q('#qslCanvas')?.scrollIntoView({block:'start',behavior:'smooth'});};const wrap=document.createElement('div');wrap.className='qaPhotoTile';wrap.append(b);if(is4K(t.width,t.height)){const preview=document.createElement('button');preview.type='button';preview.className='qa4KOpen';preview.textContent='4K náhled / Preview';preview.onclick=()=>fullPreview(t);wrap.append(preview)}grid.append(wrap)});q('#qslResults').textContent='Zobrazeno '+Math.min(result.length,visible)+' z '+result.length+' jedinečných fotografií';q('#qslRealCount').textContent=sceneList.length+' skutečně různých fotografií';if(only4K&&activeCat!=='all')q('#qslResults').textContent=count4K(activeCat)+' / 50 4K · '+Math.min(result.length,visible)+' zobrazeno / shown';q('#qslMore').hidden=result.length<=visible&&activeCat==='all';q('#qslMore').textContent=visible>=result.length?'Načíst další unikátní fotografie':'Zobrazit další fotografie'}
 
 const photoSearch={
 winter:'snow mountains trees winter',weather:'thunderstorm storm clouds rain',
@@ -203,7 +207,7 @@ function plainText(html){
 }
 function titleFromFile(title){return String(title||'').replace(/^File:/,'').replace(/\.[^/.]+$/,'').replace(/_/g,' ').slice(0,85)}
 async function fetchUnique(cat){
- if(!cat||photoLoading.has(cat.id)||photoDone.has(cat.id)||(perCategory.get(cat.id)||0)>=72)return;
+ if(!cat||photoLoading.has(cat.id)||photoDone.has(cat.id)||count4K(cat.id)>=50||(perCategory.get(cat.id)||0)>=72)return;
  photoLoading.add(cat.id);
  try{
   const offset=photoOffset.get(cat.id)||0;
@@ -221,7 +225,7 @@ async function fetchUnique(cat){
   let added=0;
   for(const page of pages){
    const img=page.imageinfo&&page.imageinfo[0],meta=img&&img.extmetadata;
-   if(!img||!meta||img.mime!=='image/jpeg'||!img.thumburl||img.width<1500||img.height<850||img.sha1&&usedImageHashes.has(img.sha1))continue;
+   if(!img||!meta||img.mime!=='image/jpeg'||!img.thumburl||!is4K(img.width,img.height)||img.sha1&&usedImageHashes.has(img.sha1))continue;
    if(/logo|drawing|painting|cartoon|illustration|map|diagram|advertisement|poster|flag|screenshot|icon/i.test(page.title))continue;
    const license=plainText(meta.LicenseShortName&&meta.LicenseShortName.value);
    if(!/^(CC0|Public domain|PD\b|PDM\b)/i.test(license))continue;
@@ -230,17 +234,18 @@ async function fetchUnique(cat){
    const author=plainText(meta.Artist&&meta.Artist.value)||'Wikimedia Commons';
    const title=titleFromFile(page.title);
    const source='https://commons.wikimedia.org/wiki/'+encodeURIComponent(page.title.replace(/ /g,'_'));
-   if(addPhoto(cat,img.thumburl,title,{author,source,license},img.url)){added++;if(img.sha1)usedImageHashes.add(img.sha1)}
-   if((perCategory.get(cat.id)||0)>=72)break;
+   if(addPhoto(cat,img.thumburl,title,{author,source,license},img.url,img.width,img.height)){added++;if(img.sha1)usedImageHashes.add(img.sha1)}
+   if(count4K(cat.id)>=50||(perCategory.get(cat.id)||0)>=72)break;
   }
-  photoOffset.set(cat.id,offset+50);
+  photoOffset.set(cat.id,Number(result.continue?.gsroffset)||offset+50);
   if(!result.continue||!result.continue.gsroffset||(perCategory.get(cat.id)||0)>=72)photoDone.add(cat.id);
   if(added)renderCards();
   if(activeCat===cat.id)status(added?'Přidáno '+added+' jiných fotografií. Každá fotografie má vlastní zdroj a licenci.':'V tomto hledání nejsou další ověřené fotografie. Je možné zkusit novou stránku výsledků.');
  }catch(err){if(activeCat===cat.id)status('Některé fotografie se nepodařilo načíst: '+err.message+'. Dostupné karty zůstávají v knihovně.')}
  finally{photoLoading.delete(cat.id)}
 }
-async function loadStudioPhotos(){try{const response=await fetch('./assets/photos/manifest.json',{cache:'no-cache'});if(!response.ok)return;const data=await response.json();if(!Array.isArray(data.assets))return;const seen=new Set();for(const x of data.assets){const cat=cats.find(c=>c.id===x.category);if(!cat||typeof x.id!=='string'||seen.has(x.id)||typeof x.file!=='string'||!(/^[a-z0-9][a-z0-9/_.-]*\\.(webp|png|jpg|jpeg)$/i.test(x.file))||x.file.includes('..'))continue;seen.add(x.id);const path='./assets/photos/'+x.file;addPhoto(cat,path,String(x.name||x.id).slice(0,85),{author:'QA Studio AI PRO',source:path,license:'QA Studio original asset'},path)}renderCards()}catch{}}
+async function loadStudioPhotos(){try{const response=await fetch('./assets/photos/manifest.json',{cache:'no-cache'});if(!response.ok)return;const data=await response.json();if(!Array.isArray(data.assets))return;const seen=new Set();for(const x of data.assets){const cat=cats.find(c=>c.id===x.category);if(!cat||typeof x.id!=='string'||seen.has(x.id)||typeof x.file!=='string'||!(/^[a-z0-9][a-z0-9/_.-]*\\.(webp|png|jpg|jpeg)$/i.test(x.file))||x.file.includes('..'))continue;seen.add(x.id);const path='./assets/photos/'+x.file;addPhoto(cat,path,String(x.name||x.id).slice(0,85),{author:'QA Studio AI PRO',source:path,license:'QA Studio original asset'},path,Number(x.width)||0,Number(x.height)||0)}renderCards()}catch{}}
+async function fill4K(cat){if(!cat)return;for(let page=0;page<8;page++){if(activeCat!==cat.id||!only4K||count4K(cat.id)>=50||photoDone.has(cat.id)||photoLoading.has(cat.id))break;await fetchUnique(cat);if(page<7)await new Promise(r=>setTimeout(r,300));}renderCards()}
 let filling=false;
 async function loadBackgroundCatalog(){
  if(filling)return;
@@ -251,7 +256,7 @@ async function loadBackgroundCatalog(){
 }
 
 q('#qaPhotoBack').onclick=()=>section.classList.remove('qaFullPhotoLibrary');
-const catsBar=q('#qslCategories');[{id:'all',name:'Všechna pozadí'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name;b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=70;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else if(c.id==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
+const catsBar=q('#qslCategories');[{id:'all',name:'Všechna pozadí'}].concat(cats).forEach(c=>{let b=document.createElement('button');b.textContent=c.name;b.dataset.cat=c.id;b.onclick=()=>{activeCat=c.id;visible=70;catsBar.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCards();if(c.id==='all')loadBackgroundCatalog();else if(c.id==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else if(only4K)fill4K(c);else fetchUnique(c)};catsBar.append(b)});catsBar.firstChild.classList.add('active');
 window.addEventListener('qa:use-gallery-image',event=>{
  const image=event.detail&&event.detail.image;
  if(typeof image!=='string'||!image.startsWith('data:image/png;base64,')||image.length>15000000)return;
@@ -269,9 +274,10 @@ window.addEventListener('qa:use-gallery-image',event=>{
  im.onerror=()=>{if(token!==photoToken)return;photoFailed=true;status('Obrázek z galerie se nepodařilo převést do editoru.');};
  im.src=image;
 });
-window.addEventListener('qa:open-category',event=>{const id=String(event.detail?.category||'');const match=Array.from(catsBar.querySelectorAll('button[data-cat]')).find(b=>b.dataset.cat===id);if(!match)return;q('#qslSearch').value='';query='';q('#qslTier').value='all';filter='all';q('#qslGenre').value='all';match.click();});
+window.addEventListener('qa:open-category',event=>{const id=String(event.detail?.category||'');if(event.detail?.quality==='4k'){only4K=true;q('#qslQuality').value='4k'}const match=Array.from(catsBar.querySelectorAll('button[data-cat]')).find(b=>b.dataset.cat===id);if(!match)return;q('#qslSearch').value='';query='';q('#qslTier').value='all';filter='all';q('#qslGenre').value='all';match.click();});
 const genre=q('#qslGenre');Object.keys(fxNames).forEach(k=>{let o=document.createElement('option');o.value=k;o.textContent=fxNames[k];genre.append(o)});
-q('#qslTier').onchange=e=>{filter=e.target.value;visible=70;renderCards()};genre.onchange=()=>{visible=70;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=70;renderCards()};q('#qslMore').onclick=()=>{visible+=70;renderCards();if(activeCat==='all')loadBackgroundCatalog();else if(activeCat==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else fetchUnique(cats.find(x=>x.id===activeCat))};
+q('#qslQuality').onchange=e=>{only4K=e.target.value==='4k';visible=50;renderCards();if(only4K&&activeCat!=='all')fill4K(cats.find(c=>c.id===activeCat))};
+q('#qslTier').onchange=e=>{filter=e.target.value;visible=70;renderCards()};genre.onchange=()=>{visible=70;renderCards()};q('#qslSearch').oninput=e=>{query=e.target.value.toLocaleLowerCase('cs-CZ').trim();visible=70;renderCards()};q('#qslMore').onclick=()=>{visible+=70;renderCards();if(activeCat==='all')loadBackgroundCatalog();else if(activeCat==='living')cats.filter(x=>['animals','people','fantasy'].includes(x.id)).forEach(x=>fetchUnique(x));else if(only4K)fill4K(cats.find(x=>x.id===activeCat));else fetchUnique(cats.find(x=>x.id===activeCat))};
 q('#qslDensity').oninput=e=>density=Number(e.target.value);q('#qslWind').oninput=e=>wind=Number(e.target.value);
 q('#qslRatio').onchange=e=>{const p=e.target.value.split(':').map(Number);can.width=p[0]>p[1]?960:540;can.height=Math.round(can.width*p[1]/p[0]);can.style.aspectRatio=p[0]+'/'+p[1]};
 function exportDims(){const p=q('#qslRatio').value;return p==='9:16'?(isPro?[2160,3840]:[720,1280]):p==='1:1'?(isPro?[2160,2160]:[1080,1080]):(isPro?[3840,2160]:[1280,720])}
