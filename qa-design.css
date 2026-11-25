@@ -184,3 +184,18 @@ body .nav #qaTopBrand{border:0!important;background:transparent!important;white-
 #qaWelcome.qaReferenceHome .qlaTwoCols{grid-template-columns:1fr 1fr}
 @media(max-width:1050px){#qaWelcome .qaHomeShell{grid-template-columns:125px minmax(0,1fr) 175px;gap:8px}#qaWelcome .qaHomeSidebar{padding:5px}#qaWelcome.qaReferenceHome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#qaWelcome.qaReferenceHome .qaShowcase{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:760px){#qaWelcome.qaReferenceHome.qlaLandingActive{padding:6px 8px 80px!important}#qaWelcome .qaHomeShell{grid-template-columns:minmax(0,1fr)}#qaWelcome .qaHomeSidebar{display:none}#qaWelcome .qaHomeRail{display:grid;grid-template-columns:1fr 1fr;gap:8px;grid-row:2}#qaWelcome .qaHomeRailNotice{grid-column:1/-1}#qaWelcome.qaReferenceHome .qlaHero{min-height:385px!important}#qaWelcome.qaReferenceHome .qlaHeroArt{width:100%!important;height:70%!important}#qaWelcome.qaReferenceHome .qlaHero::before{background:linear-gradient(0deg,#0b0b0d 0%,#0b0b0d 34%,#0b0b0dbb 62%,transparent 100%)!important}#qaWelcome.qaReferenceHome .qlaHeroContent{padding:12px!important}#qaWelcome.qaReferenceHome .qlaHero h1{font-size:clamp(25px,7vw,36px)!important}#qaWelcome.qaReferenceHome .qlaToolGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#qaWelcome .qaHomeTool{min-height:58px;gap:4px}#qaWelcome .qaHomeTool strong{font-size:10px}#qaWelcome .qaHomeTool small{font-size:8px}#qaWelcome.qaReferenceHome .qaShowcase{grid-template-columns:repeat(2,minmax(0,1fr))!important}#qaWelcome.qaReferenceHome .qaShowcaseCard,#qaWelcome.qaReferenceHome .qaShowcaseCard:first-child{min-height:90px;aspect-ratio:1.65}#qaWelcome.qaReferenceHome .qlaTwoCols{grid-template-columns:1fr}#qaWelcome .qaHomeRail .qlaConversionCard{padding:10px!important}#qaWelcome .qaHomeRail h2{font-size:29px!important}}
+
+#qaWelcome .qaCardPreviews{display:flex;gap:4px;width:100%;height:24px;position:relative;margin-top:4px;z-index:1}
+#qaWelcome .qaCardPreviews img{position:static!important;width:30%!important;height:100%!important;object-fit:cover;border:1px solid #c7a56a70;border-radius:4px}
+#qaWelcome .qaMobileDock{display:none}
+@media(max-width:760px){
+#qaWelcome .qaHomeCenter{display:contents}
+#qaWelcome .qaHomeShell>.qlaHero{grid-row:1}
+#qaWelcome .qaHomeRail{grid-row:2}
+#qaWelcome .qaHomeShell>#qaCollectionSection{grid-row:3}
+#qaWelcome .qaHomeShell>.qaHomeFeatured{grid-row:4}
+#qaWelcome .qaMobileDock{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;background:#111113f5;z-index:50;gap:4px;padding:6px 8px max(7px,env(safe-area-inset-bottom));border-top:1px solid #a17b3e}
+#qaWelcome .qaMobileDock button{background:transparent;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;color:#f4e3c2;min-height:48px;justify-content:center}
+#qaWelcome .qaMobileDock small{font-size:10px}
+#qaWelcome .qaCardPreviews{height:19px}
+}
