@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "status": "draft",
+  "currency": "CZK",
+  "auto_renew": false,
+  "includes_external_ai": false,
+  "plans": [
+    {
+      "id": "editor_day",
+      "days": 1,
+      "price_minor": 1900
+    },
+    {
+      "id": "editor_week",
+      "days": 7,
+      "price_minor": 6900
+    },
+    {
+      "id": "editor_14days",
+      "days": 14,
+      "price_minor": 11900
+    },
+    {
+      "id": "editor_month",
+      "days": 30,
+      "price_minor": 19900
+    },
+    {
+      "id": "editor_90days",
+      "days": 90,
+      "price_minor": 44900
+    },
+    {
+      "id": "editor_year",
+      "days": 365,
+      "price_minor": 129900
+    }
+  ]
+}

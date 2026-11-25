@@ -19,7 +19,7 @@ function card(p){
 }
 function apply(){
  const target=document.getElementById('pricing');
- if(target && target.dataset.qaPricingVersion!=='5'){
+ if(target && target.dataset.qaPricingVersion!=='6'){
   const panel=document.createElement('div');panel.className='panel';
   const title=document.createElement('h2');title.textContent='QA Studio AI PRO – společné AI kredity';
   const intro=document.createElement('p');intro.className='sub';intro.textContent='Čtyři základní šablony v každé kategorii zdarma; placený časový balíček otevře všechny hotové PRO/VIP šablony. V ceně je společný rozpočet AI kreditů, bez účtu od externího poskytovatele. Jednorázové časové balíčky bez automatického prodlužování.';
@@ -28,15 +28,15 @@ function apply(){
   const note=document.createElement('div');note.className='tip';note.textContent='Výsledné náklady každého externího AI generování budou odečteny v kreditech podle konkrétního modelu a nastavení. Externí AI se zákazníkovi nikdy neúčtuje zvlášť. Automatické generování a platby zůstanou vypnuté do dokončení bezpečného serverového čerpání a testování.';
   const action=document.createElement('button');action.type='button';action.className='btn primary';action.textContent='Zobrazit spotřebu kreditů';action.style.marginTop='16px';
   action.addEventListener('click',()=>document.querySelector('.nav button[data-tab="qaPlansPanel"]')?.click());
-  panel.append(title,intro,grid,note,action);
-  target.replaceChildren(panel);target.dataset.qaPricingVersion='5';
+  const editorTitle=document.createElement('h2');editorTitle.textContent='Editor PRO / Editor passes';const editorIntro=document.createElement('p');editorIntro.textContent='Návrh jednorázových licencí bez externí AI. Nákup zatím není aktivní. / Proposed one-time editor access, excluding external AI. Not available for purchase yet.';const editorGrid=document.createElement('div');editorGrid.className='pricing-grid';editorGrid.style.gridTemplateColumns='repeat(auto-fit,minmax(165px,1fr))';for(const [id,days,price] of [["editor_day",1,19],["editor_week",7,69],["editor_14days",14,119],["editor_month",30,199],["editor_90days",90,449],["editor_year",365,1299]]){const el=document.createElement('div');el.className='price-card';const a=document.createElement('strong');a.textContent=days===1?'24 h':days+' dní / days';const b=document.createElement('div');b.className='price-value';b.textContent=fmt(price)+' Kč';el.append(a,b);editorGrid.append(el)}panel.append(editorTitle,editorIntro,editorGrid,title,intro,grid,note,action);
+  target.replaceChildren(panel);target.dataset.qaPricingVersion='6';
  }
  const elsewhere=document.querySelector('.qa-lib-prise');
  if(elsewhere&&!elsewhere.dataset.qaPricingVersion){
   const p=elsewhere.querySelector('p');
   if(p)p.textContent='Nový návrh časových balíčků QA Studio AI PRO: 1 den 59 Kč, 3 dny 129 Kč, 14 dní 279 Kč, 30 dní 449 Kč, 90 dní 1 099 Kč a 365 dní 2 990 Kč. Balíčky zpřístupní všechny hotové PRO/VIP šablony a obsahují kreditový rozpočet na AI bez dalších plateb externím poskytovatelům. Nákup a externí AI generování zatím nejsou aktivní.';
   const h=elsewhere.querySelector('h3');if(h)h.textContent='Jednotné AI kredity – připravujeme aktivaci';
-  elsewhere.dataset.qaPricingVersion='5';
+  elsewhere.dataset.qaPricingVersion='6';
  }
 }
 apply();
