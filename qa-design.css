@@ -361,3 +361,54 @@ body>.qaMobileDock{display:none}
  body>.qaMobileDock small{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){#qaWelcome *,body>.qaMobileDock *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Finish compact dashboard and real asset previews. */
+#qaWelcome .qaCategorySymbol{color:#efc66f;margin-right:5px}
+#qaWelcome .qaPreviewImage{display:block;background-size:cover;background-position:center;min-width:0;border-radius:4px}
+#qaWelcome .qaCardPreviews .qaPreviewImage{flex:1;border:1px solid #af884f}
+#qaWelcome .qaCategoryArrow{display:grid;place-items:center;color:#f9d99b;background:#0a0908b0;border-radius:4px;font-size:18px;flex:0 0 15px}
+#qaWelcome .qaCategoryCover{position:absolute;inset:0;z-index:-2}
+#qaWelcome.qaReferenceHome .qaShowcaseCard{justify-content:flex-start!important;gap:3px;padding:7px!important;box-shadow:0 0 7px #ce9b3c50,inset 0 0 6px #ffde9e20!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard strong{font-weight:750;line-height:1.15}
+#qaWelcome.qaReferenceHome .qaShowcaseCard small{margin:0!important;padding:3px 7px!important;font-weight:700}
+#qaWelcome .qaCardPreviews{margin-top:auto!important}
+#qaWelcome .qaSearchToggle{display:none}
+#qaWelcome #qaCollectionSection .qlaHeader p,#qaWelcome #qaCollectionSection .qlaMini{display:none}
+#qaWelcome #qaCollectionSection .qlaHeader h2{margin:0!important}
+#qaWelcome #qaCollectionSection .qlaHeader .qlaMiniLink{font-size:11px!important;padding:5px 8px!important;min-height:30px!important}
+#qaGalleryPanel .qagCard{border-color:#ac854a!important;background:#15110d!important}
+#qaGalleryPanel .qagChip.selected{background:#e2b566!important;color:#120d07!important}
+#qaSceneLib.qaFullPhotoLibrary #qslCategories button{border-color:#775832!important}
+#qaSceneLib .qsl-card{box-shadow:0 0 6px #a77a3020}
+@media(max-width:760px){
+ body.qaModernShell .nav{min-height:38px!important;padding:3px 5px!important}
+ body.qaModernShell .nav #qaMobileMenu,body.qaModernShell .nav #qaTopBrand{min-height:32px!important}
+ body.qaModernShell .nav #qaLanguagePicker{min-height:30px!important}
+ #qaWelcome.qaReferenceHome .qlaHeroArt{height:clamp(92px,27vw,140px)!important}
+ #qaWelcome.qaReferenceHome .qlaHero h1{font-size:clamp(21px,5.8vw,29px)!important}
+ #qaWelcome.qaReferenceHome .qlaHeroContent{padding:0 2px 3px!important}
+ #qaWelcome.qaReferenceHome .qlaLead{font-size:11px!important;line-height:1.2!important}
+ #qaWelcome .qaHomeTool{min-height:47px!important;gap:2px!important}
+ #qaWelcome .qaHomeTool .qaHomeIcon svg{width:18px;height:18px}
+ #qaWelcome .qaHomeTool strong{font-size:10px!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard{margin:0!important;padding:5px!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard h2{font-size:20px!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard p{font-size:10px!important;line-height:1.1!important;margin:2px 0!important}
+ #qaWelcome .qaHomeRail .qlaConversionCard button{min-height:24px!important;padding:3px!important;font-size:10px!important}
+ #qaWelcome #qaCollectionSection .qlaHeader{display:flex;align-items:center;flex-wrap:wrap;margin-bottom:4px!important;gap:4px!important}
+ #qaWelcome #qaCollectionSection .qlaHeader>div{flex:1}
+ #qaWelcome #qaCollectionSection .qlaHeader h2{font-size:15px!important}
+ #qaWelcome .qaSearchToggle{display:inline-flex;align-items:center;justify-content:center;border:1px solid #9e773d;background:#17120d;color:#f6d799;border-radius:6px;width:29px;height:29px;font-size:18px}
+ #qaWelcome #qaHomeCollectionSearch{display:none}
+ #qaWelcome .qaSearchExpanded #qaHomeCollectionSearch{display:block;order:5;flex-basis:100%}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard,#qaWelcome.qaReferenceHome .qaShowcaseCard:first-child{min-height:0!important;height:clamp(44px,14vw,65px)!important;aspect-ratio:auto!important;justify-content:center!important;align-items:flex-start!important;padding:4px 4px 4px 42%!important;gap:2px!important}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard>img,#qaWelcome .qaCategoryCover{width:45%!important;height:100%!important;left:0!important;right:auto!important;object-fit:cover}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard::before{background:linear-gradient(90deg,transparent 17%,#0b0b0c40 35%,#0b0b0cf2 52%,#0b0b0c 100%)!important}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard strong{font-size:11px!important;line-height:1.1!important}
+ #qaWelcome .qaCategorySymbol{display:none}
+ #qaWelcome.qaReferenceHome .qaShowcaseCard small{font-size:9px!important;padding:0!important;background:transparent!important;color:#f3d69d!important}
+ #qaWelcome .qaCardPreviews{display:none!important}
+ #qaWelcome #qaAllCollections{min-height:34px!important;font-size:12px!important;padding:6px 10px!important;margin:6px auto!important}
+ #qaWelcome .qaHomeFeatured h2{font-size:15px!important;margin:4px 0}
+ body>.qaMobileDock button{min-height:43px}
+}
