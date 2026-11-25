@@ -132,7 +132,10 @@ test('Dashboard boot is ordered and beta redirects to the same release',()=>{con
 test('Modern shell removes legacy chrome and mobile menu is accessible',()=>{assert.match(file('qa-landing.js'),/qaModernShell/);assert.match(file('qa-landing.js'),/qaMobileMenu/);assert.match(file('qa-design.css'),/body\.qaModernShell>\.wrap>\.hero/);assert.match(file('qa-design.css'),/qaMenuExpanded/)});
 
 
-test('Reference artwork, current cache and mobile dock ship together',()=>{const s=file('qa-landing.js');assert.match(s,/reference-fantasy\.webp/);assert(fs.existsSync(path.join(root,'assets/reference-fantasy.webp')));assert.match(s,/document\.body\.append\(mobile\)/);assert.match(file('qa-design.css'),/body>\.qaMobileDock/);assert.match(file('index.html'),/20261125-finish10/);assert.match(file('beta/index.html'),/20261125-finish10/);assert.match(file('sw.js'),/v38-finish10/)});
+test('Reference artwork, current cache and mobile dock ship together',()=>{const s=file('qa-landing.js');assert.match(s,/reference-fantasy\.webp/);assert(fs.existsSync(path.join(root,'assets/reference-fantasy.webp')));assert.match(s,/document\.body\.append\(mobile\)/);assert.match(file('qa-design.css'),/body>\.qaMobileDock/);assert.match(file('index.html'),/20261125-artwork11/);assert.match(file('beta/index.html'),/20261125-artwork11/);assert.match(file('sw.js'),/v39-artwork11/)});
 
 
 test('Home cards use catalog records and real photo routes',()=>{const landing=file('qa-landing.js');assert.match(landing,/qaPhotoCatalog/);assert.match(landing,/qaPortraitCatalog/);assert.match(landing,/qaCutoutCount/);assert.match(landing,/qa:open-category/);assert.match(file('qa-animals.js'),/window\.qaPhotoCatalog/);assert.match(file('qa-gallery.js'),/window\.qaPortraitCatalog/);assert.match(file('qa-cutouts.js'),/window\.qaCutoutCount/)});
+
+
+test('Approved reference artwork ships with all twelve home category covers',()=>{const s=file('qa-landing.js');assert.match(s,/function referenceArt/);assert.match(s,/qaExactCategoryCover/);assert.match(s,/showReferenceInGallery/);assert(fs.existsSync(path.join(root,'assets/qa-reference-covers.webp')));assert.match(file('qa-design.css'),/qa-reference-covers\.webp/);assert.match(file('sw.js'),/qa-reference-covers\.webp/)});

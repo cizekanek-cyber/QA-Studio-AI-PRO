@@ -13,11 +13,11 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./qa-design.css?v=20261125-finish10">
+<link rel="stylesheet" href="./qa-design.css?v=20261125-artwork11">
 </head>
 <body>
 <div id="notice">Loading QA Studio AI PRO…</div>
-<iframe id="app" src="./index-1.html?v=finish-20261125-10" title="QA Studio AI PRO" allow="web-share"></iframe>
+<iframe id="app" src="./index-1.html?v=artwork-20261125-11" title="QA Studio AI PRO" allow="web-share"></iframe>
 <script>
 if(location.hash.includes('access_token=')||location.search.includes('error_code=')){
  location.replace('./login.html'+location.search+location.hash);
@@ -25,16 +25,16 @@ if(location.hash.includes('access_token=')||location.search.includes('error_code
 (function(){
 'use strict';
 const f=document.getElementById('app'),n=document.getElementById('notice');
-if(location.search||location.hash){const q=new URLSearchParams(location.search);q.delete('v');f.src='./index-1.html?v=finish-20261125-10'+(q.size?'&'+q.toString():'')+location.hash;}
+if(location.search||location.hash){const q=new URLSearchParams(location.search);q.delete('v');f.src='./index-1.html?v=artwork-20261125-11'+(q.size?'&'+q.toString():'')+location.hash;}
 f.addEventListener('load',async function(){
  try{
    const doc=f.contentDocument;
-   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261125-finish10';doc.head.append(design);}
+   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261125-artwork11';doc.head.append(design);}
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    const loadModule=script=>new Promise(resolve=>{const old=script.onload;const error=script.onerror;script.onload=e=>{try{old?.call(script,e)}finally{resolve(true)}};script.onerror=e=>{try{error?.call(script,e)}finally{resolve(false)}};script.async=false;doc.body.append(script)});
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js?v=20261125-finish10';
+     script.src='./qa-animals.js?v=20261125-artwork11';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      await loadModule(script);
@@ -43,15 +43,15 @@ f.addEventListener('load',async function(){
    if(!doc.querySelector('script[data-qa-account]')){const account=doc.createElement('script');account.src='./qa-account.js?v=20261124-mailguard01';account.dataset.qaAccount='true';await loadModule(account)}
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';await loadModule(social);}
    if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261123-core02';plans.dataset.qaPlans='true';await loadModule(plans);}
-   if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-finish10';cutouts.dataset.qaCutouts='true';await loadModule(cutouts);}
+   if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-artwork11';cutouts.dataset.qaCutouts='true';await loadModule(cutouts);}
    if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-funny01';start.dataset.qaStart='true';await loadModule(start);}
-   if(!doc.querySelector('script[data-qa-gallery]')){const gallery=doc.createElement('script');gallery.src='./qa-gallery.js?v=20261125-finish10';gallery.dataset.qaGallery='true';gallery.onerror=()=>console.error('Galerii fotošablon se nepodařilo načíst');await loadModule(gallery);}
-   if(!doc.querySelector('script[data-qa-funny]')){const funny=doc.createElement('script');funny.src='./qa-funny.js?v=20261125-finish10';funny.dataset.qaFunny='true';funny.onerror=()=>console.error('Funny Lab se nepodařilo načíst');await loadModule(funny);}
-   if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261125-finish10';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');await loadModule(uni);}
+   if(!doc.querySelector('script[data-qa-gallery]')){const gallery=doc.createElement('script');gallery.src='./qa-gallery.js?v=20261125-artwork11';gallery.dataset.qaGallery='true';gallery.onerror=()=>console.error('Galerii fotošablon se nepodařilo načíst');await loadModule(gallery);}
+   if(!doc.querySelector('script[data-qa-funny]')){const funny=doc.createElement('script');funny.src='./qa-funny.js?v=20261125-artwork11';funny.dataset.qaFunny='true';funny.onerror=()=>console.error('Funny Lab se nepodařilo načíst');await loadModule(funny);}
+   if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261125-artwork11';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');await loadModule(uni);}
    if(!doc.querySelector('script[data-qa-help]')){const help=doc.createElement('script');help.src='./qa-help.js?v=20261123-onboard01';help.dataset.qaHelp='true';help.onerror=()=>console.error('Nápovědu nebylo možné načíst');await loadModule(help);}
    if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261123-v6';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');await loadModule(pricing);}
-   if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261125-finish10';i18n.dataset.qaI18n='true';await loadModule(i18n);}
-   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261125-finish10';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}
+   if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261125-artwork11';i18n.dataset.qaI18n='true';await loadModule(i18n);}
+   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261125-artwork11';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}
    const deadline=Date.now()+6000;while(!doc.querySelector('#qlaNewLanding .qaHomeShell')&&Date.now()<deadline)await new Promise(r=>setTimeout(r,100));
    if(doc.querySelector('#qlaNewLanding .qaHomeShell')){doc.querySelector('.nav button[data-tab="qaWelcome"]')?.click();doc.defaultView.scrollTo(0,0);n.style.display='none'}else{n.replaceChildren();const msg=document.createElement('p');msg.textContent='Nová domovská stránka se nenačetla. / Dashboard failed to load.';const retry=document.createElement('button');retry.textContent='Zkusit znovu / Retry';retry.onclick=()=>location.reload();const fallback=document.createElement('button');fallback.textContent='Otevřít dostupný editor / Open editor';fallback.onclick=()=>{n.style.display='none'};n.append(msg,retry,fallback)}
  }catch(e){

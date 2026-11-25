@@ -412,3 +412,12 @@ body>.qaMobileDock{display:none}
  #qaWelcome .qaHomeFeatured h2{font-size:15px!important;margin:4px 0}
  body>.qaMobileDock button{min-height:43px}
 }
+
+/* Artwork cut from the approved visual reference. Covers are visual previews, not native 4K assets. */
+.qaReferenceArtwork{display:block;background-image:url('./assets/qa-reference-covers.webp');background-size:400% 300%!important;background-repeat:no-repeat!important}
+#qaWelcome .qaExactCategoryCover{position:absolute;inset:0 0 0 auto;width:64%;height:100%;z-index:-2;border-radius:inherit}
+#qaWelcome.qaReferenceHome .qaShowcaseCard:has(.qaExactCategoryCover)::before{background:linear-gradient(90deg,#0a0909 5%,#0a0909e8 24%,#0a090944 68%,transparent 100%),linear-gradient(0deg,#090909d9,transparent 45%)}
+#qaWelcome .qaCardPreviews .qaReferenceArtwork{flex:1;min-width:0;border:1px solid #a7854f;border-radius:4px}
+#qaWelcome .qaStripReferenceArtwork{width:100%;height:68px;border-radius:6px;margin-bottom:5px}
+.qaGalleryReferenceArtwork{float:right;width:clamp(76px,18vw,136px);aspect-ratio:4/3;margin:0 0 8px 10px;border:1px solid #b88c43;border-radius:9px;box-shadow:0 0 10px #c8933a33}
+@media(max-width:760px){#qaWelcome .qaExactCategoryCover{inset:0 auto 0 0!important;width:45%!important;height:100%!important}#qaWelcome.qaReferenceHome .qaShowcaseCard:has(.qaExactCategoryCover)::before{background:linear-gradient(90deg,transparent 16%,#09090944 34%,#090909ee 48%,#090909 100%)!important}}
