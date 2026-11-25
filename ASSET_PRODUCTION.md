@@ -4,3 +4,6 @@ Photo manifest entries: {id,category,file,name}, category is the editor category
 
 ## Full-page library targets
 70 distinct originals per collection, 4K source quality (landscape 3840×2160, portrait 2160×3840, square 3840×3840); preserve alpha for cutouts. Never label resized crops as native 4K. The UI measures actual decoded dimensions; dimensions alone are not proof of native detail. New categories: scifi, vanoce, efekty, stavby, funny, jidlo, sport. The existing manifests remain empty until actual validated assets are uploaded.
+
+## Updated 4K target
+50 distinct standalone 4K assets per category. Both dimensions must meet UHD (3840 × 2160 or portrait equivalent). Source dimensions are metadata until the original is decoded in the preview. Existing lower-resolution portraits and cover graphics are not 4K inventory. Public-domain photo discovery is opportunistic; neither remote availability nor the full quota is guaranteed. Original PNG assets still require production and import.
