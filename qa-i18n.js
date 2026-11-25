@@ -31,7 +31,7 @@ function apply(){
  setText('button[data-tab="qaAnimalsTab"]','🐾 '+t.animals);
  setText('button[data-tab="qaSceneLib"]','🎬 '+t.editor);
  setText('button[data-tab="qaSocialPanel"]','↗ '+t.share);
- setText('button[data-tab="qaPlansPanel"]','◈ '+t.plans);
+ setText('button[data-tab="qaPlansPanel"]',current==='cs'?'◈ Editor PRO – ceník':'◈ Editor PRO – pricing');
  setText('button[data-tab="qaAccountPanel"]','🔐 '+t.premium);
  setText('button[data-tab="pricing"]',t.prices);
  setText('button[data-tab="saved"]',t.saved);
@@ -63,7 +63,7 @@ function apply(){
  setText('#pricing h2','QA Studio AI PRO — '+t.prices);
  setText('#pricing p.sub',t.priceDesc);
  allText('#pricing .price-card .price-state',t.inactive);
- setText('#qaPlansPanel h2','QA Studio AI PRO — '+t.prices);
+ 
  setText('#qaSocialPanel h2',t.share);
  picker.setAttribute('aria-label',t.language);
  busy=false;

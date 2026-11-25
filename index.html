@@ -40,7 +40,7 @@ f.addEventListener('load',async function(){
      await loadModule(script);
    }
    if(!doc.defaultView.QAAuthCore){const core=doc.createElement('script');core.src='./qa-auth-core.js?v=20261123-core02';core.dataset.qaCore='true';await loadModule(core)}
-   if(!doc.querySelector('script[data-qa-account]')){const account=doc.createElement('script');account.src='./qa-account.js?v=20261124-mailguard01';account.dataset.qaAccount='true';await loadModule(account)}
+   if(!doc.querySelector('script[data-qa-account]')){const account=doc.createElement('script');account.src='./qa-account.js?v=20261125-external02';account.dataset.qaAccount='true';await loadModule(account)}
    if(!doc.querySelector('script[data-qa-social]')){const social=doc.createElement('script');social.src='./qa-social.js?v=20261123-social1';social.dataset.qaSocial='true';await loadModule(social);}
    if(!doc.querySelector('script[data-qa-plans]')){const plans=doc.createElement('script');plans.src='./qa-plans.js?v=20261125-external01';plans.dataset.qaPlans='true';await loadModule(plans);}
    if(!doc.querySelector('script[data-qa-cutouts]')){const cutouts=doc.createElement('script');cutouts.src='./qa-cutouts.js?v=20261125-clean13';cutouts.dataset.qaCutouts='true';await loadModule(cutouts);}
@@ -50,7 +50,7 @@ f.addEventListener('load',async function(){
    if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261125-external01';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');await loadModule(uni);}
    if(!doc.querySelector('script[data-qa-help]')){const help=doc.createElement('script');help.src='./qa-help.js?v=20261123-onboard01';help.dataset.qaHelp='true';help.onerror=()=>console.error('Nápovědu nebylo možné načíst');await loadModule(help);}
    if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261125-external01';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');await loadModule(pricing);}
-   if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261125-clean13';i18n.dataset.qaI18n='true';await loadModule(i18n);}
+   if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261125-external02';i18n.dataset.qaI18n='true';await loadModule(i18n);}
    if(!doc.querySelector('script[data-qa-prompts]')){const prompts=doc.createElement('script');prompts.src='./qa-prompts.js?v=20261125-prompts01';prompts.dataset.qaPrompts='true';await loadModule(prompts);}
    if(!doc.querySelector('script[data-qa-external-ai]')){const ext=doc.createElement('script');ext.src='./qa-external-ai.js?v=20261125-external01';ext.dataset.qaExternalAi='true';await loadModule(ext);}
    if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261125-external01';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}

@@ -36,27 +36,25 @@
  form.insertAdjacentHTML('beforeend','<div style="margin-top:12px"><button id="qaModeLink" type="button">Odkaz na e-mail</button><button id="qaModePassword" type="button">Přihlášení heslem</button></div><div id="qaPasswordBox" class="qaHidden"><label for="qaPassword">Heslo (min. 8 znaků)</label><input id="qaPassword" type="password" autocomplete="current-password" placeholder="Heslo"><div><button id="qaPassLogin" type="button">Přihlásit</button><button id="qaPassRegister" type="button">Registrovat</button><button id="qaPassReset" type="button">Obnovit heslo</button></div></div>');
  sec.querySelector('.qaAccPanel').insertAdjacentHTML('beforeend','<div id="qaAdminPanel" class="qaHidden"><h2>Administrace majitele</h2><p>Tržby a předplatná uvidí pouze serverově ověřený správce.</p><button id="qaAdminRefresh" type="button">Načíst tržby</button><div class="qaAdminKpis"><span><strong id="qaGross">–</strong>Hrubé tržby Kč</span><span><strong id="qaPayments">–</strong>Transakce</span><span><strong id="qaSubs">–</strong>Předplatná</span></div><p id="qaAdminInfo" class="qaNote"></p></div>');
 
- sec.querySelector('#qaAdminPanel').insertAdjacentHTML('beforeend','<h3>Model hospodaření · pouze majitel, nejde o skutečné tržby</h3><p class="qaNote">Jednorázové kreditové balíčky bez automatické obnovy. Počítá se modelový poplatek Stripe 1,5 % + 6,50 Kč (standardní karta EHP). Skutečné poplatky se mohou lišit.</p><div><label>Balíček <select id="qaFinancePlan"><option value="qa_day">1 den · 59 Kč</option><option value="qa_3days">3 dny · 129 Kč</option><option value="qa_14days">14 dní · 279 Kč</option><option value="qa_month" selected>30 dní · 449 Kč</option><option value="qa_3months">90 dní · 1 099 Kč</option><option value="qa_year">365 dní · 2 990 Kč</option></select></label><label>Max. cena externí AI / kredit (Kč) <input type="number" id="qaAiCost" min="0" step="0.01" value="0.25" style="max-width:115px"></label><label>Počet prodaných balíčků / měsíc <input type="number" id="qaCustomers" min="0" step="10" value="100" style="max-width:125px"></label><label>Fixní provoz Kč/měs. <input type="number" id="qaFixedCost" min="0" step="100" value="1000" style="max-width:130px"></label></div><div id="qaForecast" class="qaAccStatus" style="margin-top:8px;line-height:1.8"></div><p class="qaNote">Odhad platí při spotřebování všech kreditů a dodržení nastaveného limitu. Serverové vynucení AI nákladového limitu zatím není dokončené. Výsledek nezahrnuje daně, vratky, chargebacky, dražší karty, marketing, účetnictví a další provozní náklady.</p>');
+ sec.querySelector('#qaAdminPanel').insertAdjacentHTML('beforeend','<h3>Model hospodaření · pouze majitel, nejde o skutečné tržby</h3><p class="qaNote">Jednorázové licence editoru bez automatické obnovy. Počítá se modelový poplatek Stripe 1,5 % + 6,50 Kč (standardní karta EHP). Skutečné poplatky se mohou lišit.</p><div><label>Balíček <select id="qaFinancePlan"><option value="editor_day">1 den · 19 Kč</option><option value="editor_week">7 dní · 69 Kč</option><option value="editor_14days">14 dní · 119 Kč</option><option value="editor_month" selected>30 dní · 199 Kč</option><option value="editor_90days">90 dní · 449 Kč</option><option value="editor_year">365 dní · 1 299 Kč</option></select></label><label>Počet prodaných balíčků / měsíc <input type="number" id="qaCustomers" min="0" step="10" value="100" style="max-width:125px"></label><label>Fixní provoz Kč/měs. <input type="number" id="qaFixedCost" min="0" step="100" value="1000" style="max-width:130px"></label></div><div id="qaForecast" class="qaAccStatus" style="margin-top:8px;line-height:1.8"></div><p class="qaNote">Externí AI používá zákazník na vlastní účet; její náklady nejsou součástí našich licencí. Výsledek nezahrnuje daně, vratky, chargebacky, dražší karty, marketing, účetnictví a další provozní náklady.</p>');
  function cashForecast(){
-  const offers={qa_day:{price:59,credits:70},qa_3days:{price:129,credits:150},qa_14days:{price:279,credits:370},qa_month:{price:449,credits:550},qa_3months:{price:1099,credits:1550},qa_year:{price:2990,credits:4500}};
-  const plan=offers[sec.querySelector('#qaFinancePlan').value]||offers.qa_month;
+  const offers={"editor_day":{"price":19},"editor_week":{"price":69},"editor_14days":{"price":119},"editor_month":{"price":199},"editor_90days":{"price":449},"editor_year":{"price":1299}};
+  const plan=offers[sec.querySelector('#qaFinancePlan').value]||offers.editor_month;
   const n=Math.max(0,Number(sec.querySelector('#qaCustomers').value)||0);
   const fixed=Math.max(0,Number(sec.querySelector('#qaFixedCost').value)||0);
-  const aiRate=Math.max(0,Number(sec.querySelector('#qaAiCost').value)||0);
-  const fee=plan.price*.015+6.5, ai=plan.credits*aiRate, unit=plan.price-fee-ai;
+  const fee=plan.price*.015+6.5, unit=plan.price-fee;
   const profit=n*unit-fixed;
   const breakEven=unit>0?Math.ceil(fixed/unit):null;
   const kr=x=>x.toLocaleString('cs-CZ',{maximumFractionDigits:2})+' Kč';
   sec.querySelector('#qaForecast').textContent=
    'Příjmy: '+kr(n*plan.price)+'\n'
    +'Poplatky Stripe: −'+kr(n*fee)+'\n'
-   +'Maximální rozpočet externí AI: −'+kr(n*ai)+'\n'
    +'Modelové fixní náklady: −'+kr(fixed)+'\n'
    +'Příspěvek na provoz a zisk z 1 balíčku: '+kr(unit)+'\n'
    +'Zbývá před dalšími náklady a daněmi: '+kr(profit)+'\n'
    +'Bod zvratu: '+(breakEven===null?'nedosažitelný při tomto limitu':'cca '+breakEven+' prodejů za měsíc');
  }
- for(const id of ['qaFinancePlan','qaFixedCost','qaAiCost','qaCustomers'])sec.querySelector('#'+id).addEventListener(id==='qaFinancePlan'?'change':'input',cashForecast);
+ for(const id of ['qaFinancePlan','qaFixedCost','qaCustomers'])sec.querySelector('#'+id).addEventListener(id==='qaFinancePlan'?'change':'input',cashForecast);
  cashForecast();
 
  const q=s=>sec.querySelector(s),status=q('#qaAccountStatus');
