@@ -1,0 +1,14 @@
+(()=>{'use strict';
+let promptEvent=null,installed=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true,button=null;
+const frame=document.getElementById('app');
+function cs(){try{return localStorage.getItem('qa-studio-language')==='cs'||(!localStorage.getItem('qa-studio-language')&&navigator.language.startsWith('cs'))}catch{return false}}
+const t=(a,b)=>cs()?a:b;
+function render(){if(button){button.hidden=installed;button.textContent=t('⬇ Nainstalovat aplikaci','⬇ Install app')}}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();promptEvent=e;render()});
+window.addEventListener('appinstalled',()=>{installed=true;promptEvent=null;render()});
+function help(){const d=document.getElementById('qaInstallHelp');d.querySelector('h2').textContent=t('Instalace QA Studio','Install QA Studio');d.querySelector('p').textContent=/iPhone|iPad|iPod/.test(navigator.userAgent)?t('V Safari otevři Sdílet → Přidat na plochu → Přidat.','In Safari, choose Share → Add to Home Screen → Add.'):t('V Chrome nebo Edge otevři nabídku ⋮ → Nainstalovat aplikaci (nebo Přidat na plochu). Pokud jsi v prohlížeči jiné aplikace, otevři tento web přímo v Chrome nebo Safari.','In Chrome or Edge, open the ⋮ menu → Install app (or Add to Home screen). If you are in an in-app browser, open this website in Chrome or Safari.');d.querySelector('button').textContent=t('Zavřít','Close');if(d.showModal)d.showModal();else d.setAttribute('open','')}
+async function request(){if(installed)return;if(!promptEvent){help();return}const e=promptEvent;promptEvent=null;try{await e.prompt();const choice=await e.userChoice;if(choice?.outcome==='accepted'){installed=true}}catch{help()}render()}
+function attach(){const doc=frame?.contentDocument;if(!doc)return;const nav=doc.querySelector('.nav');if(!nav)return;button=doc.getElementById('qaInstallButton');if(!button){button=doc.createElement('button');button.type='button';button.id='qaInstallButton';button.style.cssText='border:1px solid #d5ae67;border-radius:8px;padding:10px;color:#f5e0b2;background:#201b13;';button.onclick=request;nav.append(button);const home=doc.querySelector('#qlaNewLanding .qlaHeroActions');if(home&&!doc.getElementById('qaInstallHero')){const b=doc.createElement('button');b.type='button';b.id='qaInstallHero';b.className='qlaOutline';b.textContent=t('⬇ Nainstalovat aplikaci','⬇ Install app');b.hidden=installed;b.onclick=request;home.append(b)}}const hero=doc.getElementById('qaInstallHero');if(hero){hero.hidden=installed;hero.textContent=t('⬇ Nainstalovat aplikaci','⬇ Install app')}render()}
+window.qaAttachInstall=attach;window.addEventListener('appinstalled',attach);frame?.addEventListener('load',()=>{setTimeout(attach,1000)});window.addEventListener('storage',attach);
+document.getElementById('qaInstallHelp').querySelector('button').onclick=()=>{const d=document.getElementById('qaInstallHelp');if(d.close)d.close();else d.removeAttribute('open')};
+})();

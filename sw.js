@@ -1,7 +1,7 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261127-catalog02';
+const VERSION='qa-shell-20261127-install01';
 const SCOPE_PATH=new URL(self.registration.scope).pathname;
-const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-external-ai.js','./qa-shared-library.js','./qa-social.js','./qa-cutouts.js','./qa-prompts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-motion.js','./qa-prep-studio.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-hero-campaign.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
+const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-external-ai.js','./qa-shared-library.js','./qa-social.js','./qa-cutouts.js','./qa-prompts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-motion.js','./qa-prep-studio.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-hero-campaign.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./assets/qa-icon-192.png','./assets/qa-icon-512.png','./assets/qa-icon-180.png','./qa-install.js','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
   const cache=await caches.open(VERSION);
@@ -26,9 +26,9 @@ self.addEventListener('fetch',event=>{
   return r;
  })());return;}
  if(req.mode==='navigate'||url.pathname.endsWith('.html')){event.respondWith((async()=>{
-  try{const res=await fetch(req);if(res.ok)(await caches.open(VERSION)).put(req,res.clone());return res;}catch{const cached=await caches.match(req);return cached||Response.error();}
+  try{const res=await fetch(req);if(res.ok)(await caches.open(VERSION)).put(req,res.clone());return res;}catch{const cached=await caches.match(req)||await caches.match(req,{ignoreSearch:true});return cached||Response.error();}
  })());return;}
  if(/\.(?:js|css|svg|webmanifest)$/i.test(url.pathname)){event.respondWith((async()=>{
-  const cache=await caches.open(VERSION);try{const res=await fetch(req,{cache:'no-cache'});if(res.ok){await cache.put(req,res.clone());return res}return (await cache.match(req))||res}catch{return (await cache.match(req))||Response.error()}
+  const cache=await caches.open(VERSION);try{const res=await fetch(req,{cache:'no-cache'});if(res.ok){await cache.put(req,res.clone());return res}return (await cache.match(req)||await cache.match(req,{ignoreSearch:true}))||res}catch{return (await cache.match(req)||await cache.match(req,{ignoreSearch:true}))||Response.error()}
  })());}
 });
