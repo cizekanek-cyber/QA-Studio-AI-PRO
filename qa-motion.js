@@ -29,7 +29,7 @@ function mount(){
  '#qaMotionStudio button:disabled{opacity:.45;cursor:not-allowed}#qaMotionStudio .qmStatus{min-height:22px;overflow-wrap:anywhere}';
  document.head.append(css);
  section.innerHTML='<h2 data-cs="🎬 AI Motion Studio" data-en="🎬 AI Motion Studio"></h2>'+
- '<p data-cs="Vlož vlastní fotografii. Lokální náhled animuje kameru, nikoli tělo. Realistický pohyb připrav pomocí AI zadání a externího modelu; přímé AI generování zatím není připojeno." data-en="Upload your own photo. Local preview animates the camera, not the subject. Prepare realistic motion with an AI prompt and external model; direct AI generation is not connected yet."></p>'+
+ '<p data-cs="Bezplatná příprava před AI generováním: vlož fotografii, nastav pohyb a dolaď zadání bez spotřeby AI kreditů. Lokální náhled animuje kameru, nikoli tělo. Přímé AI generování zatím není připojeno." data-en="Free preparation before AI generation: upload a photo, configure motion and refine the prompt without spending AI credits. Local preview animates the camera, not the subject; direct AI generation is not connected yet."></p>'+
  '<label><span data-cs="Vlastní fotografie (max. 20 MB)" data-en="Your photo (max. 20 MB)"></span><input id="qmPhoto" type="file" accept="image/png,image/jpeg,image/webp"></label>'+
  '<canvas id="qmCanvas" width="640" height="360" aria-label="Motion preview"></canvas>'+
  '<div class="qmGrid"><label><span data-cs="Typ AI pohybu" data-en="AI motion type"></span><select id="qmMode">'+
@@ -41,7 +41,7 @@ function mount(){
  '<label><span data-cs="Vlastní instrukce k pohybu (např. anglicky mluvící kočka)" data-en="Custom motion instructions (e.g. an English-speaking cat)"></span><textarea id="qmInstruction" maxlength="1200"></textarea></label>'+
  '<label><span data-cs="Volitelný dialog a styl hlasu – součást AI zadání" data-en="Optional dialogue and voice style — included in AI prompt"></span><textarea id="qmDialogue" maxlength="600"></textarea></label>'+
  '<div class="qmActions"><button type="button" id="qmPlay" disabled data-cs="▶ Lokální náhled kamery" data-en="▶ Local camera preview"></button><button type="button" id="qmStop" disabled data-cs="■ Zastavit" data-en="■ Stop"></button><button type="button" id="qmExport" disabled data-cs="Export pohybu kamery" data-en="Export camera motion"></button></div>'+
- '<h3 data-cs="Realistická AI animace – ruční předání" data-en="Realistic AI animation — manual handoff"></h3>'+
+ '<h3 data-cs="Finální AI generování – ruční předání" data-en="Final AI generation — manual handoff"></h3>'+
  '<p data-cs="Zkopíruj zadání, otevři externí službu a nahraj do ní fotografii ručně. Služba může vyžadovat vlastní účet a platbu. Fotografie se automaticky nikam neposílá." data-en="Copy the prompt, open an external service and upload your photo manually. The service may require its own account and payment. Your photo is never uploaded automatically."></p>'+
  '<label><span data-cs="AI zadání (anglické instrukce + vlastní text)" data-en="AI prompt (English instructions + your text)"></span><textarea id="qmPrompt" readonly></textarea></label>'+
  '<div class="qmActions"><button id="qmCopy" type="button" data-cs="Kopírovat AI zadání" data-en="Copy AI prompt"></button><a class="qmLink" href="https://app.runwayml.com/" target="_blank" rel="noopener noreferrer">Runway ↗</a><a class="qmLink" href="https://klingai.com/" target="_blank" rel="noopener noreferrer">Kling ↗</a></div>'+
