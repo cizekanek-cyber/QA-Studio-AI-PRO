@@ -47,6 +47,10 @@ function init(){
  ['objects','🐾 Průhledné objekty','Skutečně průhledné PNG/WebP lze vložit jako samostatné vrstvy.'],
  ['living','🧑 Lidé a tvorové','Fotografické předlohy mohou mít vlastní původní pozadí. Nejde automaticky o vyříznuté PNG.'],
  ['funny','👽 Funny šablony','Vyber scénu a pomocí „Použít v editoru“ ji přenes na hlavní plátno. Import zatím spojuje motiv do jednoho obrázku.'],
+ ['image','🖼️ AI Image Studio','Local image preparation / Lokální příprava obrázků'],
+ ['sound','🎧 AI Sound Studio','Local sound preparation / Lokální příprava zvuku'],
+ ['voice','🎙️ AI Voice Studio','Voice preparation / Příprava hlasu'],
+ ['video','🎞️ AI Video Studio','Shared timeline / Společná časová osa'],
  ['motion','🎬 AI Motion Studio','Vlož fotografii, nastav pohyb a připrav realistickou AI animaci. Lokální náhled kamery je dostupný bez AI.'],
  ['editor','✏️ Úpravy a export','Uprav obsah na plátně, přidej text, počasí, vlastní PNG a exportuj.']
  ];

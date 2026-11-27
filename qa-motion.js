@@ -89,7 +89,7 @@ function mount(){
  for(const id of ['qmMode','qmCamera','qmDuration','qmStrength','qmSpeed','qmInstruction','qmDialogue'])q(id).addEventListener('input',()=>{updatePrompt();if(!recording){stop();drawStill()}});
  q('qmPlay').onclick=play;q('qmStop').onclick=stop;
  q('qmCopy').onclick=async()=>{try{await navigator.clipboard.writeText(q('qmPrompt').value);status('AI zadání zkopírováno.','AI prompt copied.')}catch{q('qmPrompt').focus();q('qmPrompt').select();status('Zadání označeno, zkopíruj jej ručně.','Prompt selected; copy it manually.')}};
- q('qmVideoFile').onchange=()=>{const f=q('qmVideoFile').files[0];if(!f)return;if(!['video/mp4','video/webm'].includes(f.type)){status('Vyber MP4 nebo WebM.','Choose MP4 or WebM.');return}if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);q('qmVideo').src=videoURL;q('qmVideo').hidden=false;status('Video načteno lokálně.','Video imported locally.')};
+ q('qmVideoFile').onchange=()=>{const f=q('qmVideoFile').files[0];if(!f)return;if(!['video/mp4','video/webm'].includes(f.type)){status('Vyber MP4 nebo WebM.','Choose MP4 or WebM.');return}if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);window.dispatchEvent(new CustomEvent('qa:motion-import',{detail:{file:f}}));q('qmVideo').src=videoURL;q('qmVideo').hidden=false;status('Video načteno lokálně.','Video imported locally.')};
  q('qmVideo').onerror=()=>status('Tento prohlížeč neumí přehrát zvolený soubor.','This browser cannot play the selected file.');
  q('qmExport').onclick=async()=>{
   if(!photo||recording)return;stop();recording=true;controls();const s=settings(),img=photo;
@@ -110,7 +110,7 @@ function mount(){
    });
    if(!chunks.length)throw Error('Empty recording');
    const type=rec.mimeType||chunks[0].type||'video/webm';
-   if(downloadURL)URL.revokeObjectURL(downloadURL);downloadURL=URL.createObjectURL(new Blob(chunks,{type}));
+   if(downloadURL)URL.revokeObjectURL(downloadURL);const resultBlob=new Blob(chunks,{type});downloadURL=URL.createObjectURL(resultBlob);window.dispatchEvent(new CustomEvent('qa:motion-import',{detail:{file:resultBlob}}));
    const a=document.createElement('a');a.href=downloadURL;a.download='qa-camera-motion.'+(type.includes('mp4')?'mp4':'webm');a.click();status('Lokální video kamery připraveno ke stažení.','Local camera video ready to download.');
   }catch(e){console.warn('Motion export:',e);status('Export selhal nebo jej prohlížeč nepodporuje.','Export failed or is not supported in this browser.')}
   finally{clearTimeout(timeout);cancelAnimationFrame(raf);if(rec&&rec.state!=='inactive')try{rec.stop()}catch{};stream?.getTracks().forEach(x=>x.stop());recording=false;controls()}

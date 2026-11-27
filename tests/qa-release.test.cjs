@@ -8,7 +8,7 @@ const root=path.resolve(__dirname,'..');
 const file=name=>fs.readFileSync(path.join(root,name),'utf8');
 
 test('Every first-party JS module parses',()=>{
-  const list=['qa-auth-core.js','qa-login.js','qa-account.js','qa-landing.js','qa-start.js','qa-plans.js','qa-animals.js','qa-cutouts.js','qa-funny.js','qa-gallery.js','qa-help.js','qa-i18n.js','qa-one-editor.js','qa-motion.js','qa-pricing-fix.js','qa-social.js','qa-external-ai.js','qa-shared-library.js','sw.js'];
+  const list=['qa-auth-core.js','qa-login.js','qa-account.js','qa-landing.js','qa-start.js','qa-plans.js','qa-animals.js','qa-cutouts.js','qa-funny.js','qa-gallery.js','qa-help.js','qa-i18n.js','qa-one-editor.js','qa-motion.js','qa-prep-studio.js','qa-pricing-fix.js','qa-social.js','qa-external-ai.js','qa-shared-library.js','sw.js'];
   for(const name of list)assert.doesNotThrow(()=>new vm.Script(file(name),{filename:name}),name);
 });
 
@@ -144,3 +144,5 @@ test('Old category artwork is removed',()=>{for(const p of ['assets/gallery-anim
 test('4K catalogue checks both source dimensions and offers full image preview',()=>{const a=file('qa-animals.js');assert.match(a,/Math\.max\(Number\(w\)\|\|0,Number\(h\)\|\|0\)>=3840/);assert.match(a,/!is4K\(img.width,img.height\)/);assert.match(a,/count4K\(cat.id\)>=50/);assert.match(a,/img.naturalWidth/);assert.match(a,/t.photoFull\|\|photoUrl/);assert.match(a,/Math\.min\(Number\(w\)\|\|0,Number\(h\)\|\|0\)>=2160/);assert.match(file('qa-one-editor.js'),/window\.qaOpenPhotoLibrary=/);assert.match(file('qa-cutouts.js'),/Original preview/);const lib=file('qa-shared-library.js');assert.match(lib,/resized\(img,3840,/);assert.match(lib,/original_width:img\.width,original_height:img\.height/);assert.match(lib,/x\.original_width/);assert.match(lib,/Upscaled files/)});
 
 test('Motion Studio is mounted in the editor and uses honest local preview and manual AI handoff',()=>{const s=file('qa-motion.js'),u=file('qa-one-editor.js'),html=file('index.html');assert.match(u,/window\.qaOpenMotionStudio=/);assert.match(u,/qa:motion-mode/);assert.match(s,/captureStream\(30\)/);assert.match(s,/createObjectURL\(file\)/);assert.match(s,/direct AI generation is not connected yet/);assert.match(s,/noopener noreferrer/);assert.doesNotMatch(s,/\bfetch\s*\(/);assert(html.indexOf('await loadModule(uni)')<html.indexOf('await loadModule(motion)'));assert.match(file('sw.js'),/'\.\/qa-motion\.js'/)});
+
+test('Free preparation tools share a local timeline and do not call paid APIs',()=>{const s=file('qa-prep-studio.js'),h=file('index.html'),m=file('qa-motion.js');assert.match(s,/shared timeline/i);assert.match(s,/decodeAudioData/);assert.match(s,/SpeechSynthesisUtterance/);assert.match(s,/qa:motion-import/);assert.match(m,/qa:motion-import/);assert.doesNotMatch(s,/\bfetch\s*\(/);assert(h.indexOf('await loadModule(motion)')<h.indexOf('await loadModule(prep)'));assert.match(file('sw.js'),/'\.\/qa-prep-studio\.js'/)});
