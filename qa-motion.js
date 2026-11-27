@@ -29,7 +29,7 @@ function mount(){
  '#qaMotionStudio button:disabled{opacity:.45;cursor:not-allowed}#qaMotionStudio .qmStatus{min-height:22px;overflow-wrap:anywhere}';
  document.head.append(css);
  section.innerHTML='<h2 data-cs="🎬 AI Motion Studio" data-en="🎬 AI Motion Studio"></h2>'+
- '<p data-cs="Bezplatná příprava před AI generováním: vlož fotografii, nastav pohyb a dolaď zadání bez spotřeby AI kreditů. Lokální náhled animuje kameru, nikoli tělo. Přímé AI generování zatím není připojeno." data-en="Free preparation before AI generation: upload a photo, configure motion and refine the prompt without spending AI credits. Local preview animates the camera, not the subject; direct AI generation is not connected yet."></p>'+
+ '<p data-cs="Příprava v ceně licence před AI generováním: vlož fotografii, nastav pohyb a dolaď zadání bez spotřeby AI kreditů. Lokální náhled animuje kameru, nikoli tělo. Přímé AI generování zatím není připojeno." data-en="Preparation included in your license before AI generation: upload a photo, configure motion and refine the prompt without spending AI credits. Local preview animates the camera, not the subject; direct AI generation is not connected yet."></p>'+
  '<label><span data-cs="Vlastní fotografie (max. 20 MB)" data-en="Your photo (max. 20 MB)"></span><input id="qmPhoto" type="file" accept="image/png,image/jpeg,image/webp"></label>'+
  '<canvas id="qmCanvas" width="640" height="360" aria-label="Motion preview"></canvas>'+
  '<div class="qmGrid"><label><span data-cs="Typ AI pohybu" data-en="AI motion type"></span><select id="qmMode">'+
