@@ -457,3 +457,20 @@ body>.qaMobileDock{display:none}
 #qaWelcome.qaReferenceHome .qaHomeTool[data-go="templates"] small,#qaWelcome.qaReferenceHome .qaHomeTool[data-go="editor"] small,#qaWelcome.qaReferenceHome .qaHomeTool[data-go="library"] small{display:none!important}
 #qaWelcome.qaReferenceHome .qaHomeTool{min-height:56px!important;padding:6px!important}
 #qaWelcome.qaReferenceHome .qaHomeRail .qlaConversionCard{padding:9px!important}
+
+/* Unified cinematic library tiles. */
+#qaWelcome.qaReferenceHome .qaShowcase{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(145px,1fr))!important;gap:7px!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard,#qaWelcome.qaReferenceHome .qaShowcaseCard:first-child{position:relative!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:flex-start!important;grid-column:auto!important;aspect-ratio:1.7!important;height:auto!important;min-height:0!important;padding:7px!important;border-radius:10px!important;overflow:hidden!important;background:radial-gradient(ellipse at 50% 25%,#49365b,#16121c 65%,#080809)!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard[hidden]{display:none!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard .qaNativeCategoryCover{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:-2!important}
+#qaWelcome.qaReferenceHome .qaNativeCategoryCover .qaBrandingCaption{display:none!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard::before,#qaWelcome.qaReferenceHome .qaShowcaseCard:has(.qaNativeCategoryCover)::before{background:linear-gradient(0deg,#000e,transparent 65%)!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard strong{font-size:clamp(11px,1.2vw,15px)!important;line-height:1.15!important;color:white!important;max-width:100%;white-space:normal!important}
+#qaWelcome.qaReferenceHome .qaShowcaseCard:has(.qaNativeCategoryCover) .qaCategorySymbol,#qaWelcome .qaCategoryArrow,#qaWelcome .qaShowcaseCard small{display:none!important}
+#qaSharedLibrary .qs-grid{grid-template-columns:repeat(auto-fill,minmax(145px,1fr))!important;gap:8px!important}
+#qaSharedLibrary article{position:relative;background:#111!important;border:1px solid #b58c4d!important;border-radius:10px!important;padding:5px!important;gap:4px!important;overflow:hidden}
+#qaSharedLibrary article img{height:auto!important;aspect-ratio:1.3;object-fit:contain!important}
+#qaSharedLibrary article small{font-size:10px!important;color:#aaa}
+#qaSharedLibrary article button{font-size:12px!important;padding:7px!important;background:#302719!important;color:#ffe0a0!important;border:1px solid #a88449!important}
+#qaSharedLibrary #qsCategoryCover{display:none!important}
+@media(max-width:760px){#qaWelcome.qaReferenceHome .qaShowcase,#qaSharedLibrary .qs-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}

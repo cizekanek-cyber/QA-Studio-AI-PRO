@@ -16,7 +16,7 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 <link rel="apple-touch-icon" href="./assets/qa-icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="./qa-design.css?v=20261127-minimal09">
+<link rel="stylesheet" href="./qa-design.css?v=20261127-gallery10">
 </head>
 <body>
 <dialog id="qaInstallHelp" style="max-width:350px;background:#15151a;color:#fff;border:1px solid #b89450;border-radius:14px;padding:20px;font:16px system-ui"><h2></h2><p></p><button type="button"></button></dialog>
@@ -34,7 +34,7 @@ if(location.search||location.hash){const q=new URLSearchParams(location.search);
 f.addEventListener('load',async function(){
  try{
    const doc=f.contentDocument;
-   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261127-minimal09';doc.head.append(design);}
+   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261127-gallery10';doc.head.append(design);}
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    const loadModule=script=>new Promise(resolve=>{const old=script.onload;const error=script.onerror;script.onload=e=>{try{old?.call(script,e)}finally{resolve(true)}};script.onerror=e=>{try{error?.call(script,e)}finally{resolve(false)}};script.async=false;doc.body.append(script)});
    if(!doc.querySelector('script[data-qa-animals]')){
@@ -62,7 +62,7 @@ f.addEventListener('load',async function(){
    if(!doc.querySelector('script[data-qa-external-ai]')){const ext=doc.createElement('script');ext.src='./qa-external-ai.js?v=20261125-external01';ext.dataset.qaExternalAi='true';await loadModule(ext);}
    if(!doc.querySelector('script[data-qa-branding]')){const art=doc.createElement('script');art.src='./qa-branding-art.js?v=20261127-brand05';art.dataset.qaBranding='true';await loadModule(art);}
    if(!doc.querySelector('script[data-qa-shared-library]')){const lib=doc.createElement('script');lib.src='./qa-shared-library.js?v=20261127-brand05';lib.dataset.qaSharedLibrary='true';await loadModule(lib);}
-   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261127-minimal09';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}
+   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261127-gallery10';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}
    const deadline=Date.now()+6000;while(!doc.querySelector('#qlaNewLanding .qaHomeShell')&&Date.now()<deadline)await new Promise(r=>setTimeout(r,100));
    if(doc.querySelector('#qlaNewLanding .qaHomeShell')){doc.querySelector('.nav button[data-tab="qaWelcome"]')?.click();doc.defaultView.scrollTo(0,0);n.style.display='none';window.qaAttachInstall?.();const requested=new URLSearchParams(location.search).get('studio');if(['image','sound','voice','video','motion','editor'].includes(requested)){doc.defaultView.qaOpenEditorMode?.(requested)}else if(requested==='library'){doc.defaultView.qaOpenSharedLibrary?.('all','all')}}else{n.replaceChildren();const msg=document.createElement('p');msg.textContent='Nová domovská stránka se nenačetla. / Dashboard failed to load.';const retry=document.createElement('button');retry.textContent='Zkusit znovu / Retry';retry.onclick=()=>location.reload();const fallback=document.createElement('button');fallback.textContent='Otevřít dostupný editor / Open editor';fallback.onclick=()=>{n.style.display='none'};n.append(msg,retry,fallback)}
  }catch(e){
