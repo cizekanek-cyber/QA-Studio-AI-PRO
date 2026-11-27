@@ -56,3 +56,51 @@ test('the visible choices retain a few earlier presets and remove the rest', () 
     assert(!source.includes("['" + id + "',"), id + ' has no selectable option');
   }
 });
+
+test('pitch adjustment preserves a smooth voiced tone at the intended pitch', () => {
+  const rate = 32000, baseHz = 200, shift = 4;
+  const tone = Float32Array.from({length: rate}, (_, i) => .3 * Math.sin(2 * Math.PI * baseHz * i / rate));
+  const edited = dsp(tone, rate, shift, 1, 'none', 0, 1).data;
+  const targetHz = baseHz * 2 ** (shift / 12);
+  let real = 0, imag = 0, energy = 0, count = 0;
+  for (let i = 6400; i < 25600; i++) {
+    const value = edited[i], angle = 2 * Math.PI * targetHz * i / rate;
+    real += value * Math.cos(angle); imag += value * Math.sin(angle);
+    energy += value * value; count++;
+  }
+  const tonalClarity = 2 * (real * real + imag * imag) / (energy * count);
+  assert(tonalClarity > .85, 'voiced tone should not break into metallic sidebands');
+  assert.equal(edited.length, tone.length, 'pitch shift preserves the duration');
+});
+
+test('voice presets use subtle processing instead of electronic modulation', () => {
+  for (const [id, [pitch, tempo, effect]] of Object.entries(presets)) {
+    assert(Math.abs(pitch) <= 6, id);
+    assert(tempo >= .95 && tempo <= 1.1, id);
+    assert(['none','gentle','warm','bright'].includes(effect), id);
+  }
+});
+
+test('different recording rates and extreme manual controls produce valid audio', () => {
+  for (const [rate, pitch, tempo] of [[16000,-12,.65],[44100,12,1.5],[48000,3,1]]) {
+    const signal = Float32Array.from({length: Math.floor(rate * .15)}, (_, i) => .2 * Math.sin(2 * Math.PI * 180 * i / rate));
+    const output = dsp(signal, rate, pitch, tempo, 'none', 0, 1);
+    assert.equal(output.data.length, Math.ceil(signal.length / rate / tempo * 32000));
+    assert(output.data.every(x => Number.isFinite(x) && Math.abs(x) <= 1));
+    assert(output.data.some(x => Math.abs(x) > .01));
+  }
+});
+
+test('a softened recording can be encoded as an audible WAV', async () => {
+  const wavSource = source.slice(source.indexOf('function wav(s)'), source.indexOf('\n function stopSound()'));
+  const makeWav = Function('const clamp=(v,a,b)=>Math.min(b,Math.max(a,Number(v)||0));' + wavSource + ';return wav')();
+  const edited = dsp(input, 32000, ...presets.kitten.slice(0,2), presets.kitten[2], .6, 1);
+  const blob = makeWav(edited);
+  const bytes = Buffer.from(await blob.arrayBuffer());
+  assert.equal(blob.type, 'audio/wav');
+  assert.equal(bytes.toString('ascii', 0, 4), 'RIFF');
+  assert.equal(bytes.toString('ascii', 8, 12), 'WAVE');
+  assert.equal(bytes.readUInt32LE(24), 32000);
+  assert.equal(bytes.readUInt32LE(40), edited.data.length * 2);
+  assert(bytes.subarray(44).some(byte => byte !== 0));
+});

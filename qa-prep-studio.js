@@ -6,13 +6,45 @@ const names={image:['Obrázky','Images'],motion:['Animace','Motion'],voice:['Hla
 const label=k=>t(...names[k]);
 const MAX=120;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,Number(v)||0));
-// Independent pitch/tempo approximation using overlap-add grains; local DSP, not AI.
+// Local pitch/tempo processing. Align overlapping speech segments to reduce
+// phase cancellation and avoid the metallic sound of unaligned grains.
 function voiceDSP(input,sourceRate,semitones,tempo,effect,amount,volume,extra={}){
  const rate=32000,pitch=2**(clamp(semitones,-12,12)/12),speed=clamp(tempo,.65,1.5),mix=clamp(amount,0,1),gain=clamp(volume,0,1.5);
- const n=Math.max(1,Math.min(rate*120,Math.ceil(input.length/sourceRate/speed*rate))),data=new Float32Array(n),weights=new Float32Array(n);
+ const n=Math.max(1,Math.min(rate*120,Math.ceil(input.length/sourceRate/speed*rate))),data=new Float32Array(n);
  function sample(at){const i=Math.floor(at);if(i<0||i>=input.length)return 0;return input[i]+((input[i+1]||0)-input[i])*(at-i)}
  if(Math.abs(pitch-speed)<.0001){for(let i=0;i<n;i++)data[i]=sample(i*speed*sourceRate/rate)}
- else{const grain=1280,hop=320;for(let start=-grain+hop;start<n;start+=hop){for(let j=0;j<grain;j++){const i=start+j;if(i<0||i>=n)continue;const w=.5-.5*Math.cos(2*Math.PI*(j+.5)/grain);const at=((start+grain/2)*speed+(j-grain/2)*pitch)*sourceRate/rate;data[i]+=sample(at)*w;weights[i]+=w}}for(let i=0;i<n;i++)data[i]/=Math.max(.0001,weights[i])}
+ else{
+  const sourceStep=sourceRate/rate*pitch,shiftedLength=Math.max(1,Math.ceil(input.length/sourceStep)),shifted=new Float32Array(shiftedLength);
+  for(let i=0;i<shiftedLength;i++)shifted[i]=sample(i*sourceStep);
+  const grain=1024,hop=256,radius=160,searchStep=8,weights=new Float32Array(n),window=new Float32Array(grain);
+  for(let j=0;j<grain;j++)window[j]=.5-.5*Math.cos(2*Math.PI*(j+.5)/grain);
+  const analysisHop=hop*speed/pitch;let previous=-1;
+  for(let start=0,frame=0;start<n;start+=hop,frame++){
+   let pos=Math.min(shiftedLength-1,Math.max(0,Math.round(frame*analysisHop)));
+   if(previous>=0&&pos<shiftedLength-grain){
+    let refEnergy=0;for(let j=0;j<grain-hop;j+=8){const x=shifted[previous+hop+j]||0;refEnergy+=x*x}
+    if(refEnergy>1e-7){
+     let best=-Infinity,bestPos=pos;
+     const low=Math.max(0,previous+1,pos-radius),high=Math.min(shiftedLength-grain,pos+radius);
+     for(let c=low;c<=high;c+=searchStep){
+      let cross=0,power=0;for(let j=0;j<grain-hop;j+=8){const a=shifted[previous+hop+j]||0,b=shifted[c+j]||0;cross+=a*b;power+=b*b}
+      const score=cross/Math.sqrt(refEnergy*power+1e-18)-.002*Math.abs(c-pos)/radius;
+      if(score>best){best=score;bestPos=c}
+     }
+     const center=bestPos;
+     for(let c=Math.max(low,center-searchStep+1);c<=Math.min(high,center+searchStep-1);c++){
+      let cross=0,power=0;for(let j=0;j<grain-hop;j+=8){const a=shifted[previous+hop+j]||0,b=shifted[c+j]||0;cross+=a*b;power+=b*b}
+      const score=cross/Math.sqrt(refEnergy*power+1e-18)-.002*Math.abs(c-pos)/radius;
+      if(score>best){best=score;bestPos=c}
+     }
+     pos=bestPos;
+    }
+   }
+   previous=pos;
+   for(let j=0;j<grain&&start+j<n&&pos+j<shiftedLength;j++){const w=window[j];data[start+j]+=shifted[pos+j]*w;weights[start+j]+=w}
+  }
+  for(let i=0;i<n;i++)data[i]/=Math.max(weights[i],1e-9);
+ }
  let lp=0,slow=0,bassState=0,trebleState=0,gate=1;const rev=Math.round(rate*.071);const delay=Math.round(rate*.18),long=Math.round(rate*.31),hist=new Float32Array(long+1);
  for(let i=0;i<n;i++){const x=data[i],t=i/rate;let y=x;lp+=.17*(x-lp);slow+=.015*(x-slow);
  switch(effect){
@@ -30,6 +62,9 @@ function voiceDSP(input,sourceRate,semitones,tempo,effect,amount,volume,extra={}
  case 'flutter':y=x*(.62+.38*Math.sin(2*Math.PI*5.5*t));break;
  case 'bubbly':{const d=Math.round(rate*.018);y=x*(.76+.18*Math.sin(2*Math.PI*6*t))+(i>=d?hist[(i-d)%hist.length]*.18:0);break}
  case 'softrobot':y=x*(.72+.28*Math.cos(2*Math.PI*24*t));break;
+ case 'gentle':y=.94*x+.06*lp;break;
+ case 'warm':y=.90*x+.10*lp;break;
+ case 'bright':y=x+.10*(x-lp);break;
  }
  let z=x*(1-mix)+y*mix;z+=clamp(extra.echo,0,1)*(i>=delay?hist[(i-delay)%hist.length]*.5:0)+clamp(extra.reverb,0,1)*(i>=rev?hist[(i-rev)%hist.length]*.35:0);bassState+=.025*(z-bassState);trebleState+=.4*(z-trebleState);z+=clamp(extra.bass,-1,1)*bassState+clamp(extra.treble,-1,1)*(z-trebleState);const threshold=clamp(extra.noise,0,1)*.025;gate+=.02*((Math.abs(z)<threshold?.12:1)-gate);z*=gate;const d=clamp(extra.drive,0,1);z=z*(1-d)+Math.tanh(4*z)*d;hist[i%hist.length]=x;data[i]=clamp(z*gain,-1,1)}
  return {data,rate,len:n/rate};
@@ -150,13 +185,13 @@ const status=(a,b)=>{q('qpStatus').textContent=t(a,b)};
  q('qpSpeechStop').onclick=cancelVoice;
  const fileChange=(id,track)=>q(id).onchange=()=>{const f=q(id).files[0];if(f)addFile(track,f,f.name);q(id).value=''};
  let voiceInput=null,voiceLoad=0,voiceCache=null;
- const presets={normal:[0,1,'none'],cat:[5,1,'none'],child:[7,1.05,'none'],cute:[4,1.05,'none'],chip:[10,1.2,'none'],comic:[8,1.3,'none'],kitten:[8,1.1,'fairy'],puppy:[6,1.15,'flutter'],bunny:[9,1.05,'fairy'],hamster:[11,1.2,'none'],duckling:[10,1.15,'flutter'],frog:[4,1.05,'bubbly'],fairy:[6,1,'fairy'],goblin:[6,1.15,'witch'],teddy:[2,.95,'double'],baby_dragon:[5,1.1,'bubbly'],cute_robot:[5,1.05,'softrobot'],baby_alien:[9,1.05,'bubbly']};
+ const presets={normal:[0,1,'none'],cat:[3,1,'gentle'],child:[3,1,'bright'],cute:[3,1.05,'warm'],chip:[6,1.1,'bright'],comic:[4,1.1,'warm'],kitten:[4,1,'gentle'],puppy:[3,1.05,'gentle'],bunny:[5,1.05,'warm'],hamster:[6,1.05,'bright'],duckling:[5,1.1,'bright'],frog:[2,1,'warm'],fairy:[4,.95,'bright'],goblin:[3,1.1,'gentle'],teddy:[1,.95,'warm'],baby_dragon:[2,1.05,'warm'],cute_robot:[4,1.05,'gentle'],baby_alien:[5,1,'bright']};
  const newPresetIds=new Set(['kitten','puppy','bunny','hamster','duckling','frog','fairy','goblin','teddy','baby_dragon','cute_robot','baby_alien']);
  const fxIds=['Echo','Reverb','Bass','Treble','Noise','Drive'];const icons={normal:'🎙️',cat:'🐱',child:'👶',cute:'💗',chip:'🐿️',comic:'😂',kitten:'🐱',puppy:'🐶',bunny:'🐰',hamster:'🐹',duckling:'🐥',frog:'🐸',fairy:'🧚',goblin:'🧝',teddy:'🧸',baby_dragon:'🐉',cute_robot:'🤖',baby_alien:'👽'};function voiceTiles(){const boxes=[q('qpVoiceTiles'),q('qpVoiceMoreTiles')],scroll=boxes.map(box=>box.scrollLeft);for(const box of boxes)box.replaceChildren();for(const o of q('qpVoicePreset').options){const b=document.createElement('button');b.type='button';b.textContent=(icons[o.value]||'🎵')+' '+o.textContent;b.setAttribute('aria-pressed',String(o.selected));if(o.selected)b.style.borderColor='#e5bf65';b.onclick=()=>{q('qpVoicePreset').value=o.value;choosePreset()};boxes[newPresetIds.has(o.value)?1:0].append(b)}boxes.forEach((box,i)=>{box.scrollLeft=scroll[i]})}
  function voiceSettings(){return {extra:Object.fromEntries(fxIds.map(id=>[id.toLowerCase(),Number(q('qpFx'+id).value)/100])),pitch:Number(q('qpVoiceShift').value),tempo:Number(q('qpVoiceTempo').value),effect:(presets[q('qpVoicePreset').value]||presets.normal)[2],amount:Number(q('qpVoiceMix').value)/100,volume:Number(q('qpVoiceVolume').value)/100}}
  function voiceLabels(){for(const [id,suffix] of [['Shift',''],['Tempo','×'],['Mix','%'],['Volume','%']])q('qpVoice'+id+'Value').textContent=q('qpVoice'+id).value+suffix;for(const id of ['Original','Preview','Stop','Save','Clip'])q('qpVoice'+id).disabled=!voiceInput}
  for(const id of fxIds)q('qpFx'+id).oninput=()=>{voiceCache=null;q('qpFx'+id+'Value').textContent=q('qpFx'+id).value+'%'};
- function choosePreset(){const [p,t]=presets[q('qpVoicePreset').value]||presets.normal;q('qpVoiceShift').value=p;q('qpVoiceTempo').value=t;q('qpVoiceMix').value=70;voiceCache=null;voiceLabels();voiceTiles()}
+ function choosePreset(){stopSound();const [p,t]=presets[q('qpVoicePreset').value]||presets.normal;q('qpVoiceShift').value=p;q('qpVoiceTempo').value=t;q('qpVoiceMix').value=60;for(const id of fxIds){q('qpFx'+id).value=0;q('qpFx'+id+'Value').textContent='0%'}voiceCache=null;voiceLabels();voiceTiles()}
  q('qpVoicePreset').onchange=choosePreset;for(const id of ['Shift','Tempo','Mix','Volume'])q('qpVoice'+id).oninput=()=>{voiceCache=null;voiceLabels()};
  q('qpVoiceReset').onclick=()=>{stopSound();q('qpVoicePreset').value='normal';q('qpVoiceVolume').value=100;for(const id of fxIds){q('qpFx'+id).value=0;q('qpFx'+id).oninput()}choosePreset()};
  async function loadVoiceFile(file){if(!file)return;const seq=++voiceLoad;stopSound();voiceInput=null;voiceCache=null;voiceLabels();if(file.size>30*1024*1024){status('Maximální velikost je 30 MB.','Maximum file size is 30 MB.');return}try{const buffer=await getAudio().decodeAudioData(await file.arrayBuffer());if(seq!==voiceLoad)return;if(buffer.duration>60){status('Použij nahrávku do 60 sekund.','Use a recording up to 60 seconds.');return}const mono=new Float32Array(buffer.length);for(let c=0;c<buffer.numberOfChannels;c++){const channel=buffer.getChannelData(c);for(let i=0;i<mono.length;i++)mono[i]+=channel[i]/buffer.numberOfChannels}voiceInput={data:mono,rate:buffer.sampleRate,len:buffer.duration};q('qpVoiceInfo').textContent=file.name+' · '+buffer.duration.toFixed(1)+' s';voiceLabels();status('Hlas připraven k úpravě.','Voice ready to edit.')}catch{if(seq===voiceLoad)status('Nahrávku nelze otevřít.','Cannot open recording.')}}
