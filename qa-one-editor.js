@@ -69,6 +69,7 @@ function init(){
  window.qaOpenEditorMode=mode=>{if(!quBtns[mode])return false;open(mode);return true};
  window.qaOpenMotionStudio=()=>window.qaOpenEditorMode('motion');
  window.qaOpenPhotoLibrary=async()=>{await open('backgrounds');if(scene.dataset.qaEditorMode!=='backgrounds'||!scene.classList.contains('active'))return;scene.classList.add('qaFullPhotoLibrary');const first=scene.querySelector('#qslCategories button[data-cat="all"]');first?.click()};engineBtn.onclick=()=>open('editor');engineBtn.textContent='🎬 Editor';
+ try{window.QAAuthCore?.createClient().auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){accessRequest++;window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:'locked'}));if(scene.classList.contains('active'))nav.querySelector('[data-tab="qaAccountPanel"]')?.click()}})}catch{}
  const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel','qaCutoutPanel','qaPromptPanel','qaExternalAi','qaSharedLibrary']);
  nav.querySelectorAll('button[data-tab]').forEach(b=>{if(!visibleTabs.has(b.dataset.tab)){b.hidden=true;b.style.display='none'}});
  const libraryButton=nav.querySelector('[data-tab="qaCutoutPanel"]');if(libraryButton){libraryButton.hidden=false;libraryButton.style.display='';libraryButton.textContent='▦ Knihovna PNG'}
