@@ -32,6 +32,9 @@ function init(){
  #qaSceneLib .qsl-layout .qsl-editor>canvas{max-height:60vh;object-fit:contain}
  #qaSceneLib .qsl-editor .qsl-row{gap:7px}
  #qaSceneLib .qsl-gallery{display:none}
+ #qaUnifiedTools .quTabs button[data-qa-editor-mode="living"],#qaUnifiedTools .quTabs button[data-qa-editor-mode="funny"]{display:none}
+ #qaUnifiedTools .quTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #qaSceneLib:not(.qu-backgrounds) .qsl-toolbar{display:none!important}
  #qaSceneLib.qu-backgrounds .qsl-gallery{display:block}
  #qaSceneLib.qu-preparation .qsl-layout,#qaSceneLib.qu-preparation .qsl-toolbar{display:none!important}
  #qaSceneLib.qu-preparation #qaUnifiedDrawer{display:block!important}
@@ -41,20 +44,21 @@ function init(){
  `;document.head.append(style);
  const wrap=document.createElement('div');wrap.id='qaUnifiedTools';wrap.innerHTML=`<h2>🎬 Jeden editor pro všechno</h2><p>Vyber pozadí, přidej samostatnou průhlednou postavu nebo zvíře, uprav vrstvy a exportuj ze stejného plátna.</p><div class="quTabs" role="group" aria-label="Knihovna hlavního editoru"></div><div class="quHint" id="quHint"></div>`;
  scene.insertBefore(wrap,layout);
+ const bottom=editor.querySelector('.qsl-bottom');if(bottom){const rows=[...bottom.querySelectorAll(':scope > .qsl-row')];const uploads=document.createElement('div');uploads.id='qaSceneUploads';uploads.style.cssText='display:grid;gap:5px;margin:8px 0';for(const row of rows.slice(0,2))uploads.append(row);editor.querySelector('#qslCanvas')?.insertAdjacentElement('beforebegin',uploads);const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Další úpravy / More controls';details.append(summary);for(const node of [...editor.querySelectorAll(':scope > .qsl-tools,:scope > .qsl-sub,:scope > #qslEffects')])details.append(node);bottom.before(details);}
  const dock=document.createElement('div');dock.id='qaUnifiedDrawer';scene.insertBefore(dock,layout);
  const targets={living:oldGallery,funny:funny};
  for(const [k,element] of Object.entries(targets)){const box=document.createElement('div');box.dataset.quDrawer=k;box.hidden=true;dock.append(box);element.classList.remove('tab');element.classList.remove('active');box.append(element)}
  const modes=[
- ['backgrounds','🏞️ Pozadí','Vyber čisté prostředí ze scén. U fotografických podkladů ověř, že neobsahují postavy.'],
- ['objects','🐾 Průhledné objekty','Skutečně průhledné PNG/WebP lze vložit jako samostatné vrstvy.'],
+ ['backgrounds','🏞️ Pozadí / Background','Vyber čisté prostředí ze scén. U fotografických podkladů ověř, že neobsahují postavy.'],
+ ['objects','🐾 Postavy / Characters','Skutečně průhledné PNG/WebP lze vložit jako samostatné vrstvy.'],
  ['living','🧑 Lidé a tvorové','Fotografické předlohy mohou mít vlastní původní pozadí. Nejde automaticky o vyříznuté PNG.'],
  ['funny','👽 Funny šablony','Vyber scénu a pomocí „Použít v editoru“ ji přenes na hlavní plátno. Import zatím spojuje motiv do jednoho obrázku.'],
  ['image','🖼️ AI Image Studio','Local image preparation / Lokální příprava obrázků'],
  ['sound','🎧 AI Sound Studio','Local sound preparation / Lokální příprava zvuku'],
  ['voice','🎙️ AI Voice Studio','Voice preparation / Příprava hlasu'],
  ['video','🎞️ AI Video Studio','Shared timeline / Společná časová osa'],
- ['motion','🎬 AI Motion Studio','Vlož fotografii, nastav pohyb a připrav realistickou AI animaci. Lokální náhled kamery je dostupný bez AI.'],
- ['editor','✏️ Úpravy a export','Uprav obsah na plátně, přidej text, počasí, vlastní PNG a exportuj.']
+ ['motion','🎬 AI Motion (foto)','Vlož fotografii, nastav pohyb a připrav realistickou AI animaci. Lokální náhled kamery je dostupný bez AI.'],
+ ['editor','▶ Scéna / Scene','Uprav obsah na plátně, přidej text, počasí, vlastní PNG a exportuj.']
  ];
  const tabs=wrap.querySelector('.quTabs');
  const quBtns={};
@@ -63,7 +67,7 @@ function init(){
  function open(mode){if(!quBtns[mode])mode='editor';if(mode==='objects'&&typeof window.qaOpenAssetLibrary==='function'){window.qaOpenAssetLibrary();return}showEditor();scene.dataset.qaEditorMode=mode;scene.classList.remove('qaFullPhotoLibrary');scene.classList.toggle('qu-preparation',['image','sound','voice','video','motion'].includes(mode));scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:mode}));if(['image','sound','voice','video','motion'].includes(mode)){const panel=document.getElementById(mode==='motion'?'qaMotionStudio':'qaPrepStudio');panel?.scrollIntoView({behavior:'smooth',block:'start'});}}
  window.qaOpenEditorMode=mode=>{if(!quBtns[mode])return false;open(mode);return true};
  window.qaOpenMotionStudio=()=>window.qaOpenEditorMode('motion');
- window.qaOpenPhotoLibrary=()=>{open('backgrounds');scene.classList.add('qaFullPhotoLibrary');const first=scene.querySelector('#qslCategories button[data-cat="all"]');first?.click()};engineBtn.onclick=()=>open('backgrounds');engineBtn.textContent='🎬 Editor';
+ window.qaOpenPhotoLibrary=()=>{open('backgrounds');scene.classList.add('qaFullPhotoLibrary');const first=scene.querySelector('#qslCategories button[data-cat="all"]');first?.click()};engineBtn.onclick=()=>open('editor');engineBtn.textContent='🎬 Editor';
  const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel','qaCutoutPanel','qaPromptPanel','qaExternalAi','qaSharedLibrary']);
  nav.querySelectorAll('button[data-tab]').forEach(b=>{if(!visibleTabs.has(b.dataset.tab)){b.hidden=true;b.style.display='none'}});
  const libraryButton=nav.querySelector('[data-tab="qaCutoutPanel"]');if(libraryButton){libraryButton.hidden=false;libraryButton.style.display='';libraryButton.textContent='▦ Knihovna PNG'}
@@ -79,7 +83,7 @@ function init(){
  const head=scene.querySelector('.qsl-head h2');if(head)head.textContent='Profesionální editor obrázků a videí';
  const notes=scene.querySelector('.qsl-head .qsl-sub');if(notes)notes.textContent='Jedno plátno pro pozadí, postavy, objekty, text, efekty a export. První čtyři motivy v každé kategorii zdarma; zbytek s platnou licencí PRO / VIP.';
  // Do not override the landing screen when late-loaded modules initialize.
- if(scene.classList.contains('active')){open('backgrounds')}else{scene.classList.add('qu-backgrounds');quBtns.backgrounds.setAttribute('aria-pressed','true')}
+ if(scene.classList.contains('active')){open('editor')}else{quBtns.editor.setAttribute('aria-pressed','true')}
  return true;
 }
 let tries=0;function tick(){if(init())return;if(++tries<24)setTimeout(tick,350);}tick();

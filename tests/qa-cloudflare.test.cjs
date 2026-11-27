@@ -39,6 +39,6 @@ test('Security and friendly routes are configured for Pages',()=>{
   assert.match(text('_redirects'),/^\/register \/login\.html 302/m);
 });
 
- test('Obsidian theme ships with production, beta and account entrypoints',()=>{const theme=text('qa-design.css');assert.match(theme,/prefers-reduced-motion/);for(const name of ['index.html','beta/index.html','login.html','licenses.html'])assert.match(text(name),/qa-design\.css/);assert.match(text('sw.js'),/qa-design\.css/);const landing=text('qa-landing.js');assert.match(landing,/qaShowcaseCard/);assert.match(landing,/mode==='living'\)\{editorTab\(2\)/);});
+ test('Obsidian theme ships with production, beta and account entrypoints',()=>{const theme=text('qa-design.css');assert.match(theme,/prefers-reduced-motion/);for(const name of ['index.html','beta/index.html','login.html','licenses.html'])assert.match(text(name),/qa-design\.css/);assert.match(text('sw.js'),/qa-design\.css/);const landing=text('qa-landing.js');assert.match(landing,/qaShowcaseCard/);assert.match(landing,/mode==='living'\)\{editorTab\('living'\)/);});
 
 test('Collection manifests are deployed and do not invent counts',()=>{for(const p of ['assets/photos/manifest.json','assets/cutouts/manifest.json']){const m=JSON.parse(text(p));assert(Array.isArray(m.assets));for(const item of m.assets){assert(!item.file.includes('..'));assert(fs.statSync(path.join(dist,path.dirname(p),item.file)).isFile())}}assert.match(text('qa-landing.js'),/data-collection/);assert.match(text('qa-animals.js'),/loadStudioPhotos/)});
