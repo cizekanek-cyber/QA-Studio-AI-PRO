@@ -1,7 +1,7 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261127-brand02';
+const VERSION='qa-shell-20261127-brand03';
 const SCOPE_PATH=new URL(self.registration.scope).pathname;
-const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-external-ai.js','./qa-shared-library.js','./qa-social.js','./qa-cutouts.js','./qa-prompts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-motion.js','./qa-prep-studio.js','./qa-help.js','./qa-landing.js','./qa-branding-art.js','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-hero-campaign.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./assets/qa-icon-192.png','./assets/qa-icon-512.png','./assets/qa-icon-180.png','./qa-install.js','./manifest.webmanifest'];
+const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-external-ai.js','./qa-shared-library.js','./qa-social.js','./qa-cutouts.js','./qa-prompts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-motion.js','./qa-prep-studio.js','./qa-help.js','./qa-landing.js','./qa-branding-art.js','./assets/branding/hero.webp','./assets/branding/postavy.webp','./assets/branding/zvirata.webp','./assets/branding/lide.webp','./assets/branding/fantasytvorove.webp','./assets/branding/fantasypozadi.webp','./assets/branding/ptaci.webp','./assets/branding/farma.webp','./assets/branding/divokazvirata.webp','./assets/branding/vodnizvirata.webp','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-hero-campaign.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./assets/qa-icon-192.png','./assets/qa-icon-512.png','./assets/qa-icon-180.png','./qa-install.js','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
  event.waitUntil((async()=>{
   const cache=await caches.open(VERSION);
@@ -17,7 +17,7 @@ self.addEventListener('fetch',event=>{
  if(req.method!=='GET')return;
  const url=new URL(req.url);
  if(url.origin!==location.origin||!url.pathname.startsWith(SCOPE_PATH))return;
- if((url.pathname.endsWith('/assets/reference-fantasy.webp'))||url.pathname.includes('/assets/cutouts/')){event.respondWith((async()=>{
+ if((url.pathname.endsWith('/assets/reference-fantasy.webp'))||url.pathname.includes('/assets/cutouts/')||url.pathname.includes('/assets/branding/')){event.respondWith((async()=>{
   const c=await caches.open(VERSION);
   const cached=await c.match(req);
   if(cached)return cached;
