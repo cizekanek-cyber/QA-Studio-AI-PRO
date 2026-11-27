@@ -27,7 +27,7 @@ button{border-radius:10px;border:1px solid #8e75b4;background:#272c55;color:whit
 <p class="note"><strong>Public checkout and paid AI generation are not available yet.</strong> This page cannot charge customers or activate paid access.</p>
 <h2>Access levels</h2>
 <p><strong>FREE</strong> – free registration and library previews. <strong>PRO</strong> – time-limited access to all local editing tools and eligible premium templates with unlimited edits when billing is active. <strong>VIP</strong> – planned expanded tier, not for sale. <strong>ADMIN</strong> – verified internal owner.</p></div>
-<table><thead><tr><th>Licence / Pass</th><th>Dní / Days</th><th>Cena / Price</th><th>External AI</th></tr></thead><tbody><tr><td>Editor PRO</td><td>1</td><td>19 Kč</td><td>—</td></tr><tr><td>Editor PRO</td><td>7</td><td>69 Kč</td><td>—</td></tr><tr><td>Editor PRO</td><td>14</td><td>119 Kč</td><td>—</td></tr><tr><td>Editor PRO</td><td>30</td><td>199 Kč</td><td>—</td></tr><tr><td>Editor PRO</td><td>90</td><td>449 Kč</td><td>—</td></tr><tr><td>Editor PRO</td><td>365</td><td>1299 Kč</td><td>—</td></tr></tbody></table>
+<table><thead><tr><th>Licence / Pass</th><th>Dní / Days</th><th>Cena / Price</th><th>External AI</th></tr></thead><tbody id="qaPromoPrices"><tr><td colspan="4">Ceny se načítají / Loading prices</td></tr></tbody></table>
 <div data-cs>
 <h2>Jak licence funguje</h2>
 <p>Jde o jednorázové časové balíčky bez automatického obnovování. Platnost se počítá po potvrzené aktivaci a skončí uplynutím přiděleného období. V ceně jsou lokální úpravy obrázků, animací, zvuku, hlasu, dabingu a časové osy. Jednotlivé úpravy nespotřebovávají kredity. Externí AI není součástí ceny; integrované placené generování zatím není dostupné.</p>
@@ -43,9 +43,10 @@ button{border-radius:10px;border:1px solid #8e75b4;background:#272c55;color:whit
 <p><a href="./login.html">← Přihlášení / Sign in</a> · <a href="./">Studio / Home</a></p>
 <small>QA Studio AI PRO · Přehled produktu / Product overview · 27. 11. 2026</small>
 </main>
+<script src="./qa-promo-catalog.js?v=20261127-promo01"></script>
 <script>
 const btn=document.getElementById('langBtn');
 let lang=(navigator.language||'cs').toLowerCase().startsWith('cs')?'cs':'en';
-function render(){for(const el of document.querySelectorAll('[data-cs]'))el.hidden=lang!=='cs';for(const el of document.querySelectorAll('[data-en]'))el.hidden=lang!=='en';document.documentElement.lang=lang}
+function render(){for(const el of document.querySelectorAll('[data-cs]'))el.hidden=lang!=='cs';for(const el of document.querySelectorAll('[data-en]'))el.hidden=lang!=='en';document.documentElement.lang=lang;const body=document.getElementById('qaPromoPrices'),catalog=window.QAPromoCatalog;if(!catalog){body.textContent=lang==='cs'?'Ceník není k dispozici.':'Prices are unavailable.';return}body.replaceChildren();for(const offer of catalog.offers){const tr=document.createElement('tr');for(const value of ['Editor PRO',String(offer.days),catalog.formatPrice(offer.minorUnits,lang),'—']){const td=document.createElement('td');td.textContent=value;tr.append(td)}body.append(tr)}}
 btn.addEventListener('click',()=>{lang=lang==='cs'?'en':'cs';render()});render();
 </script></body></html>
