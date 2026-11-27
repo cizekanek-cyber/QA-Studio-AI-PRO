@@ -47,13 +47,15 @@ function init(){
  ['objects','🐾 Průhledné objekty','Skutečně průhledné PNG/WebP lze vložit jako samostatné vrstvy.'],
  ['living','🧑 Lidé a tvorové','Fotografické předlohy mohou mít vlastní původní pozadí. Nejde automaticky o vyříznuté PNG.'],
  ['funny','👽 Funny šablony','Vyber scénu a pomocí „Použít v editoru“ ji přenes na hlavní plátno. Import zatím spojuje motiv do jednoho obrázku.'],
+ ['motion','🎬 AI Motion Studio','Vlož fotografii, nastav pohyb a připrav realistickou AI animaci. Lokální náhled kamery je dostupný bez AI.'],
  ['editor','✏️ Úpravy a export','Uprav obsah na plátně, přidej text, počasí, vlastní PNG a exportuj.']
  ];
  const tabs=wrap.querySelector('.quTabs');
  const quBtns={};
  for(const [key,text] of modes){const b=document.createElement('button');b.type='button';b.textContent=text;b.onclick=()=>open(key);b.setAttribute('aria-pressed','false');tabs.append(b);quBtns[key]=b;}
  function showEditor(){if(typeof oldEngineOpen==='function')oldEngineOpen.call(engineBtn);else{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===scene));nav.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===engineBtn))}}
- function open(mode){if(!quBtns[mode])mode='editor';if(mode==='objects'&&typeof window.qaOpenAssetLibrary==='function'){window.qaOpenAssetLibrary();return}showEditor();scene.classList.remove('qaFullPhotoLibrary');scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];}
+ function open(mode){if(!quBtns[mode])mode='editor';if(mode==='objects'&&typeof window.qaOpenAssetLibrary==='function'){window.qaOpenAssetLibrary();return}showEditor();scene.classList.remove('qaFullPhotoLibrary');scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:mode}));if(mode==='motion')document.getElementById('qaMotionStudio')?.scrollIntoView({behavior:'smooth',block:'start'});}
+ window.qaOpenMotionStudio=()=>open('motion');
  window.qaOpenPhotoLibrary=()=>{open('backgrounds');scene.classList.add('qaFullPhotoLibrary');const first=scene.querySelector('#qslCategories button[data-cat="all"]');first?.click()};engineBtn.onclick=()=>open('backgrounds');engineBtn.textContent='🎬 Editor';
  const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel','qaCutoutPanel','qaPromptPanel','qaExternalAi','qaSharedLibrary']);
  nav.querySelectorAll('button[data-tab]').forEach(b=>{if(!visibleTabs.has(b.dataset.tab)){b.hidden=true;b.style.display='none'}});
