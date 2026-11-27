@@ -16,7 +16,7 @@ html,body{width:100%;height:100%;margin:0;background:#090c19;color:#fff}
 <link rel="apple-touch-icon" href="./assets/qa-icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="./qa-design.css?v=20261127-gold11">
+<link rel="stylesheet" href="./qa-design.css?v=20261127-unified12">
 </head>
 <body>
 <dialog id="qaInstallHelp" style="max-width:350px;background:#15151a;color:#fff;border:1px solid #b89450;border-radius:14px;padding:20px;font:16px system-ui"><h2></h2><p></p><button type="button"></button></dialog>
@@ -34,7 +34,7 @@ if(location.search||location.hash){const q=new URLSearchParams(location.search);
 f.addEventListener('load',async function(){
  try{
    const doc=f.contentDocument;
-   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261127-gold11';doc.head.append(design);}
+   if(doc&&!doc.getElementById('qaObsidianDesign')){const design=doc.createElement('link');design.id='qaObsidianDesign';design.rel='stylesheet';design.href='./qa-design.css?v=20261127-unified12';doc.head.append(design);}
    if(!doc||!doc.querySelector('.nav'))throw Error('Aplikace nebyla načtena.');
    const loadModule=script=>new Promise(resolve=>{const old=script.onload;const error=script.onerror;script.onload=e=>{try{old?.call(script,e)}finally{resolve(true)}};script.onerror=e=>{try{error?.call(script,e)}finally{resolve(false)}};script.async=false;doc.body.append(script)});
    if(!doc.querySelector('script[data-qa-animals]')){

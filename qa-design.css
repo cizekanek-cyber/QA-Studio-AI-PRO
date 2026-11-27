@@ -484,3 +484,23 @@ html,body{background-color:#09090c!important;background-image:radial-gradient(el
 #qaPrepStudio .qpToolNav button,#qaSharedLibrary button{border-color:#9d7945!important;color:#f4dfb8!important}
 #qaPrepStudio input[type=range]{accent-color:#d6ad62}
 #qaWelcome.qaReferenceHome .qaShowcaseCard{isolation:isolate}
+
+/* Consistent compact interaction surfaces across library and preparation workspace. */
+#qaSharedLibrary{padding:8px!important}
+#qaSharedLibrary #qsTitle{font-size:20px;margin:8px 0;color:#f5d69a}
+#qaSharedLibrary #qsIntro{font-size:12px;line-height:1.4;margin:4px 0 8px;color:#bdb5a9}
+#qaSharedLibrary .qs-bar{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px!important;margin:6px 0 10px!important}
+#qaSharedLibrary select,#qaSharedLibrary input:not([type=checkbox]),#qaPrepStudio select,#qaPrepStudio textarea,#qaPrepStudio input:not([type=range]):not([type=checkbox]){background:linear-gradient(145deg,#211e24,#141316)!important;color:#f4eee3!important;border:1px solid #8d7145!important;border-radius:10px!important;min-width:0;max-width:100%;box-sizing:border-box;padding:9px!important}
+#qaSharedLibrary article{background:linear-gradient(145deg,#211b22,#0c0c10)!important;box-shadow:0 2px 8px #0005}
+#qaSharedLibrary article img{width:100%;border-radius:7px!important}
+#qaPrepStudio .qpToolNav button,#qaPrepStudio .qpActions button,#qaSharedLibrary button{background:linear-gradient(150deg,#30271e,#141317)!important;border:1px solid #9c7b48!important;border-radius:9px!important;min-height:36px}
+#qaPrepStudio .qpToolNav button[aria-pressed=true],#qaPrepStudio #qpVoiceTiles button[aria-pressed=true]{background:linear-gradient(145deg,#e5c485,#9f7338)!important;color:#15100a!important}
+#qaPrepStudio .qpActions{display:flex!important;flex-wrap:wrap;gap:5px!important}
+#qaPrepStudio .qpActions button{flex:1 1 110px;font-size:12px!important}
+#qaPrepStudio .qpToolPanel label{font-size:12px!important;gap:3px!important;margin:3px 0!important}
+#qaPrepStudio .qpToolPanel h3{font-size:15px!important;color:#e9c98c;margin:6px 0!important}
+#qaPrepStudio .qpToolPanel textarea{min-height:64px!important;resize:vertical}
+#qaPrepStudio .qpTimeline{padding:5px!important}
+#qaPrepStudio .qpRail{height:20px!important}
+#qaPrepStudio button:focus-visible,#qaSharedLibrary button:focus-visible{outline:2px solid #f3ce85;outline-offset:2px}
+@media(max-width:380px){#qaPrepStudio .qpToolNav button{font-size:10px!important;padding:6px 1px!important}}
