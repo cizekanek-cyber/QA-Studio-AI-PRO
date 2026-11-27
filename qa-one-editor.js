@@ -33,13 +33,15 @@ function init(){
  #qaSceneLib .qsl-editor .qsl-row{gap:7px}
  #qaSceneLib .qsl-gallery{display:none}
  #qaSceneLib.qu-backgrounds .qsl-gallery{display:block}
+ #qaSceneLib.qu-preparation .qsl-layout,#qaSceneLib.qu-preparation .qsl-toolbar{display:none!important}
+ #qaSceneLib.qu-preparation #qaUnifiedDrawer{display:block!important}
  #qaSceneLib #qaCutoutPanel,#qaSceneLib #qaGalleryPanel,#qaSceneLib #qaFunnyPanel{max-width:100%!important;margin:0!important}
  #qaSceneLib #qaGalleryPanel .qagDetail{position:static}
  @media(max-width:600px){#qaSceneLib{padding:8px}#qaUnifiedTools .quTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#qaUnifiedTools .quTabs button{font-size:12px;padding:10px 6px}#qaSceneLib .qsl-layout .qsl-editor>canvas{max-height:42vh}}
  `;document.head.append(style);
  const wrap=document.createElement('div');wrap.id='qaUnifiedTools';wrap.innerHTML=`<h2>🎬 Jeden editor pro všechno</h2><p>Vyber pozadí, přidej samostatnou průhlednou postavu nebo zvíře, uprav vrstvy a exportuj ze stejného plátna.</p><div class="quTabs" role="group" aria-label="Knihovna hlavního editoru"></div><div class="quHint" id="quHint"></div>`;
  scene.insertBefore(wrap,layout);
- const dock=document.createElement('div');dock.id='qaUnifiedDrawer';scene.append(dock);
+ const dock=document.createElement('div');dock.id='qaUnifiedDrawer';scene.insertBefore(dock,layout);
  const targets={living:oldGallery,funny:funny};
  for(const [k,element] of Object.entries(targets)){const box=document.createElement('div');box.dataset.quDrawer=k;box.hidden=true;dock.append(box);element.classList.remove('tab');element.classList.remove('active');box.append(element)}
  const modes=[
@@ -56,10 +58,11 @@ function init(){
  ];
  const tabs=wrap.querySelector('.quTabs');
  const quBtns={};
- for(const [key,text] of modes){const b=document.createElement('button');b.type='button';b.textContent=text;b.onclick=()=>open(key);b.setAttribute('aria-pressed','false');tabs.append(b);quBtns[key]=b;}
+ for(const [key,text] of modes){const b=document.createElement('button');b.type='button';b.dataset.qaEditorMode=key;b.textContent=text;b.onclick=()=>open(key);b.setAttribute('aria-pressed','false');tabs.append(b);quBtns[key]=b;}
  function showEditor(){if(typeof oldEngineOpen==='function')oldEngineOpen.call(engineBtn);else{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===scene));nav.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===engineBtn))}}
- function open(mode){if(!quBtns[mode])mode='editor';if(mode==='objects'&&typeof window.qaOpenAssetLibrary==='function'){window.qaOpenAssetLibrary();return}showEditor();scene.classList.remove('qaFullPhotoLibrary');scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:mode}));if(mode==='motion')document.getElementById('qaMotionStudio')?.scrollIntoView({behavior:'smooth',block:'start'});}
- window.qaOpenMotionStudio=()=>open('motion');
+ function open(mode){if(!quBtns[mode])mode='editor';if(mode==='objects'&&typeof window.qaOpenAssetLibrary==='function'){window.qaOpenAssetLibrary();return}showEditor();scene.dataset.qaEditorMode=mode;scene.classList.remove('qaFullPhotoLibrary');scene.classList.toggle('qu-preparation',['image','sound','voice','video','motion'].includes(mode));scene.classList.toggle('qu-backgrounds',mode==='backgrounds');for(const [k,d] of Object.entries(targets)){const panel=d.parentElement;panel.hidden=k!==mode;d.classList.toggle('active',k===mode)}for(const [k,b] of Object.entries(quBtns))b.setAttribute('aria-pressed',String(k===mode));wrap.querySelector('#quHint').textContent=modes.find(x=>x[0]===mode)[2];window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:mode}));if(['image','sound','voice','video','motion'].includes(mode)){const panel=document.getElementById(mode==='motion'?'qaMotionStudio':'qaPrepStudio');panel?.scrollIntoView({behavior:'smooth',block:'start'});}}
+ window.qaOpenEditorMode=mode=>{if(!quBtns[mode])return false;open(mode);return true};
+ window.qaOpenMotionStudio=()=>window.qaOpenEditorMode('motion');
  window.qaOpenPhotoLibrary=()=>{open('backgrounds');scene.classList.add('qaFullPhotoLibrary');const first=scene.querySelector('#qslCategories button[data-cat="all"]');first?.click()};engineBtn.onclick=()=>open('backgrounds');engineBtn.textContent='🎬 Editor';
  const visibleTabs=new Set(['qaWelcome','qaSceneLib','saved','qaAccountPanel','qaPlansPanel','qaCutoutPanel','qaPromptPanel','qaExternalAi','qaSharedLibrary']);
  nav.querySelectorAll('button[data-tab]').forEach(b=>{if(!visibleTabs.has(b.dataset.tab)){b.hidden=true;b.style.display='none'}});

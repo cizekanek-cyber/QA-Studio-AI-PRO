@@ -100,7 +100,7 @@ function mount(){
  window.addEventListener('qa:language',translate);
  window.addEventListener('qa:motion-mode',e=>{stop();stopSound();cancelVoice();if(['image','sound','voice','video'].includes(e.detail)){mode=e.detail;root.hidden=false;for(const k of ['Image','Sound','Voice','Video'])q('qp'+k).hidden=k.toLowerCase()!==mode;translate();root.scrollIntoView({behavior:'smooth',block:'start'})}else root.hidden=true});
  window.addEventListener('pagehide',()=>{stop();stopSound();cancelVoice()});
- translate();paintImage(null);return true
+ translate();paintImage(null);const current=document.getElementById('qaSceneLib')?.dataset.qaEditorMode;if(['image','sound','voice','video'].includes(current))window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:current}));return true
 }
 function tick(){if(!mount()&&++tries<40)setTimeout(tick,250)}tick();
 })();

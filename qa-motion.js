@@ -119,7 +119,7 @@ function mount(){
  window.addEventListener('qa:language',translate);
  window.addEventListener('qa:motion-mode',e=>{section.hidden=e.detail!=='motion';if(section.hidden){stop();q('qmVideo').pause()}});
  window.addEventListener('pagehide',()=>{stop();if(videoURL)URL.revokeObjectURL(videoURL);if(downloadURL)URL.revokeObjectURL(downloadURL)});
- translate();updatePrompt();drawStill();controls();return true;
+ translate();updatePrompt();drawStill();controls();section.hidden=document.getElementById('qaSceneLib')?.dataset.qaEditorMode!=='motion';return true;
 }
 function tick(){if(!mount()&&++tries<40)setTimeout(tick,250)}tick();
 })();

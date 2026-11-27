@@ -1,5 +1,5 @@
 /* QA Studio AI PRO offline shell — no account/API data caching */
-const VERSION='qa-shell-20261127-prep01';
+const VERSION='qa-shell-20261127-route01';
 const SCOPE_PATH=new URL(self.registration.scope).pathname;
 const CORE=['./','./index.html','./index-1.html','./qa-design.css','./assets/photos/manifest.json','./assets/cutouts/manifest.json','./qa-animals.js','./qa-account.js','./qa-auth-core.js','./qa-login.js','./login.html','./licenses.html','./qa-plans.js','./qa-external-ai.js','./qa-shared-library.js','./qa-social.js','./qa-cutouts.js','./qa-prompts.js','./qa-start.js','./qa-gallery.js','./qa-funny.js','./qa-one-editor.js','./qa-motion.js','./qa-prep-studio.js','./qa-help.js','./qa-landing.js','./qa-i18n.js','./assets/reference-fantasy.webp','./assets/qa-hero-campaign.webp','./assets/gallery-hero.webp','./qa-pricing-fix.js','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{
