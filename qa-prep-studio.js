@@ -6,6 +6,28 @@ const names={image:['Obrázky','Images'],motion:['Animace','Motion'],voice:['Hla
 const label=k=>t(...names[k]);
 const MAX=120;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,Number(v)||0));
+// Independent pitch/tempo approximation using overlap-add grains; local DSP, not AI.
+function voiceDSP(input,sourceRate,semitones,tempo,effect,amount,volume){
+ const rate=32000,pitch=2**(clamp(semitones,-12,12)/12),speed=clamp(tempo,.65,1.5),mix=clamp(amount,0,1),gain=clamp(volume,0,1.5);
+ const n=Math.max(1,Math.min(rate*120,Math.ceil(input.length/sourceRate/speed*rate))),data=new Float32Array(n),weights=new Float32Array(n);
+ function sample(at){const i=Math.floor(at);if(i<0||i>=input.length)return 0;return input[i]+((input[i+1]||0)-input[i])*(at-i)}
+ if(Math.abs(pitch-speed)<.0001){for(let i=0;i<n;i++)data[i]=sample(i*speed*sourceRate/rate)}
+ else{const grain=1280,hop=320;for(let start=-grain+hop;start<n;start+=hop){for(let j=0;j<grain;j++){const i=start+j;if(i<0||i>=n)continue;const w=.5-.5*Math.cos(2*Math.PI*(j+.5)/grain);const at=((start+grain/2)*speed+(j-grain/2)*pitch)*sourceRate/rate;data[i]+=sample(at)*w;weights[i]+=w}}for(let i=0;i<n;i++)data[i]/=Math.max(.0001,weights[i])}
+ let lp=0,slow=0;const delay=Math.round(rate*.18),long=Math.round(rate*.31),hist=new Float32Array(long+1);
+ for(let i=0;i<n;i++){const x=data[i],t=i/rate;let y=x;lp+=.17*(x-lp);slow+=.015*(x-slow);
+ switch(effect){
+ case 'robot':y=x*(.15+.85*Math.cos(2*Math.PI*75*t));break;
+ case 'monster':y=Math.tanh(3*(.55*x+.85*slow));break;
+ case 'radio':y=Math.tanh(2.8*(lp-slow))*.9;break;
+ case 'distort':y=Math.tanh(5*x);break;
+ case 'alien':y=x*(.4+.6*Math.sin(2*Math.PI*(32*t+2*Math.sin(2*Math.PI*3*t))));break;
+ case 'echo':y=x*.75+(i>=delay?hist[(i-delay)%hist.length]*.45:0)+(i>=long?hist[(i-long)%hist.length]*.25:0);break;
+ case 'space':y=x*.65+(i>=delay?hist[(i-delay)%hist.length]*.35*Math.cos(2*Math.PI*2*t):0)+(i>=long?hist[(i-long)%hist.length]*.28:0);break;
+ }
+ hist[i%hist.length]=x;data[i]=clamp((x*(1-mix)+y*mix)*gain,-1,1)}
+ return {data,rate,len:n/rate};
+}
+
 let tries=0;
 function mount(){
  const dock=document.getElementById('qaUnifiedDrawer');if(!dock)return false;if(document.getElementById('qaPrepStudio'))return true;
@@ -33,7 +55,14 @@ function mount(){
  '<div class="qpGrid">'+field('Hlas zařízení','Device voice','<select id="qpVoiceChoice"></select>')+field('Tempo','Rate','<input id="qpRate" type="range" min=".5" max="2" step=".1" value="1">')+
  field('Výška hlasu','Pitch','<input id="qpPitch" type="range" min=".5" max="2" step=".1" value="1">')+field('Emoce a styl AI hlasu','AI voice emotion and style','<input id="qpEmotion" maxlength="200">')+'</div>'+
  '<p'+tr('Náhled používá hlas zařízení, nikoli AI klon nebo výsledný dabing. Vlastní namluvenou stopu lze vložit na časovou osu.','Preview uses a device voice, not an AI clone or final dubbing. Import your recorded voice onto the timeline.')+'></p><div class="qpActions">'+btn('qpSpeak','Poslechnout text','Preview speech')+btn('qpSpeechStop','Zastavit hlas','Stop speech')+'</div>'+
- field('Vlastní nahrávka hlasu','Your voice recording','<input id="qpVoiceFile" type="file" accept="audio/*">')+'</section>'+
+ field('Vlastní nahrávka hlasu','Your voice recording','<input id="qpVoiceFile" type="file" accept="audio/*">')+
+ '<h3'+tr('Změna hlasu a zábavné efekty','Voice changer and funny effects')+'></h3><p'+tr('Nahraj zvuk a vyber efekt. Výška a tempo mají samostatné ovladače. Úpravy jsou lokální a bez AI kreditů.','Import audio and choose an effect. Pitch and tempo have separate controls. Local editing uses no AI credits.')+'></p><p id="qpVoiceInfo"></p><div class="qpGrid">'+
+ field('Předvolba','Preset','<select id="qpVoicePreset">'+opts([['normal','Přirozený','Natural'],['cute','Roztomilý vysoký','Cute high'],['chip','Veverka','Chipmunk'],['deep','Hluboký hlas','Deep voice'],['robot','Robot','Robot'],['monster','Příšera','Monster'],['alien','Mimozemšťan','Alien'],['radio','Vysílačka','Radio'],['distort','Zkreslený hlas','Distorted'],['echo','Ozvěna','Echo'],['space','Vesmírný hlas','Space voice']])+'</select>')+
+ field('Výška nahrávky (půltóny)','Recording pitch (semitones)','<input id="qpVoiceShift" type="range" min="-12" max="12" step="1" value="0"><output id="qpVoiceShiftValue">0</output>')+
+ field('Rychlost nahrávky','Recording tempo','<input id="qpVoiceTempo" type="range" min=".65" max="1.5" step=".05" value="1"><output id="qpVoiceTempoValue">1×</output>')+
+ field('Intenzita efektu','Effect intensity','<input id="qpVoiceMix" type="range" min="0" max="100" value="70"><output id="qpVoiceMixValue">70%</output>')+
+ field('Hlasitost nahrávky','Recording volume','<input id="qpVoiceVolume" type="range" min="0" max="150" value="100"><output id="qpVoiceVolumeValue">100%</output>')+
+ '</div><div class="qpActions">'+btn('qpVoiceOriginal','▶ Originál','▶ Original')+btn('qpVoicePreview','▶ Upravený hlas','▶ Edited voice')+btn('qpVoiceStop','■ Stop','■ Stop')+btn('qpVoiceReset','Obnovit','Reset')+btn('qpVoiceSave','Uložit WAV','Save WAV')+btn('qpVoiceClip','Přidat hlas na osu','Add voice to timeline')+'</div></section>'+
  '<section id="qpVideo" hidden>'+field('Přidat vlastní video','Add your video','<input id="qpVideoFile" type="file" accept="video/mp4,video/webm">')+
  '<p'+tr('Na ose upravíš začátky, délky a hlasitost. Obrazová stopa nahoře má při překryvu přednost; audio stopy hrají společně.','Edit starts, lengths and volume on the timeline. The upper-priority visual clip wins overlaps; audio tracks play together.')+'></p></section>'+
  field('Zadání pro finální AI – styl, scéna a požadavky','Final AI instructions — style, scene and requirements','<textarea id="qpPrompt" maxlength="1500"></textarea>')+
@@ -68,7 +97,20 @@ function mount(){
  q('qpSpeak').onclick=()=>{if(!window.speechSynthesis||!window.SpeechSynthesisUtterance||!voiceList.length){status('Hlas zařízení není dostupný.','Device speech unavailable.');return}cancelVoice();const u=new SpeechSynthesisUtterance(q('qpSpeech').value);u.voice=voiceList[Number(q('qpVoiceChoice').value)]||null;if(u.voice)u.lang=u.voice.lang;u.rate=Number(q('qpRate').value);u.pitch=Number(q('qpPitch').value);speechSynthesis.speak(u)};
  q('qpSpeechStop').onclick=cancelVoice;
  const fileChange=(id,track)=>q(id).onchange=()=>{const f=q(id).files[0];if(f)addFile(track,f,f.name);q(id).value=''};
- fileChange('qpVoiceFile','voice');fileChange('qpVideoFile','video');
+ let voiceInput=null,voiceLoad=0,voiceCache=null;
+ const presets={normal:[0,1,'none'],cute:[4,1.05,'none'],chip:[10,1.2,'none'],deep:[-5,.9,'none'],robot:[0,1,'robot'],monster:[-8,.85,'monster'],alien:[5,1,'alien'],radio:[0,1,'radio'],distort:[-2,1,'distort'],echo:[0,1,'echo'],space:[3,.95,'space']};
+ function voiceSettings(){return {pitch:Number(q('qpVoiceShift').value),tempo:Number(q('qpVoiceTempo').value),effect:(presets[q('qpVoicePreset').value]||presets.normal)[2],amount:Number(q('qpVoiceMix').value)/100,volume:Number(q('qpVoiceVolume').value)/100}}
+ function voiceLabels(){for(const [id,suffix] of [['Shift',''],['Tempo','×'],['Mix','%'],['Volume','%']])q('qpVoice'+id+'Value').textContent=q('qpVoice'+id).value+suffix;for(const id of ['Original','Preview','Stop','Save','Clip'])q('qpVoice'+id).disabled=!voiceInput}
+ function choosePreset(){const [p,t]=presets[q('qpVoicePreset').value]||presets.normal;q('qpVoiceShift').value=p;q('qpVoiceTempo').value=t;q('qpVoiceMix').value=70;voiceCache=null;voiceLabels()}
+ q('qpVoicePreset').onchange=choosePreset;for(const id of ['Shift','Tempo','Mix','Volume'])q('qpVoice'+id).oninput=()=>{voiceCache=null;voiceLabels()};
+ q('qpVoiceReset').onclick=()=>{stopSound();q('qpVoicePreset').value='normal';q('qpVoiceVolume').value=100;choosePreset()};
+ q('qpVoiceFile').onchange=async()=>{const file=q('qpVoiceFile').files[0];if(!file)return;const seq=++voiceLoad;stopSound();voiceInput=null;voiceCache=null;voiceLabels();if(file.size>30*1024*1024){status('Maximální velikost je 30 MB.','Maximum file size is 30 MB.');return}try{const buffer=await getAudio().decodeAudioData(await file.arrayBuffer());if(seq!==voiceLoad)return;if(buffer.duration>60){status('Použij nahrávku do 60 sekund.','Use a recording up to 60 seconds.');return}const mono=new Float32Array(buffer.length);for(let c=0;c<buffer.numberOfChannels;c++){const channel=buffer.getChannelData(c);for(let i=0;i<mono.length;i++)mono[i]+=channel[i]/buffer.numberOfChannels}voiceInput={data:mono,rate:buffer.sampleRate,len:buffer.duration};q('qpVoiceInfo').textContent=file.name+' · '+buffer.duration.toFixed(1)+' s';voiceLabels();status('Hlas připraven k úpravě.','Voice ready to edit.')}catch{if(seq===voiceLoad)status('Nahrávku nelze otevřít.','Cannot open recording.')}};
+ function processedVoice(){if(!voiceInput)return null;if(!voiceCache){const v=voiceSettings();voiceCache=voiceDSP(voiceInput.data,voiceInput.rate,v.pitch,v.tempo,v.effect,v.amount,v.volume)}return voiceCache}
+ async function listenVoice(original){if(!voiceInput)return;stop();stopSound();cancelVoice();const seq=soundSeq;try{const ac=getAudio();await ac.resume();if(seq!==soundSeq)return;const s=original?voiceInput:processedVoice();if(!s)return;const b=ac.createBuffer(1,s.data.length,s.rate);b.copyToChannel(s.data,0);soundNode=ac.createBufferSource();soundNode.buffer=b;soundNode.connect(ac.destination);soundNode.start()}catch{status('Náhled hlasu není dostupný.','Voice preview unavailable.')}}
+ q('qpVoiceOriginal').onclick=()=>listenVoice(true);q('qpVoicePreview').onclick=()=>listenVoice(false);q('qpVoiceStop').onclick=stopSound;
+ q('qpVoiceSave').onclick=()=>{const s=processedVoice();if(s)download(wav(s),'qa-edited-voice.wav')};
+ q('qpVoiceClip').onclick=()=>{const s=processedVoice();if(s)addFile('voice',wav(s),'Edited voice.wav',s.len)};
+ voiceLabels();fileChange('qpVideoFile','video');
  function duration(){return Math.min(MAX,Math.max(30,...clips.map(c=>c.start+c.len)))}
  function addFile(track,file,name,known){
   if(clips.length>=24||file.size>60*1024*1024){status('Max. 24 klipů a 60 MB na soubor.','Max 24 clips and 60 MB per file.');return}
@@ -93,7 +135,7 @@ function mount(){
  function stop(){running=false;cancelAnimationFrame(frame);player.pause();for(const c of clips)c.el.pause?.()}
  q('qpPlay').onclick=()=>{stop();stopSound();cancelVoice();if(position>=duration())position=0;started=performance.now()-position*1000;running=true;sync(true);const tick=now=>{if(!running)return;position=Math.min(duration(),(now-started)/1000);sync(true);if(position>=duration()||root.hidden){stop();return}frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)};
  q('qpPause').onclick=stop;q('qpSeek').oninput=()=>{stop();position=Number(q('qpSeek').value);sync(false)};
- function plan(){return {version:1,mode,prompt:q('qpPrompt').value,voice:{text:q('qpSpeech').value,style:q('qpEmotion').value,rate:Number(q('qpRate').value),pitch:Number(q('qpPitch').value)},clips:clips.map(({track,name,start,len,offset,volume})=>({track,name,start,len,offset,volume})),note:'Preparation only; source files not included; no AI generation or billing.'}}
+ function plan(){return {version:1,mode,prompt:q('qpPrompt').value,voice:{text:q('qpSpeech').value,style:q('qpEmotion').value,rate:Number(q('qpRate').value),pitch:Number(q('qpPitch').value),recordingEffects:voiceSettings()},clips:clips.map(({track,name,start,len,offset,volume})=>({track,name,start,len,offset,volume})),note:'Preparation only; source files not included; no AI generation or billing.'}}
  q('qpSpec').onclick=()=>download(new Blob([JSON.stringify(plan(),null,2)],{type:'application/json'}),'qa-project-plan.json');
  q('qpCopy').onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(plan(),null,2));status('Zadání zkopírováno.','Instructions copied.')}catch{status('Kopírování není dostupné, ulož JSON.','Clipboard unavailable; save JSON.')}};
  function translate(){for(const el of root.querySelectorAll('[data-cs][data-en]'))el.textContent=t(el.dataset.cs,el.dataset.en);q('qpTitle').textContent={image:'AI Image Studio',sound:'AI Sound Studio',voice:'AI Voice Studio',video:'AI Video Studio'}[mode]||'QA Studio';render()}
