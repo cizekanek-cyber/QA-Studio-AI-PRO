@@ -15,6 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify voice processing and account download limits
+        run: node --test tests/qa-voice-presets.test.cjs tests/qa-voice-access.test.cjs
       - name: Validate auth, UI modules and release links
         run: node --test tests/qa-release.test.cjs
       - name: Build Cloudflare Pages output (without provider secrets)
