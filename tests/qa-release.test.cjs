@@ -158,3 +158,15 @@ test('Owner upload can recover retained ZIP and skip confirmed assets',()=>{cons
 test('Voice DSP processes recording pitch and tempo and exports effects locally',()=>{const s=file('qa-prep-studio.js');const fn=s.slice(s.indexOf('function voiceDSP('),s.indexOf('let tries=0;'));const out=vm.runInNewContext('const clamp=(v,a,b)=>Math.min(b,Math.max(a,Number(v)||0));'+fn+';const input=Float32Array.from({length:3200},(_,i)=>.3*Math.sin(2*Math.PI*200*i/32000));[voiceDSP(input,32000,0,1,"none",0,1),voiceDSP(input,32000,7,1,"robot",1,1),voiceDSP(input,32000,0,.8,"none",0,1)]');assert.equal(out[0].data.length,3200);assert.equal(out[1].data.length,3200);assert.equal(out[2].data.length,4000);assert(out[1].data.every(Number.isFinite));assert(out[1].data.some((v,i)=>Math.abs(v-out[0].data[i])>.03));assert.match(s,/qa-edited-voice\.wav/);assert.match(s,/addFile\('voice',wav\(s\)/)});
 
 test('Editor entry checks server license and microphone is explicitly requested',()=>{assert.match(file('qa-one-editor.js'),/await window\.qaCheckEditorAccess/);assert.match(file('qa-plans.js'),/a\.editor_active===true/);assert.match(file('qa-prep-studio.js'),/getUserMedia\(\{audio:true\}\)/);assert.match(file('index.html'),/allow="web-share; microphone"/)});
+require('node:test')('native branding works before any asset downloads and falls back on error',()=>{
+ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+ const window={},document={createElement(tag){return {tag,style:{},children:[],append(...items){this.children.push(...items)},addEventListener(type,fn){this[type]=fn},classList:{add(){}}}}};
+ vm.runInNewContext(fs.readFileSync(path.join(__dirname,'..','qa-branding-art.js'),'utf8'),{window,document,localStorage:{getItem:()=>null},navigator:{language:'en'},Promise});
+ for(const lang of ['cs','en','de','fr','es','it','ru','xx']){
+  const art=window.qaBrandingElement('hero',lang),[img,caption]=art.children;
+  assert.equal(img.src,'./assets/branding/hero.webp');assert.ok(caption.children[0].textContent);assert.equal(caption.hidden,lang==='cs');
+  img.error();assert.equal(caption.hidden,false);
+ }
+ assert.equal(window.qaBrandingElement('unknown','en'),null);
+ assert.ok(window.qaBrandingElement('plazi','cs'));
+});
