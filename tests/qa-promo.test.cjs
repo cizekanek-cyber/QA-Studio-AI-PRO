@@ -64,3 +64,14 @@ test('the public purchase button cannot initiate checkout while the EUR catalog 
   assert.equal(calls, 0);
   assert.match(elements.get('#qaEditorAccess').textContent, /prodej zatím není aktivní/i);
 });
+
+test('the catalog loads before the plan and landing panels and is included in the offline shell', () => {
+  const root = path.join(__dirname, '..');
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const worker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+  const catalogIndex = html.indexOf('await loadModule(promo)');
+  assert.ok(catalogIndex >= 0);
+  assert.ok(catalogIndex < html.indexOf('await loadModule(plans)'));
+  assert.ok(catalogIndex < html.indexOf('await loadModule(landing)'));
+  assert.match(worker, /'\.\/qa-promo-catalog\.js'/);
+});
