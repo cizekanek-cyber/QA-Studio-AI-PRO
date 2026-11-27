@@ -451,3 +451,9 @@ body>.qaMobileDock{display:none}
 #qaWelcome.qaReferenceHome .qlaHero{min-height:0!important;height:auto!important;background:#0b0b0d!important;display:block!important}
 #qaWelcome.qaReferenceHome .qlaHero::before,#qaWelcome.qaReferenceHome .qlaHero .qlaGlow{display:none!important}
 #qaWelcome.qaReferenceHome .qlaHeroContent{width:100%!important;max-width:none!important;padding:8px!important;box-sizing:border-box}
+
+/* Minimal dashboard: keep actions and essential service disclosures. */
+#qaWelcome.qaReferenceHome .qlaHero h1,#qaWelcome.qaReferenceHome .qlaHero .qlaLead,#qaWelcome.qaReferenceHome .qlaHero .qlaKicker,#qaWelcome.qaReferenceHome .qlaHero .qlaSublead{display:none!important}
+#qaWelcome.qaReferenceHome .qaHomeTool[data-go="templates"] small,#qaWelcome.qaReferenceHome .qaHomeTool[data-go="editor"] small,#qaWelcome.qaReferenceHome .qaHomeTool[data-go="library"] small{display:none!important}
+#qaWelcome.qaReferenceHome .qaHomeTool{min-height:56px!important;padding:6px!important}
+#qaWelcome.qaReferenceHome .qaHomeRail .qlaConversionCard{padding:9px!important}

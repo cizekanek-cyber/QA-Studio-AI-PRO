@@ -82,6 +82,10 @@ function mount(){
  const timeline=document.createElement('div');timeline.className='qpTimeline';
  const prompt=document.createElement('details');prompt.className='qpProjectDetails';
  const summary=document.createElement('summary');summary.dataset.cs='AI zadání a plán';summary.dataset.en='AI instructions and plan';prompt.append(summary);
+ const help=document.createElement('details');help.className='qpProjectDetails';const helpSummary=document.createElement('summary');helpSummary.dataset.cs='Nápověda';helpSummary.dataset.en='Help';help.append(helpSummary);
+ for(const section of ['qpVoice','qpVideo'])for(const p of q(section).querySelectorAll('p[data-cs][data-en]'))help.append(p);
+ const presetLabel=q('qpVoicePreset').parentElement;presetLabel.hidden=true;
+ const speechDetails=document.createElement('details');const speechSummary=document.createElement('summary');speechSummary.dataset.cs='Text na řeč';speechSummary.dataset.en='Text to speech';speechDetails.append(speechSummary,q('qpSpeech').parentElement,q('qpVoiceChoice').parentElement.parentElement,q('qpSpeak').parentElement);q('qpVoice').append(speechDetails);
  const nodes=Array.from(root.children);const previewNode=q('qpPreview'),videoNode=q('qpPlayer');
  stage.append(previewNode,videoNode,q('qpPlay').parentElement,q('qpSeek').parentElement);
  for(const id of ['qpImage','qpSound','qpVoice','qpVideo'])panel.append(q(id));
@@ -90,7 +94,7 @@ function mount(){
  const clipDetails=document.createElement('details');const clipSummary=document.createElement('summary');clipSummary.dataset.cs='Střih a nastavení klipů';clipSummary.dataset.en='Trim and clip settings';clipDetails.append(clipSummary,clipList);timeline.append(clipDetails);
  const tabs=[['image','▧','Obrázky','Images'],['video','▶','Video','Video'],['voice','🎙','Hlas','Voice'],['sound','♫','Zvuk','Sound'],['motion','✦','Animace','Motion']];
  for(const [key,icon,cs,en] of tabs){const b=document.createElement('button');b.type='button';b.dataset.tool=key;b.dataset.cs=icon+' '+cs;b.dataset.en=icon+' '+en;b.onclick=()=>{if(key==='motion'){window.qaOpenMotionStudio?.();return}window.dispatchEvent(new CustomEvent('qa:motion-mode',{detail:key}))};tools.append(b)}
- workspace.append(stage,timeline,tools,panel,prompt,q('qpStatus'));root.replaceChildren(workspace);
+ workspace.append(stage,timeline,tools,panel,prompt,help,q('qpStatus'));root.replaceChildren(workspace);
  style.textContent+=`
  #qaPrepStudio{background:#0e1016;border-color:#806336;padding:8px;border-radius:12px}
  #qaPrepStudio .qpWorkspace{display:grid;gap:8px;min-width:0}
@@ -103,7 +107,7 @@ function mount(){
  #qaPrepStudio .qpToolPanel{min-width:0;background:#15171e;border-radius:10px;padding:8px}
  #qaPrepStudio .qpToolPanel .qpGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
  #qaPrepStudio #qpVoiceTiles{grid-template-columns:repeat(3,minmax(0,1fr))}
- #qaPrepStudio #qpVoiceTiles button{font-size:11px;padding:6px 2px}
+ #qaPrepStudio #qpVoiceTiles{display:flex!important;overflow-x:auto;gap:5px;scroll-snap-type:x proximity;padding:3px 0} #qaPrepStudio #qpVoiceTiles button{font-size:12px;padding:8px;flex:0 0 auto;scroll-snap-align:start;white-space:nowrap}
  #qaPrepStudio .qpTimeline{background:#14151b;padding:6px;border-radius:8px}
  #qaPrepStudio .qpLane{grid-template-columns:76px 1fr}
  #qaPrepStudio .qpRail{height:24px}
