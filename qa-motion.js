@@ -110,7 +110,7 @@ function mount(){
    });
    if(!chunks.length)throw Error('Empty recording');
    const type=rec.mimeType||chunks[0].type||'video/webm';
-   if(downloadURL)URL.revokeObjectURL(downloadURL);const resultBlob=new Blob(chunks,{type});downloadURL=URL.createObjectURL(resultBlob);window.dispatchEvent(new CustomEvent('qa:motion-import',{detail:{file:resultBlob}}));
+   if(downloadURL)URL.revokeObjectURL(downloadURL);const resultBlob=new Blob(chunks,{type});downloadURL=URL.createObjectURL(resultBlob);window.dispatchEvent(new CustomEvent('qa:motion-import',{detail:{file:resultBlob,duration:s.duration}}));
    const a=document.createElement('a');a.href=downloadURL;a.download='qa-camera-motion.'+(type.includes('mp4')?'mp4':'webm');a.click();status('Lokální video kamery připraveno ke stažení.','Local camera video ready to download.');
   }catch(e){console.warn('Motion export:',e);status('Export selhal nebo jej prohlížeč nepodporuje.','Export failed or is not supported in this browser.')}
   finally{clearTimeout(timeout);cancelAnimationFrame(raf);if(rec&&rec.state!=='inactive')try{rec.stop()}catch{};stream?.getTracks().forEach(x=>x.stop());recording=false;controls()}
