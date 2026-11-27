@@ -34,7 +34,7 @@ f.addEventListener('load',async function(){
    const loadModule=script=>new Promise(resolve=>{const old=script.onload;const error=script.onerror;script.onload=e=>{try{old?.call(script,e)}finally{resolve(true)}};script.onerror=e=>{try{error?.call(script,e)}finally{resolve(false)}};script.async=false;doc.body.append(script)});
    if(!doc.querySelector('script[data-qa-animals]')){
      const script=doc.createElement('script');
-     script.src='./qa-animals.js?v=20261127-import01';
+     script.src='./qa-animals.js?v=20261127-catalog02';
      script.dataset.qaAnimals='true';
      script.onerror=function(){console.warn('Doplněk zvířecích šablon se nenačetl.')};
      await loadModule(script);
@@ -47,16 +47,16 @@ f.addEventListener('load',async function(){
    if(!doc.querySelector('script[data-qa-start]')){const start=doc.createElement('script');start.src='./qa-start.js?v=20261123-funny01';start.dataset.qaStart='true';await loadModule(start);}
    if(!doc.querySelector('script[data-qa-gallery]')){const gallery=doc.createElement('script');gallery.src='./qa-gallery.js?v=20261125-clean13';gallery.dataset.qaGallery='true';gallery.onerror=()=>console.error('Galerii fotošablon se nepodařilo načíst');await loadModule(gallery);}
    if(!doc.querySelector('script[data-qa-funny]')){const funny=doc.createElement('script');funny.src='./qa-funny.js?v=20261125-clean13';funny.dataset.qaFunny='true';funny.onerror=()=>console.error('Funny Lab se nepodařilo načíst');await loadModule(funny);}
-   if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261127-import01';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');await loadModule(uni);}
-   if(!doc.querySelector('script[data-qa-motion]')){const motion=doc.createElement('script');motion.src='./qa-motion.js?v=20261127-import01';motion.dataset.qaMotion='true';await loadModule(motion);}
-   if(!doc.querySelector('script[data-qa-prep]')){const prep=doc.createElement('script');prep.src='./qa-prep-studio.js?v=20261127-import01';prep.dataset.qaPrep='true';await loadModule(prep);}
+   if(!doc.querySelector('script[data-qa-unified]')){const uni=doc.createElement('script');uni.src='./qa-one-editor.js?v=20261127-catalog02';uni.dataset.qaUnified='true';uni.onerror=()=>console.error('Jednotný editor se nenačetl');await loadModule(uni);}
+   if(!doc.querySelector('script[data-qa-motion]')){const motion=doc.createElement('script');motion.src='./qa-motion.js?v=20261127-catalog02';motion.dataset.qaMotion='true';await loadModule(motion);}
+   if(!doc.querySelector('script[data-qa-prep]')){const prep=doc.createElement('script');prep.src='./qa-prep-studio.js?v=20261127-catalog02';prep.dataset.qaPrep='true';await loadModule(prep);}
    if(!doc.querySelector('script[data-qa-help]')){const help=doc.createElement('script');help.src='./qa-help.js?v=20261123-onboard01';help.dataset.qaHelp='true';help.onerror=()=>console.error('Nápovědu nebylo možné načíst');await loadModule(help);}
    if(!doc.querySelector('script[data-qa-pricing-fix]')){const pricing=doc.createElement('script');pricing.src='./qa-pricing-fix.js?v=20261125-external01';pricing.dataset.qaPricingFix='true';pricing.onerror=()=>console.error('Ceník se nepodařilo aktualizovat');await loadModule(pricing);}
    if(!doc.querySelector('script[data-qa-i18n]')){const i18n=doc.createElement('script');i18n.src='./qa-i18n.js?v=20261125-external02';i18n.dataset.qaI18n='true';await loadModule(i18n);}
    if(!doc.querySelector('script[data-qa-prompts]')){const prompts=doc.createElement('script');prompts.src='./qa-prompts.js?v=20261125-prompts01';prompts.dataset.qaPrompts='true';await loadModule(prompts);}
    if(!doc.querySelector('script[data-qa-external-ai]')){const ext=doc.createElement('script');ext.src='./qa-external-ai.js?v=20261125-external01';ext.dataset.qaExternalAi='true';await loadModule(ext);}
-   if(!doc.querySelector('script[data-qa-shared-library]')){const lib=doc.createElement('script');lib.src='./qa-shared-library.js?v=20261127-import01';lib.dataset.qaSharedLibrary='true';await loadModule(lib);}
-   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261127-import01';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}
+   if(!doc.querySelector('script[data-qa-shared-library]')){const lib=doc.createElement('script');lib.src='./qa-shared-library.js?v=20261127-catalog02';lib.dataset.qaSharedLibrary='true';await loadModule(lib);}
+   if(!doc.querySelector('script[data-qa-landing]')){const landing=doc.createElement('script');landing.src='./qa-landing.js?v=20261127-catalog02';landing.dataset.qaLanding='true';landing.onerror=()=>console.error('Promotional homepage failed to load');await loadModule(landing);}
    const deadline=Date.now()+6000;while(!doc.querySelector('#qlaNewLanding .qaHomeShell')&&Date.now()<deadline)await new Promise(r=>setTimeout(r,100));
    if(doc.querySelector('#qlaNewLanding .qaHomeShell')){doc.querySelector('.nav button[data-tab="qaWelcome"]')?.click();doc.defaultView.scrollTo(0,0);n.style.display='none';const requested=new URLSearchParams(location.search).get('studio');if(['image','sound','voice','video','motion','editor'].includes(requested)){doc.defaultView.qaOpenEditorMode?.(requested)}else if(requested==='library'){doc.defaultView.qaOpenSharedLibrary?.('all','all')}}else{n.replaceChildren();const msg=document.createElement('p');msg.textContent='Nová domovská stránka se nenačetla. / Dashboard failed to load.';const retry=document.createElement('button');retry.textContent='Zkusit znovu / Retry';retry.onclick=()=>location.reload();const fallback=document.createElement('button');fallback.textContent='Otevřít dostupný editor / Open editor';fallback.onclick=()=>{n.style.display='none'};n.append(msg,retry,fallback)}
  }catch(e){
