@@ -446,3 +446,8 @@ body>.qaMobileDock{display:none}
 #qaWelcome .qaHomeHeroGroup{min-width:0;grid-column:1;grid-row:1}
 #qaWelcome .qaNativeCategoryCover{aspect-ratio:auto!important}
 .qaSharedBrandingCover{width:min(100%,420px);margin:12px auto;border:1px solid #b08b45;border-radius:16px}
+
+/* Single promotional banner; keep the functional dashboard compact. */
+#qaWelcome.qaReferenceHome .qlaHero{min-height:0!important;height:auto!important;background:#0b0b0d!important;display:block!important}
+#qaWelcome.qaReferenceHome .qlaHero::before,#qaWelcome.qaReferenceHome .qlaHero .qlaGlow{display:none!important}
+#qaWelcome.qaReferenceHome .qlaHeroContent{width:100%!important;max-width:none!important;padding:8px!important;box-sizing:border-box}
