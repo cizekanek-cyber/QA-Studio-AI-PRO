@@ -474,3 +474,13 @@ body>.qaMobileDock{display:none}
 #qaSharedLibrary article button{font-size:12px!important;padding:7px!important;background:#302719!important;color:#ffe0a0!important;border:1px solid #a88449!important}
 #qaSharedLibrary #qsCategoryCover{display:none!important}
 @media(max-width:760px){#qaWelcome.qaReferenceHome .qaShowcase,#qaSharedLibrary .qs-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* Unified dark gold workspace atmosphere */
+html,body{background-color:#09090c!important;background-image:radial-gradient(ellipse at 10% 12%,#39254b55,transparent 45%),radial-gradient(ellipse at 95% 45%,#70502122,transparent 50%),linear-gradient(155deg,#101015,#080809 70%)!important;background-attachment:fixed!important;color:#f4eee3}
+#qaWelcome,#qaPrepStudio,#qaSharedLibrary{color:#f4eee3}
+#qaPrepStudio .qpToolPanel,#qaPrepStudio .qpTimeline{background:linear-gradient(145deg,#201b23,#101013)!important;border:1px solid #81643b;border-radius:10px}
+#qaPrepStudio .qpRail{background:#29242c!important;border:1px solid #665338}
+#qaPrepStudio .qpStage{background:#09090b!important}
+#qaPrepStudio .qpToolNav button,#qaSharedLibrary button{border-color:#9d7945!important;color:#f4dfb8!important}
+#qaPrepStudio input[type=range]{accent-color:#d6ad62}
+#qaWelcome.qaReferenceHome .qaShowcaseCard{isolation:isolate}
